@@ -1,6 +1,7 @@
 import { useState } from "react"
 import type { Product } from "../types"
 import { FaShoppingCart } from "react-icons/fa";
+import ProductViewModal from "./ProductViewModal";
 
 
 const ProductCard = (product: Product) => {
@@ -18,7 +19,7 @@ const ProductCard = (product: Product) => {
     const [openModal, setOpenModal] = useState(false)
     let btnLoader = false;
     const [selectedViewProduct, setSelectedViewProduct] = useState<Product>()
-    const isAvailable = quantity && quantity > 0;
+    const isAvailable : boolean = Boolean(quantity && quantity > 0);
 
     if (discount >= 1) discount = 0;
 
@@ -72,6 +73,12 @@ const ProductCard = (product: Product) => {
                     </button>
                 </div>
             </div>
+            <ProductViewModal 
+                product={product} 
+                isAvailable={isAvailable} 
+                isOpen={openModal} 
+                setIsOpen={setOpenModal}
+            />
         </div>
   )
 }
