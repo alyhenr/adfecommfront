@@ -6,20 +6,18 @@ import type { AppDispatch, RootState } from "../store/reducers/store";
 import ProductCard from "./ProductCard";
 
 const Products = () => {
-  let isLoading: boolean = false;
-  let errorMessage: string = "";
-
+   
+  let { isLoading, errorMessage } = useSelector((state: RootState) => state.errorsState);
   const products = useSelector((state: RootState) => state.productsState.products);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchProductsThunk())
   }, [dispatch]);
-  
   return (
     <div className="lg:px-14 sm:px-8 px-4 py-14 2xl:w-[90%] 2xl:mx-auto">
       {isLoading ? (
-        <p>It's loading...</p>
+        <p>Carregando...</p>
       ) : errorMessage ? (
         <div className="flex justify-center items-center  h-[200px]">
           <FaExclamationTriangle className="text-slate-800 text-4xl mr-2" />

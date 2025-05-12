@@ -1,16 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import type { Category, Pagination, Product } from "../../types"
+import type { Pagination, Product, ProductsResponse } from "../../types"
 
 export type ProductState = {
     products: Product[],
-    categories: Category[],
     pagination: Pagination,
 }
 
 const initialState: ProductState = {
     products: [],
-    categories: [],
     pagination: {
         pageNumber: 0,
         lastPage: true,
@@ -26,14 +24,7 @@ const productSlice = createSlice({
     reducers: {
         fetchProducts: (
             state,
-            action: PayloadAction<{
-                content: Product[];
-                pageNumber: number;
-                lastPage: boolean;
-                pageSize: number;
-                totalElements: number;
-                totalPages: number;
-            }>
+            action: PayloadAction<ProductsResponse>
         ) => {
             state.products = action.payload.content;
             state.pagination = {
