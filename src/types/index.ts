@@ -13,3 +13,24 @@ export interface Product {
     discount: number;
     category: Category;
 }
+
+export interface Pagination {
+    pageNumber: number,
+    pageSize: number,
+    totalElements: number,
+    totalPages: number,
+    lastPage: boolean,
+}
+
+export interface ProductsResponse extends Pagination {
+    content: Product[],
+}
+
+export interface CategoriesResponse extends Pagination {
+    content: Category[],
+}
+
+export interface DispatchState<T> extends Pagination {
+    type: string,
+    content: T[]
+}
