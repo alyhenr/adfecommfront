@@ -92,7 +92,7 @@ const Filter = () => {
   };
 
   return (
-    <div className="flex lg:flex-row flex-col-reverse lg:justify-center justify-between items-center gap-4">
+    <div className="flex lg:flex-row flex-col lg:justify-center justify-between items-center gap-4">
       {/* Keyword filter */}
       <div className="relative flex items-center 2xl:w-[450px] sm:w-[420px] w-full">
         <input
@@ -105,46 +105,51 @@ const Filter = () => {
         <FiSearch className="absolute left-3 text-slate-800 size={20}" />
       </div>
       {/* Category Filter */}
-      <div className="flex sm:flex-row flex-col gap-4 items-center">
-        <FormControl
-          className="text-slate-800 border-slate-700"
-          variant="outlined"
-          size="small"
-        >
-          <InputLabel id="category-select-label">Categorias</InputLabel>
-          <Select
-            labelId="category-select-label"
-            value={category.categoryId}
-            onChange={(ev) => handleCategory(ev.target.value)}
-            label="Category"
-            className="min-w-[120px] text-slate-800 border-slate-700 hover:cursor-pointer"
-          >
-            <MenuItem value={-1}>Todas</MenuItem>
-            {categories.map((c) => (
-              <MenuItem value={c.categoryId} key={c.categoryId}>
-                {c.categoryName}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      <div className="flex gap-2 w-full justify-center items-center">
+        <div className="flex gap-4 items-center justify-center lg:w-fit w-full">
+            <FormControl
+            className="text-slate-800 border-slate-700 w-full max-w-[300px]"
+            variant="outlined"
+            size="small"
+            >
+            <InputLabel id="category-select-label">Categorias</InputLabel>
+            <Select
+                labelId="category-select-label"
+                value={category.categoryId}
+                onChange={(ev) => handleCategory(ev.target.value)}
+                label="Category"
+                className="min-w-[120px] text-slate-800 border-slate-700 hover:cursor-pointer"
+            >
+                <MenuItem value={-1}>Todas</MenuItem>
+                {categories.map((c) => (
+                <MenuItem value={c.categoryId} key={c.categoryId}>
+                    {c.categoryName}
+                </MenuItem>
+                ))}
+            </Select>
+            </FormControl>
+        </div>
+        {/* Sort order */}
+        <Tooltip title="Ordernar por" onClick={() => handleSorting(!asc)}>
+            <Button
+            variant="contained"
+            color="primary"
+            className="flex items-center gap-2 h-10 md:w-70 lg:w-fit"
+            >
+            {asc ? <FiArrowUp size={20} /> : <FiArrowDown size={20} />}
+            <span className="hidden md:flex">
+                {asc ? "Crescente" : "Decrescente"}{" "}
+            </span>
+            </Button>
+        </Tooltip>
+        <button className="flex items-center gap-2 bg-rose-900 text-white px-3 py-2 rounded-md transition duration-300 ease-in shadow-md focus:outline-none hover:cursor-pointer min-w-fit">
+            <FiRefreshCcw className="font-semibold" size={25} />
+            <span className="font-semibold hidden md:flex" onClick={() => clearFilters()}>
+            Limpar filtro
+            </span>
+        </button>
+
       </div>
-      {/* Sort order */}
-      <Tooltip title="Ordernar por" onClick={() => handleSorting(!asc)}>
-        <Button
-          variant="contained"
-          color="primary"
-          className="flex items-center gap-2 h-10"
-        >
-          {asc ? "Crescente" : "Decrescente"}{" "}
-          {asc ? <FiArrowUp size={20} /> : <FiArrowDown size={20} />}
-        </Button>
-      </Tooltip>
-      <button className="flex items-center gap-2 bg-rose-900 text-white px-3 py-2 rounded-md transition duration-300 ease-in shadow-md focus:outline-none hover:cursor-pointer">
-        <FiRefreshCcw className="font-semibold" size={16} />
-        <span className="font-semibold" onClick={() => clearFilters()}>
-          Limpar filtro
-        </span>
-      </button>
     </div>
   );
 };

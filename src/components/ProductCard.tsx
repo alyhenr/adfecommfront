@@ -3,20 +3,7 @@ import type { Product } from "../types";
 import { FaShoppingCart } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
 import { getSpecialPriceStr } from "../utils/productsUtils";
-import mockImg1 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/1.png";
-import mockImg2 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/2.png";
-import mockImg3 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/3.png";
-import mockImg4 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/4.png";
-import mockImg5 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/5.png";
 
-const arrImgs = {
-  [6]: mockImg1,
-  [7]: mockImg2,
-  [8]: mockImg3,
-  [9]: mockImg4,
-  [10]: mockImg5,
-};
-let idx = 0;
 const ProductCard = (product: Product) => {
   let {
     productId,
@@ -51,7 +38,7 @@ const ProductCard = (product: Product) => {
       >
         <img
           className="w-full h-full cursor-pointer transiction-transform duration-300 transform hover:scale-105"
-          src={arrImgs[productId]}
+          src={imageUrl}
           alt={productName}
         />
       </div>
@@ -67,7 +54,7 @@ const ProductCard = (product: Product) => {
         <div className="min-h-30 max-h-30">
           <p className="text-gray-600 text-sm">{description}</p>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-5">
           {discount > 0 ? (
             <div className="flex flex-col">
               <span className="text-gray-400 line-through">
@@ -93,7 +80,9 @@ const ProductCard = (product: Product) => {
             } text-white py-2 px-3 rounded-lg items-center transition-colors duration-300 w-36 flex justify-center`}
           >
             <FaShoppingCart className="mr-2" />
-            {isAvailable ? "Comprar" : "Esgotado"}
+            <span className="hidden md:flex">
+              {isAvailable ? "Comprar" : "Esgotado"}
+            </span>
           </button>
         </div>
       </div>
