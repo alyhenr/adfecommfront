@@ -3,7 +3,20 @@ import type { Product } from "../types";
 import { FaShoppingCart } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
 import { getSpecialPriceStr } from "../utils/productsUtils";
+import mockImg1 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/1.png";
+import mockImg2 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/2.png";
+import mockImg3 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/3.png";
+import mockImg4 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/4.png";
+import mockImg5 from "../../../../../alysson/Downloads/IMAGENS SEM FUNDO ZIP/IMAGENS SEM FUNDO/5.png";
 
+const arrImgs = {
+  [6]: mockImg1,
+  [7]: mockImg2,
+  [8]: mockImg3,
+  [9]: mockImg4,
+  [10]: mockImg5,
+};
+let idx = 0;
 const ProductCard = (product: Product) => {
   let {
     productId,
@@ -38,7 +51,7 @@ const ProductCard = (product: Product) => {
       >
         <img
           className="w-full h-full cursor-pointer transiction-transform duration-300 transform hover:scale-105"
-          src={imageUrl}
+          src={arrImgs[productId]}
           alt={productName}
         />
       </div>
