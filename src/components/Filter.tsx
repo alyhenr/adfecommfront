@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import useProductFilter from "../hooks/useProductFilter";
 
 const Filter = () => {
   const categories: Category[] = [
@@ -33,6 +34,8 @@ const Filter = () => {
   });
   const [asc, setAsc] = useState<boolean>(true);
   const [keyword, setKeyword] = useState("");
+
+  useProductFilter()
 
   useEffect(() => {
     const currCategory: string = searchParams.get("category") || "";
@@ -79,6 +82,7 @@ const Filter = () => {
         };
       } else return prev;
     });
+    navigate(`${path}?${params}`);
   };
 
   const handleSorting = (isAsc: boolean) => {

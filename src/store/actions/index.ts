@@ -5,12 +5,14 @@ import type { ProductsResponse } from "../../types";
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
 
-export const fetchProductsThunk = () => async (dispatch: Dispatch) => {
+export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
   console.log("fetching products");
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
-    const { data }: AxiosResponse<ProductsResponse> = await api.get(`/public/products`);
+    console.log(`/public/products?${queryString}`);
+    
+    const { data }: AxiosResponse<ProductsResponse> = await api.get(`/public/products?${queryString}`);
     console.log(data);
     dispatch(
       setProducts({

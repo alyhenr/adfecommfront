@@ -6,6 +6,7 @@ import type { AppDispatch, RootState } from "../store/reducers/store";
 import ProductCard from "./ProductCard";
 import Filter from "./Filter";
 import type { Product } from "../types";
+import useProductFilter from "../hooks/useProductFilter";
 
 const Products = () => {
   const { isLoading, errorMessage } = useSelector(
@@ -15,10 +16,10 @@ const Products = () => {
     (state: RootState) => state.productsState.products
   );
   const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    dispatch(fetchProductsThunk());
-  }, [dispatch]);
+  useProductFilter()
+  // useEffect(() => {
+  //   dispatch(fetchProductsThunk());
+  // }, [dispatch]);
   return (
     <div className="lg:px-14 sm:px-8 px-4 py-14 2xl:w-[90%] 2xl:mx-auto w-[80%]">
       <Filter />
