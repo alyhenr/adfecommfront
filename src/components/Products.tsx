@@ -1,11 +1,11 @@
 import { FaExclamationTriangle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchProductsThunk } from "../store/actions";
+import { fetchCategoriesThunk, fetchProductsThunk } from "../store/actions";
 import type { AppDispatch, RootState } from "../store/reducers/store";
 import ProductCard from "./ProductCard";
 import Filter from "./Filter";
-import type { Product } from "../types";
+import { type Product } from "../types";
 import useProductFilter from "../hooks/useProductFilter";
 
 const Products = () => {
@@ -15,14 +15,22 @@ const Products = () => {
   const products = useSelector(
     (state: RootState) => state.productsState.products
   );
+
+  const categories = useSelector(
+    (state: RootState) => state.categoriesState.categories
+  );
+
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(fetchCategoriesThunk());
+  }, [dispatch]);
+
+
   useProductFilter()
-  // useEffect(() => {
-  //   dispatch(fetchProductsThunk());
-  // }, [dispatch]);
   return (
     <div className="lg:px-14 sm:px-8 px-4 py-14 2xl:w-[90%] 2xl:mx-auto w-[80%]">
-      <Filter />
+      <Filter categories={categories}/>
       {isLoading ? (
         <p>Carregando...</p>
       ) : errorMessage ? (

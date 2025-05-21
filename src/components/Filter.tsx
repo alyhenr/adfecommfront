@@ -12,12 +12,11 @@ import {
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import useProductFilter from "../hooks/useProductFilter";
 
-const Filter = () => {
-  const categories: Category[] = [
-    { categoryId: 1, categoryName: "Food" },
-    { categoryId: 2, categoryName: "Cars" },
-  ];
+type FilterProps = {
+  categories: Category[]
+}
 
+const Filter = ({ categories } : FilterProps) => {
   const categoryMap: Record<number, string> = { [-1]: "" };
   categories.forEach((category) => {
     categoryMap[category.categoryId] = category.categoryName;
