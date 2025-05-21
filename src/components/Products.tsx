@@ -7,15 +7,15 @@ import ProductCard from "./ProductCard";
 import Filter from "./Filter";
 import { type Product } from "../types";
 import useProductFilter from "../hooks/useProductFilter";
-import { MagnifyingGlass } from "react-loader-spinner"
 import Loader from "./Loader";
+import CustomPagination from "./CustomPagination";
 
 const Products = () => {
   const { isLoading, errorMessage } = useSelector(
     (state: RootState) => state.errorsState
   );
-  const products = useSelector(
-    (state: RootState) => state.productsState.products
+  const { products, pagination } = useSelector(
+    (state: RootState) => state.productsState
   );
 
   const categories = useSelector(
@@ -49,6 +49,9 @@ const Products = () => {
               products.map((p: Product, i: number) => (
                 <ProductCard key={i} {...p} />
               ))}
+          </div>
+          <div className="flex justify-center pt-10">
+            <CustomPagination paginationInfo={pagination}/>
           </div>
         </div>
       )}
