@@ -29,7 +29,7 @@ const useProductFilter = () => {
     }
 
     const queryString = params.toString()
-    console.log(queryString);
+    // console.log(queryString);
     dispatch(fetchProductsThunk(queryString))
   }, [dispatch, searchParams])
   

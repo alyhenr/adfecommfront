@@ -11,9 +11,9 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { FaShoppingCart } from "react-icons/fa";
-import Logo from "../assets/YOUDE.png";
+import Logo from "../../assets/YOUDE.png";
 
-const pages = []; //["Produtos", "Carrinho"];
+const pages : string[] = []; //["Produtos", "Carrinho"];
 const settings = ["Perfil", "Minha conta", "Minhas compras", "Logout"];
 
 const NavBar = () => {

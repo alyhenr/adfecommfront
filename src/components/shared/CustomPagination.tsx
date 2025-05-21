@@ -1,5 +1,5 @@
 import { Pagination } from "@mui/material"
-import type { Pagination as PaginationType } from "../types"
+import type { Pagination as PaginationType } from "../../types"
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 
 type PaginationProps = {
@@ -21,8 +21,9 @@ const CustomPagination = ({ paginationInfo } : PaginationProps) => {
 
   return (
     <Pagination
-      defaultPage={currPage} 
-      defaultValue={currPage} 
+      defaultPage={1} 
+      defaultValue={0} 
+      page={currPage}
       count={paginationInfo.totalPages} 
       siblingCount={1} 
       variant="outlined" 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Category } from "../types";
+import type { Category } from "../../types";
 import { FiArrowDown, FiArrowUp, FiRefreshCcw, FiSearch } from "react-icons/fi";
 import {
   Button,
@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
-import useProductFilter from "../hooks/useProductFilter";
+import useProductFilter from "../../hooks/useProductFilter";
 
 type FilterProps = {
   categories: Category[]

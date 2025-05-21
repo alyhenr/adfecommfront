@@ -11,14 +11,14 @@ import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
 
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
-  console.log("fetching products");
+  // console.log("fetching products");
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
-    console.log(`/public/products?${queryString}`);
+    // console.log(`/public/products?${queryString}`);
     
     const { data }: AxiosResponse<ProductsResponse> = await api.get(`/public/products?${queryString}`);
-    console.log(data);
+    // console.log(data);
     dispatch(
       setProducts({
         content: data.content,
@@ -39,15 +39,15 @@ export const fetchProductsThunk = (queryString: string = "") => async (dispatch:
 
 
 export const fetchCategoriesThunk = (queryString: string = "")  => async (dispatch: Dispatch) => {
-  console.log("fetching categories");
+  // console.log("fetching categories");
 
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
-    console.log(`/public/categories?${queryString}`);
+    // console.log(`/public/categories?${queryString}`);
     
     const { data }: AxiosResponse<CategoriesResponse> = await api.get(`/public/categories?${queryString}`);
-    console.log(data);
+    // console.log(data);
     dispatch(
       setCategories({
         content: data.content,

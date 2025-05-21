@@ -4,10 +4,10 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import type { Product } from "../types";
-import { getSpecialPriceStr } from "../utils/productsUtils";
+import type { Product } from "../../types";
+import { getSpecialPriceStr } from "../../utils/productsUtils";
 import { Divider } from "@mui/material";
-import Status from "./Status";
+import Status from "../shared/Status";
 import { MdClose, MdDone } from "react-icons/md";
 
 type ProductViewModalProps = {

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import type { Product } from "../types";
+import type { Product } from "../../types";
 import { FaShoppingCart } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
-import { getSpecialPriceStr } from "../utils/productsUtils";
+import { getSpecialPriceStr } from "../../utils/productsUtils";
+import { truncateText } from "../../utils/common";
 
 const ProductCard = (product: Product) => {
   let {
@@ -29,9 +30,9 @@ const ProductCard = (product: Product) => {
   };
 
   return (
-    <div className="border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300">
+    <div className="border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300 min-w-fit">
       <div
-        className="w-full overflow-hidden aspect-[1]"
+        className="w-full overflow-hidden aspect-[1.3]"
         onClick={() => {
           handleProductView();
         }}
@@ -49,10 +50,10 @@ const ProductCard = (product: Product) => {
           }}
           className="text-lg font-semibold mb-2 cursor-pointer"
         >
-          {productName}
+          {truncateText(productName, 70)}
         </h2>
         <div className="min-h-30 max-h-30">
-          <p className="text-gray-600 text-sm">{description}</p>
+          <p className="text-gray-600 text-sm">{truncateText(description)}</p>
         </div>
         <div className="flex items-center justify-between gap-5">
           {discount > 0 ? (

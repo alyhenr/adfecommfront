@@ -1,5 +1,5 @@
-import NavBar from "./components/NavBar";
-import Products from "./components/Products";
+import NavBar from "./components/shared/NavBar";
+import Products from "./components/products/Products";
 
 function App() {
   return (
