@@ -7,6 +7,8 @@ import ProductCard from "./ProductCard";
 import Filter from "./Filter";
 import { type Product } from "../types";
 import useProductFilter from "../hooks/useProductFilter";
+import { MagnifyingGlass } from "react-loader-spinner"
+import Loader from "./Loader";
 
 const Products = () => {
   const { isLoading, errorMessage } = useSelector(
@@ -32,7 +34,7 @@ const Products = () => {
     <div className="lg:px-14 sm:px-8 px-4 py-14 2xl:w-[90%] 2xl:mx-auto w-[80%]">
       <Filter categories={categories}/>
       {isLoading ? (
-        <p>Carregando...</p>
+        <Loader text="Carregando produtos..."/>
       ) : errorMessage ? (
         <div className="flex justify-center items-center  h-[200px]">
           <FaExclamationTriangle className="text-slate-800 text-4xl mr-2" />
