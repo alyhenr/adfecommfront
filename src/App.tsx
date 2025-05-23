@@ -1,14 +1,20 @@
 import NavBar from "./components/shared/NavBar";
 import Products from "./components/products/Products";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./components/home/Home";
+
+
 
 function App() {
   return (
     <>
-      <NavBar />
-      <div className="flex justify-center">
-        {/* <div className="w-[20%] flex-col justify-around items-center"></div> */}
-        <Products />
-      </div>
+      <BrowserRouter>
+        <NavBar />
+        <Routes>
+          <Route path='/' element={<Home />}/>
+          <Route path='/products' element={<Products />}/>
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
