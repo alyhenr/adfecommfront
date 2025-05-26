@@ -2,6 +2,7 @@ import { MdArrowBack, MdShoppingCart } from "react-icons/md"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../store/reducers/store"
 import { Link } from "react-router-dom"
+import ItemContent from "./ItemContent"
 
 const Cart = () => {
     const { products, totalPrice } = useSelector((state : RootState) => state.cartState)
@@ -33,12 +34,16 @@ const Cart = () => {
             </div>
         </div>
 
+        {/* Render Items */}
+        {(products?.length > 0 && products.map(p => <ItemContent key={p.productId} product={p}/>))
+        || <h1>Carrinho está vazio</h1>}
+
         <div className="border-t-[1.5px] border-slate-200 py-4 flex sm:flex-row sm:px-0 px-2 flex-col sm:justify-between gap-4">
             <div></div>
             <div className="flex text-sm gap-1 flex-col">
                 <div className="flex justify-between w-full md:text-lg text-sm font-semibold">
                     <span>Subtotal{" "}</span>
-                    <span>R${totalPrice}</span>
+                    <span>{totalPrice.toFixed(2)}</span>
                 </div>
 
                 <p className="text-slate-500">

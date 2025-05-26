@@ -3,7 +3,7 @@ export function getSpecialPriceStr(
   discount: number
 ): string {
   return (
-    "R$" +
+    "R$ " +
     (originalPrice * (1 - discount)).toFixed(2).toString().replace(",", ".")
   );
 }

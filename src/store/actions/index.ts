@@ -10,7 +10,8 @@ import type { CategoriesResponse, Product, ProductsResponse } from "../../types"
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
 import type { RootState } from "../reducers/store";
-import { addItemToCart } from "../reducers/cartReducer";
+import { setCartItems } from "../reducers/cartReducer";
+import { truncateText } from "../../utils/common";
 
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
   // console.log("fetching products");
@@ -79,7 +80,6 @@ export const addToCart = (data: Product, updateQtde: boolean = false) => (dispat
   let foundProduct = updatedCartItems.find(p => p.productId === data.productId)
   
   if (foundProduct) {
-
     if (!updateQtde) return {addedToCart: false, message: `${data.productName} already in cart`, type: "ok"};
 
     if (foundProduct.quantity < existingProduct.quantity) {
@@ -90,6 +90,8 @@ export const addToCart = (data: Product, updateQtde: boolean = false) => (dispat
           return item
         }
       })
+    } else {
+      return { addedToCart: false, message: `${truncateText(data.productName, 50)} is out of stock`, type: "alert" };
     }
   } else {
     updatedCartItems.push({ ...existingProduct, quantity: 1 });
@@ -106,11 +108,47 @@ export const addToCart = (data: Product, updateQtde: boolean = false) => (dispat
   }))
 
   dispatch(
-    addItemToCart({
+    setCartItems({
       products: updatedCartItems,
       totalPrice: updatedTotal,
     })
   );
 
-  return {addedToCart: true, message: `${data.productName} added to cart`, type: "ok"};
+  return {addedToCart: true, message: `${truncateText(data.productName, 50)} added to cart`, type: "ok"};
 };
+
+export const removeFromCart = (productId: number, clean: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { removedFromCart: boolean, message: string, type: string } => {
+  const state = currState();
+  const { products: cartItems } = state.cartState;
+  const existingProduct = state.productsState.products.find(p => p.productId === productId);
+  if (!existingProduct) return { removedFromCart: false, message: "Product not found, please refresh the page", type: "alert" };
+  
+  let updatedCartItems : Product[] = []
+  if (clean || existingProduct.quantity <= 1) {
+    updatedCartItems = cartItems.filter(i => i.productId != productId)
+  } else {
+    updatedCartItems = cartItems.map(i => {
+      if (i.productId == productId) return { ...i, quantity: i.quantity - 1 }
+      return i
+    })
+  }
+
+  const updatedTotal = updatedCartItems.reduce(
+    (sum, p) => sum + p.price * p.quantity,
+    0
+  )
+
+  localStorage.setItem("cartItems", JSON.stringify({
+    products: updatedCartItems,
+    totalPrice: updatedTotal,
+  }))
+
+  dispatch(
+    setCartItems({
+      products: updatedCartItems,
+      totalPrice: updatedTotal
+    })
+  )
+
+  return { removedFromCart: true, message: `${truncateText(existingProduct.productName, 50)} removed from cart`, type: "alert" };
+}
