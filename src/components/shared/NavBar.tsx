@@ -15,9 +15,9 @@ import Logo from "../../assets/YOUDE.png";
 import { Link, useLocation } from "react-router-dom";
 import { Badge } from "@mui/material";
 
-const pages = [{ title: "Produtos", to: "products" }, 
-               { title: "Sobre", to: "about" },
-               { title: "Contato", to: "contact"}];
+const pages = [{ title: "Produtos", to: "/products" }, 
+               { title: "Sobre", to: "/about" },
+               { title: "Contato", to: "/contact"}];
 const settings = ["Perfil", "Minha conta", "Minhas compras", "Logout"];
 
 const NavBar = () => {
@@ -119,7 +119,7 @@ const NavBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Link to={page.to}>
+              <Link to={page.to} className={`${pathName == page.to ? "opacity-60" : ""}`}>
                 <Button
                   key={page.title}
                   onClick={handleCloseNavMenu}
