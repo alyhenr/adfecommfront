@@ -32,7 +32,7 @@ const Home = () => {
         <HeroBanner />
       </div>
 
-      <div>
+      <div className="py-5">
         <div className="flex flex-col justify-center items-center space-y-2">
           <h1 className="text-slate-700 text-4xl font-bold">
             Produtos

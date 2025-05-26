@@ -10,7 +10,7 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/autoplay';
 import { Link } from 'react-router-dom';
 
-const colors = ["#E4E4DE", "#C4C5BA", "#595f39", "#1B1B1B"]
+const colors = ["#1B1B1B", "#C4C5BA", "#595f39", "#E4E4DE"]
 const slidesContent = [
   {
     id: 1,

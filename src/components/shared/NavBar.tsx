@@ -10,10 +10,14 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaSignInAlt } from "react-icons/fa";
 import Logo from "../../assets/YOUDE.png";
+import { Link, useLocation } from "react-router-dom";
+import { Badge } from "@mui/material";
 
-const pages : string[] = []; //["Produtos", "Carrinho"];
+const pages = [{ title: "Produtos", to: "products" }, 
+               { title: "Sobre", to: "about" },
+               { title: "Contato", to: "contact"}];
 const settings = ["Perfil", "Minha conta", "Minhas compras", "Logout"];
 
 const NavBar = () => {
@@ -39,8 +43,10 @@ const NavBar = () => {
     setAnchorElUser(null);
   };
 
+  const pathName = useLocation().pathname
+
   return (
-    <AppBar position="static" color={"inherit"}>
+    <AppBar position="static" color={"primary"} sx={{ bgcolor: "#E4E4DE" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -61,14 +67,14 @@ const NavBar = () => {
             <img src={Logo} alt="Logo" width={250} />
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          {/* <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color="primary"
             ></IconButton>
             <Menu
               id="menu-appbar"
@@ -87,12 +93,12 @@ const NavBar = () => {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                <MenuItem key={page.title} onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: "center", color: "black" }}>{page.title}</Typography>
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box> */}
           <Typography
             variant="h5"
             noWrap
@@ -113,20 +119,34 @@ const NavBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
+              <Link to={page.to}>
+                <Button
+                  key={page.title}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "black", display: "block" }}
+                >
+                  {page.title}
+                </Button>
+              </Link>
             ))}
           </Box>
           <div className="flex items-center gap-5">
-            <FaShoppingCart
-              size={28}
-              className="hover:cursor-pointer shadow-2xl"
-            />
+            <Link to="cart">
+              <Badge 
+                showZero
+                badgeContent={0}
+                color="primary"
+                overlap="circular"
+                anchorOrigin={{
+                  vertical: 'top', horizontal: 'right'
+                }}
+              >
+                <FaShoppingCart
+                  size={28}
+                  className="hover:cursor-pointer shadow-2xl text-[#1B1B1B]"
+                />
+              </Badge>
+            </Link>
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -158,6 +178,13 @@ const NavBar = () => {
                 ))}
               </Menu>
             </Box>
+              <Link 
+                to="login"
+                className="hidden md:flex items-center space-x-2 px-4 py-[6px] bg-gradient-to-r from purple-600 to-red-500 text-white font-semibold rounded-md shadow-lg hover:from-purple-500 hover:to-red-400 transition duration-300 ease-in-out transform bg-pink-900"
+              >
+                <FaSignInAlt />
+                <span>Login</span>
+              </Link>
           </div>
         </Toolbar>
       </Container>
