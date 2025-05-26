@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import type { Action, ActionFromReducer, PayloadAction, } from "@reduxjs/toolkit"
+import type { PayloadAction, } from "@reduxjs/toolkit"
 import type { Cart } from "../../types"
 
 export type CartState = Cart

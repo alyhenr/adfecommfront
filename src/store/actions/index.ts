@@ -96,6 +96,12 @@ export const addToCart = (data: Product) => (dispatch: Dispatch, currState: () =
     (sum, p) => sum + p.price * p.quantity,
     0
   );  
+  
+  localStorage.setItem("cartItems", JSON.stringify({
+    products: updatedCartItems,
+    totalPrice: updatedTotal,
+  }))
+
   dispatch(
     addItemToCart({
       products: updatedCartItems,

@@ -14,7 +14,7 @@ const CustomPagination = ({ paginationInfo } : PaginationProps) => {
 
   const currPage = Number(searchParams.get("page") || 1)
     
-  const changePage = (ev: React.ChangeEvent<unknown>, value: number) => {
+  const changePage = (_ev: React.ChangeEvent<unknown>, value: number) => {
     params.set("page", value.toString())
     navigate(`${pathName}?${params.toString()}`)
   }

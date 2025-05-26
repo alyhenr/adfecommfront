@@ -78,7 +78,7 @@ const ProductCard = (product: Product) => {
           )}
           <button
             disabled={!isAvailable || btnLoader}
-            onClick={() => {}}
+            onClick={() => dispatch(addToCart(product))}
             className={`bg-blue-500 ${
               isAvailable
                 ? "hover:cursor-pointer opacity-100 hover:bg-blue-600"
@@ -86,7 +86,7 @@ const ProductCard = (product: Product) => {
             } text-white py-2 px-3 rounded-lg items-center transition-colors duration-300 md:w-28 w-20 flex justify-center`}
           >
             <FaShoppingCart className="mr-2" />
-            <span className="hidden md:flex" onClick={() => dispatch(addToCart(product))}>
+            <span className="hidden md:flex">
               {isAvailable ? "Comprar" : "Esgotado"}
             </span>
           </button>

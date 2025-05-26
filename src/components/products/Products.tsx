@@ -1,7 +1,6 @@
-import { FaExclamationTriangle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchCategoriesThunk, fetchProductsThunk } from "../../store/actions";
+import { fetchCategoriesThunk } from "../../store/actions";
 import type { AppDispatch, RootState } from "../../store/reducers/store";
 import ProductCard from "./ProductCard";
 import Filter from "./Filter";
