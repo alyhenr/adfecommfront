@@ -5,10 +5,12 @@ import type { Dispatch } from "@reduxjs/toolkit";
 
 import api from "../../api/api";
 
-import type { CategoriesResponse, ProductsResponse } from "../../types";
+import type { CategoriesResponse, Product, ProductsResponse } from "../../types";
 
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
+import type { RootState } from "../reducers/store";
+import { addItemToCart } from "../reducers/cartReducer";
 
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
   // console.log("fetching products");
@@ -66,3 +68,38 @@ export const fetchCategoriesThunk = (queryString: string = "")  => async (dispat
   }
   
 }
+
+export const addToCart = (data: Product) => (dispatch: Dispatch, currState: () => RootState) => {
+  const state = currState();
+  const { products: cartItems } = state.cartState;
+  const existingProduct = state.productsState.products.find(p => p.productId === data.productId);
+  if (!existingProduct) return;
+  
+  let updatedCartItems = [...cartItems];
+  let foundProduct = updatedCartItems.find(p => p.productId === data.productId)
+  
+  if (foundProduct) {
+    if (foundProduct.quantity < existingProduct.quantity) {
+      updatedCartItems = updatedCartItems.map(item => {
+        if (item.productId == foundProduct.productId) {
+          return { ...foundProduct, quantity: foundProduct.quantity + 1 }
+        } else {
+          return item
+        }
+      })
+    }
+  } else {
+    updatedCartItems.push({ ...existingProduct, quantity: 1 });
+  }
+
+  const updatedTotal = updatedCartItems.reduce(
+    (sum, p) => sum + p.price * p.quantity,
+    0
+  );  
+  dispatch(
+    addItemToCart({
+      products: updatedCartItems,
+      totalPrice: updatedTotal,
+    })
+  );
+};

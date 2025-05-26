@@ -4,6 +4,9 @@ import { FaShoppingCart } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
 import { getSpecialPriceStr } from "../../utils/productsUtils";
 import { truncateText } from "../../utils/common";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/reducers/store";
+import { addToCart } from "../../store/actions";
 
 const ProductCard = (product: Product) => {
   let {
@@ -22,6 +25,8 @@ const ProductCard = (product: Product) => {
   const [selectedViewProduct, setSelectedViewProduct] = useState<Product>();
   const isAvailable: boolean = Boolean(quantity && quantity > 0);
 
+  const dispatch = useDispatch<AppDispatch>();
+
   if (discount >= 1) discount = 0;
 
   const handleProductView = () => {
@@ -30,9 +35,9 @@ const ProductCard = (product: Product) => {
   };
 
   return (
-    <div className="border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300 min-w-fit">
+    <div className="border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300 min-w-60 flex flex-col justify-between">
       <div
-        className="w-full overflow-hidden aspect-[1.3]"
+        className="w-full overflow-hidden aspect-[1.3] sm:aspect-[1]"
         onClick={() => {
           handleProductView();
         }}
@@ -78,10 +83,10 @@ const ProductCard = (product: Product) => {
               isAvailable
                 ? "hover:cursor-pointer opacity-100 hover:bg-blue-600"
                 : "opacity-70"
-            } text-white py-2 px-3 rounded-lg items-center transition-colors duration-300 w-36 flex justify-center`}
+            } text-white py-2 px-3 rounded-lg items-center transition-colors duration-300 md:w-28 w-20 flex justify-center`}
           >
             <FaShoppingCart className="mr-2" />
-            <span className="hidden md:flex">
+            <span className="hidden md:flex" onClick={() => dispatch(addToCart(product))}>
               {isAvailable ? "Comprar" : "Esgotado"}
             </span>
           </button>

@@ -14,6 +14,8 @@ import { FaShoppingCart, FaSignInAlt } from "react-icons/fa";
 import Logo from "../../assets/YOUDE.png";
 import { Link, useLocation } from "react-router-dom";
 import { Badge } from "@mui/material";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/reducers/store";
 
 const pages = [{ title: "Produtos", to: "/products" }, 
                { title: "Sobre", to: "/about" },
@@ -45,8 +47,12 @@ const NavBar = () => {
 
   const pathName = useLocation().pathname
 
+  const cartCount = useSelector(
+    (state: RootState) => state.cartState.products.length
+  );
+
   return (
-    <AppBar position="static" color={"primary"} sx={{ bgcolor: "#E4E4DE" }}>
+    <AppBar position="sticky" color={"primary"} sx={{ bgcolor: "#E4E4DE" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -119,9 +125,8 @@ const NavBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Link to={page.to} className={`${pathName == page.to ? "opacity-60" : ""}`}>
+              <Link key={page.title} to={page.to} className={`${pathName == page.to ? "opacity-60" : ""}`}>
                 <Button
-                  key={page.title}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "black", display: "block" }}
                 >
@@ -134,7 +139,7 @@ const NavBar = () => {
             <Link to="cart">
               <Badge 
                 showZero
-                badgeContent={0}
+                badgeContent={cartCount}
                 color="primary"
                 overlap="circular"
                 anchorOrigin={{

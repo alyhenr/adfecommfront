@@ -34,3 +34,8 @@ export interface DispatchState<T> extends Pagination {
     type: string,
     content: T[]
 }
+
+export interface Cart {
+    products: Product[],
+    totalPrice: number,
+}
