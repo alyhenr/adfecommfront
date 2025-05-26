@@ -36,7 +36,12 @@ const Cart = () => {
 
         {/* Render Items */}
         {(products?.length > 0 && products.map(p => <ItemContent key={p.productId} product={p}/>))
-        || <h1>Carrinho está vazio</h1>}
+        || <div className="flex gap-2 items-center justify-start mt-5">
+                <Link to="/products" className="flex gap-2 items-center text-slate-800 font-extrabold">
+                    <MdArrowBack size={20} className="hover:scale-110"/>
+                </Link>
+                <h1>Seu carrinho está vazio</h1>
+            </div>}
 
         <div className="border-t-[1.5px] border-slate-200 py-4 flex sm:flex-row sm:px-0 px-2 flex-col sm:justify-between gap-4">
             <div></div>

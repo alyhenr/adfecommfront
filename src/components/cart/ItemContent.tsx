@@ -18,6 +18,7 @@ export const QuantityHanlder = ({ product } : { product: Product }) => {
     }
 
     const handleSubtractFromCart = () => {
+        if (quantity <= 1) return;
         const { removedFromCart, message, type } = dispatch(removeFromCart(productId, !(quantity > 1)))
         if (removedFromCart) toast.success(message)
         else toast.error(message)

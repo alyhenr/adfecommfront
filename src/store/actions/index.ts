@@ -70,7 +70,7 @@ export const fetchCategoriesThunk = (queryString: string = "")  => async (dispat
   
 }
 
-export const addToCart = (data: Product, updateQtde: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { addedToCart: boolean, message: string, type: string }=> {
+export const addToCart = (data: Product, updateQtde: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { addedToCart: boolean, message: string, type: string } => {
   const state = currState();
   const { products: cartItems } = state.cartState;
   const existingProduct = state.productsState.products.find(p => p.productId === data.productId);
@@ -122,9 +122,13 @@ export const removeFromCart = (productId: number, clean: boolean = false) => (di
   const { products: cartItems } = state.cartState;
   const existingProduct = state.productsState.products.find(p => p.productId === productId);
   if (!existingProduct) return { removedFromCart: false, message: "Product not found, please refresh the page", type: "alert" };
+
+  let updatedCartItems : Product[] = [ ...cartItems ]
+  let foundProduct = updatedCartItems.find(p => p.productId === productId)  
   
-  let updatedCartItems : Product[] = []
-  if (clean || existingProduct.quantity <= 1) {
+  if (!foundProduct) return { removedFromCart: false, message: `${truncateText(existingProduct.productName, 50)} not in the cart`, type: "alert" };
+
+  if (clean || foundProduct.quantity <= 1) {
     updatedCartItems = cartItems.filter(i => i.productId != productId)
   } else {
     updatedCartItems = cartItems.map(i => {
