@@ -69,20 +69,23 @@ export const fetchCategoriesThunk = (queryString: string = "")  => async (dispat
   
 }
 
-export const addToCart = (data: Product) => (dispatch: Dispatch, currState: () => RootState) => {
+export const addToCart = (data: Product, updateQtde: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { addedToCart: boolean, message: string, type: string }=> {
   const state = currState();
   const { products: cartItems } = state.cartState;
   const existingProduct = state.productsState.products.find(p => p.productId === data.productId);
-  if (!existingProduct) return;
+  if (!existingProduct) return {addedToCart: false, message: "Product not found, please refresh the page", type: "alert" };
   
   let updatedCartItems = [...cartItems];
   let foundProduct = updatedCartItems.find(p => p.productId === data.productId)
   
   if (foundProduct) {
+
+    if (!updateQtde) return {addedToCart: false, message: `${data.productName} already in cart`, type: "ok"};
+
     if (foundProduct.quantity < existingProduct.quantity) {
       updatedCartItems = updatedCartItems.map(item => {
         if (item.productId == foundProduct.productId) {
-          return { ...foundProduct, quantity: foundProduct.quantity + 1 }
+          return { ...foundProduct, quantity: foundProduct.quantity + (updateQtde ? 1 : 0)  }
         } else {
           return item
         }
@@ -96,7 +99,7 @@ export const addToCart = (data: Product) => (dispatch: Dispatch, currState: () =
     (sum, p) => sum + p.price * p.quantity,
     0
   );  
-  
+
   localStorage.setItem("cartItems", JSON.stringify({
     products: updatedCartItems,
     totalPrice: updatedTotal,
@@ -108,4 +111,6 @@ export const addToCart = (data: Product) => (dispatch: Dispatch, currState: () =
       totalPrice: updatedTotal,
     })
   );
+
+  return {addedToCart: true, message: `${data.productName} added to cart`, type: "ok"};
 };

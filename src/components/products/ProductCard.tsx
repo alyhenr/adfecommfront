@@ -7,6 +7,7 @@ import { truncateText } from "../../utils/common";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store/reducers/store";
 import { addToCart } from "../../store/actions";
+import { toast } from "react-hot-toast"
 
 const ProductCard = (product: Product) => {
   let {
@@ -33,6 +34,23 @@ const ProductCard = (product: Product) => {
     setSelectedViewProduct(product);
     setOpenModal(true);
   };
+
+  const handleAddToCart = () => {
+    const { addedToCart, message, type } = dispatch(addToCart(product))
+    
+    switch (type) {
+      case "ok":
+        toast.success(message)        
+        break;
+      case "alert":
+        toast.error(message)
+        break;
+      default:
+        toast.error("Product not added to cart.")
+        break;
+    }  
+    
+  }
 
   return (
     <div className="border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300 min-w-60 flex flex-col justify-between">
@@ -78,7 +96,7 @@ const ProductCard = (product: Product) => {
           )}
           <button
             disabled={!isAvailable || btnLoader}
-            onClick={() => dispatch(addToCart(product))}
+            onClick={handleAddToCart}
             className={`bg-blue-500 ${
               isAvailable
                 ? "hover:cursor-pointer opacity-100 hover:bg-blue-600"
