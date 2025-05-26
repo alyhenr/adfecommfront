@@ -4,72 +4,99 @@ import type { RootState } from "../../store/reducers/store"
 import { Link } from "react-router-dom"
 import ItemContent from "./ItemContent"
 
+const EmptyCart = () => {
+    // return <div className="flex gap-2 items-center justify-start mt-5">
+    //     <Link to="/products" className="flex gap-2 items-center text-slate-800 font-extrabold">
+    //         <MdArrowBack size={20} className="hover:scale-110"/>
+    //     </Link>
+    //     <h1>Seu carrinho está vazio</h1>
+    // </div>
+
+    return <div className="min-h-[800px] flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center">
+            <MdShoppingCart size={80} className="mb-4 text-slate-500"/>
+            <h1 className="text-2xl font-bold text-slate-700">
+                Seu carrinho está vazio
+            </h1>
+            <Link to="/products" className="hover:cursor-pointer hover:opacity-80">
+                <h3 className="text-lg text-slate-500 mt-2">
+                    Começar a adicionar produtos ao carrinho
+                </h3>
+            </Link>
+        </div>
+        <div className="mt-6">
+            <Link to="/" className="flex gap-2 items-center text-blue-500 font-extrabold hover:text-blue-600 transition">
+                <MdArrowBack size={24} className="hover:scale-110"/>
+                <span className="font-medium">Voltar ao inicio</span>
+            </Link>
+        </div>
+    </div>
+}
+
 const Cart = () => {
     const { products, totalPrice } = useSelector((state : RootState) => state.cartState)
     return (
-    <div className="lg:px-14 sm:px-8 px-4 py-10">
-        <div className="flex flex-col items-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-                <MdShoppingCart size={36} className="text-gray-700"/>
-                Carrinho:
-            </h1>
-            <p className="text-lg text-gray-600 mt-2">Itens selecionados</p>
-        </div>
-
-        <div className="grid md:grid-cols-5 grid-cols-4 gap-4 pb-2 font-semibold items-center">
-            <div className="md:col-span-2 justify-self-start text-lg text-slate-800">
-                Produto
+        <div className="lg:px-14 sm:px-8 px-4 py-10">
+        {products?.length > 0 && <>
+            <div className="flex flex-col items-center mb-12">
+                <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
+                    <MdShoppingCart size={36} className="text-gray-700"/>
+                    Carrinho:
+                </h1>
+                <p className="text-lg text-gray-600 mt-2">Itens selecionados</p>
             </div>
-
-            <div className="justify-self-center text-lg text-slate-800">
-                Preço
-            </div>
-
-            <div className="justify-self-center text-lg text-slate-800">
-                Quantidade
-            </div>
-
-            <div className="justify-self-center text-lg text-slate-800">
-                Total
-            </div>
-        </div>
-
-        {/* Render Items */}
-        {(products?.length > 0 && products.map(p => <ItemContent key={p.productId} product={p}/>))
-        || <div className="flex gap-2 items-center justify-start mt-5">
-                <Link to="/products" className="flex gap-2 items-center text-slate-800 font-extrabold">
-                    <MdArrowBack size={20} className="hover:scale-110"/>
-                </Link>
-                <h1>Seu carrinho está vazio</h1>
-            </div>}
-
-        <div className="border-t-[1.5px] border-slate-200 py-4 flex sm:flex-row sm:px-0 px-2 flex-col sm:justify-between gap-4">
-            <div></div>
-            <div className="flex text-sm gap-1 flex-col">
-                <div className="flex justify-between w-full md:text-lg text-sm font-semibold">
-                    <span>Subtotal{" "}</span>
-                    <span>{totalPrice.toFixed(2)}</span>
+    
+            <div className="grid md:grid-cols-5 grid-cols-4 gap-4 pb-2 font-semibold items-center">
+                <div className="md:col-span-2 justify-self-start text-lg text-slate-800">
+                    Produto
                 </div>
-
-                <p className="text-slate-500">
-                    Taxas e frete são calculados no checkout
-                </p>
-
-                <Link to="/checkout" className="w-full flex justify-end">
-                    <button
-                        className="font-semibold w-[300px] py-2 px-4 rounded-sm bg-green-700 hover:cursor-pointer hover:opacity-85 text-white flex items-center justify-center gap-2 transition duration-300"
-                    >
-                        <MdShoppingCart size={20}/>
-                        Finalizar
-                    </button>
-                </Link>
-                <Link to="/products" className="flex gap-2 items-center mt-2 text-slate-500">
-                    <MdArrowBack />
-                    <span>Continuar comprando</span>
-                </Link>
+    
+                <div className="justify-self-center text-lg text-slate-800">
+                    Preço
+                </div>
+    
+                <div className="justify-self-center text-lg text-slate-800">
+                    Quantidade
+                </div>
+    
+                <div className="justify-self-center text-lg text-slate-800">
+                    Total
+                </div>
             </div>
+    
+            {/* Render Items */}
+            {products.map(p => <ItemContent key={p.productId} product={p}/>)}
+    
+            <div className="border-t-[1.5px] border-slate-200 py-4 flex sm:flex-row sm:px-0 px-2 flex-col sm:justify-between gap-4">
+                <div></div>
+                <div className="flex text-sm gap-1 flex-col">
+                    <div className="flex justify-between w-full md:text-lg text-sm font-semibold">
+                        <span>Subtotal{" "}</span>
+                        <span>{totalPrice.toFixed(2)}</span>
+                    </div>
+    
+                    <p className="text-slate-500">
+                        Taxas e frete são calculados no checkout
+                    </p>
+    
+                    <Link to="/checkout" className="w-full flex justify-end">
+                        <button
+                            className="font-semibold w-[300px] py-2 px-4 rounded-sm bg-green-700 hover:cursor-pointer hover:opacity-85 text-white flex items-center justify-center gap-2 transition duration-300"
+                        >
+                            <MdShoppingCart size={20}/>
+                            Finalizar
+                        </button>
+                    </Link>
+                    <Link to="/products" className="flex gap-2 items-center mt-2 text-slate-500">
+                        <MdArrowBack />
+                        <span>Continuar comprando</span>
+                    </Link>
+                </div>
+            </div>
+        </>
+            || <EmptyCart />
+        }
         </div>
-    </div>
     )
 }
 
