@@ -14,6 +14,7 @@ import { setCartItems } from "../reducers/cartReducer";
 import { truncateText } from "../../utils/common";
 import type { LoginRequest } from "../../components/auth/Login";
 import { fetchUser as setUser } from "../reducers/authReducer";
+import type { SignUpRequest } from "../../components/auth/SignUp";
 
 export const authenticateUser = (credentials: LoginRequest)  => async (dispatch: Dispatch) : Promise<{
   success: boolean, message: string, redirectTo: string
@@ -44,8 +45,23 @@ export const authenticateUser = (credentials: LoginRequest)  => async (dispatch:
   return { success: false, message: "Falha ao realizar login", redirectTo: "/login" }
 }
 
+export const registerUser = (userData : SignUpRequest) => async (dispatch: Dispatch) => {
+  try {
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    const { data }: AxiosResponse<User> = await api.post(`/auth/sign-up`, userData)
+    
+    if (data instanceof AxiosError) throw data;
+    
+    return { success: true, message: `Registrado com sucesso`, redirectTo: "/login" }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return { success: false, message: error?.response?.data?.message, redirectTo: "/sign-up" }
+    }
+  }
+  return { success: false, message: "Failed to create account", redirectTo: "/sign-up" }
+}
+
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
-  // console.log("fetching products");
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state

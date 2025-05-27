@@ -140,8 +140,8 @@ const NavBar = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <Link to={setting.to}>
-                    <MenuItem key={setting.title} onClick={handleCloseUserMenu}>
+                  <Link key={setting.title} to={setting.to}>
+                    <MenuItem onClick={handleCloseUserMenu}>
                       <Typography sx={{ textAlign: "center" }}>
                         {setting.title}
                       </Typography>

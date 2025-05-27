@@ -7,21 +7,38 @@ import type { AppDispatch } from "../../store/reducers/store";
 import toast from "react-hot-toast";
 import { getSpecialPriceStr } from "../../utils/productsUtils";
 
+const toastWatcher : Set<string> = new Set()
 export const QuantityHanlder = ({ product } : { product: Product }) => {
     const { productId, quantity } = product
     const dispatch = useDispatch<AppDispatch>();
 
+    //toastWatcher.clear() If cleaned, this will allow to acumulate product addition toasters in the Pscreen, but the controller will prevent the user to acumulate toaster when the state is not changing    
+    const toasterController = (success: boolean, message: string) => {
+        if (toastWatcher.has(message)) 
+            return;
+        
+        toastWatcher.add(message)
+        
+        if (success) {
+            toast.success(message)
+        } else {
+            toast.error(message)
+        }
+        
+        setTimeout(() => {
+            toastWatcher.delete(message)
+        }, 3000);
+    }
+
     const handleAddToCart = () => {
         const { addedToCart, message, type } = dispatch(addToCart(product, true))
-        if (addedToCart) toast.success(message)
-        else toast.error(message)
+        toasterController(addedToCart, message)
     }
 
     const handleSubtractFromCart = () => {
         if (quantity <= 1) return;
         const { removedFromCart, message, type } = dispatch(removeFromCart(productId, !(quantity > 1)))
-        if (removedFromCart) toast.success(message)
-        else toast.error(message)
+        toasterController(removedFromCart, message)
     }
 
     const btnStyles = "border-[1.2px] border-slate-800 px-3 py-1 rounded-full w-10 h-10 hover:cursor-pointer hover:bg-slate-800 hover:text-white transition duration-300";

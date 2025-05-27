@@ -3,7 +3,7 @@ const About = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-slate-800 text-4xl font-bold text-center mb-12">
-            About
+            Sobre nós
         </h1>
         <div className="flex flex-col lg:flex-row justify-between items-center mb-12 gap-5">
             <div className="w-full md:w-1/2 text-center md:text-left">

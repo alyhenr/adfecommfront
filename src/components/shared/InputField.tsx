@@ -50,7 +50,7 @@ const InputField = ({
                     switch (type) {
                         case "email":
                             return {
-                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/,
+                                value: /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+com+$/,
                                 message: "E-mail inválido",
                             };
                         case "url":
@@ -59,7 +59,7 @@ const InputField = ({
                                 message: "URL inválida",
                             };
                         default:
-                            return null;
+                            return null
                     }
                 })()
             })}

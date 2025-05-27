@@ -1,19 +1,19 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { AiOutlineLogin } from "react-icons/ai"
 import InputField from "../shared/InputField"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../store/reducers/store"
-import { authenticateUser } from "../../store/actions"
+import { registerUser } from "../../store/actions"
 import toast from "react-hot-toast"
+import { FaUserPlus } from "react-icons/fa"
 
-export type LoginRequest = {
+export type SignUpRequest = {
     email: string,
     password: string,
 }
 
-const Login = () => {
+const SignUp = () => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
 
@@ -21,13 +21,13 @@ const Login = () => {
 
     const {
         register, handleSubmit, formState: { errors }, reset
-    } = useForm<LoginRequest>({
+    } = useForm<SignUpRequest>({
         mode: "onTouched"
     })
 
-    const loginHandler: SubmitHandler<LoginRequest> = async (data: LoginRequest) => {
+    const registerHandler: SubmitHandler<SignUpRequest> = async (data: SignUpRequest) => {
         setLoading(true)
-        const { success, message, redirectTo } = await dispatch(authenticateUser(data))
+        const { success, message, redirectTo } = await dispatch(registerUser(data))
         if (success) {
             toast.success(message)
             navigate(redirectTo)
@@ -41,13 +41,13 @@ const Login = () => {
     return (
     <div className="min-h-[calc(100vh-64px)] flex justify-center items-center">
         <form 
-            onSubmit={handleSubmit(loginHandler)}
+            onSubmit={handleSubmit(registerHandler)}
             className="sm:w-[450px] w-[360px] shadow-lg py-8 sm:px-8 px-4 rounded-md"
         >
             <div className="flex flex-col items-center justify-center space-y-4">
-                <AiOutlineLogin className="text-slate-800 text-5xl"/>
+                <FaUserPlus className="text-slate-800 text-5xl"/>
                 <h1 className="text-slate-800 text-center font-serif lg:text-3xl font-bold">
-                   Login 
+                   Registrar
                 </h1>
             </div>
 
@@ -65,6 +65,20 @@ const Login = () => {
                     min={3}
                     placeholder="email@gmail.com"
                     type="email"
+                    value={1}
+                />
+
+                <InputField 
+                    label="Nome"
+                    required
+                    id="username"
+                    register={register}
+                    errors={errors}
+                    className=""
+                    message="*Nome é um campo obrigatório"
+                    min={5}
+                    placeholder="Nome Sobrenome"
+                    type="text"
                     value={1}
                 />
 
@@ -87,12 +101,12 @@ const Login = () => {
                     className={`bg-gradient-to-tr from-red-600 to-purple-900 text-white font-bold p-2 rounded-sm w-full transition-colors duration-100 my-3 ${loading ? "" : "hover:cursor-pointer hover:opacity-90"}`}
                     type="submit"
                 >
-                    {loading ? "Carregando..." : "Entrar"}
+                    {loading ? "Carregando..." : "Criar conta"}
                 </button>
 
                 <p className="text-center text-sm text-slate-700 mt-6">
-                    <Link to="/signup" className="font-semibold hover:text-black underline">
-                        Criar uma conta
+                    <Link to="/login" className="font-semibold hover:text-black underline">
+                        Já tenho uma conta
                     </Link>
                 </p>
             </div>
@@ -101,4 +115,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default SignUp
