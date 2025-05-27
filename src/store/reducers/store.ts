@@ -13,7 +13,7 @@ const pagination = {
     totalPages: 0,
     lastPage: false
 }
-const initialState : {
+export const initialState : {
     errorsState : ErrorState,
     productsState : ProductState,
     categoriesState: CategoryState,

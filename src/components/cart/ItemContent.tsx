@@ -31,13 +31,13 @@ export const QuantityHanlder = ({ product } : { product: Product }) => {
     }
 
     const handleAddToCart = () => {
-        const { addedToCart, message, type } = dispatch(addToCart(product, true))
+        const { addedToCart, message } = dispatch(addToCart(product, true))
         toasterController(addedToCart, message)
     }
 
     const handleSubtractFromCart = () => {
         if (quantity <= 1) return;
-        const { removedFromCart, message, type } = dispatch(removeFromCart(productId, !(quantity > 1)))
+        const { removedFromCart, message } = dispatch(removeFromCart(productId, !(quantity > 1)))
         toasterController(removedFromCart, message)
     }
 
@@ -74,7 +74,7 @@ const ItemContent = ({ product } : { product: Product }) => {
     const dispatch = useDispatch<AppDispatch>();
 
     const handleRemoveFromCart = () => {
-        const { removedFromCart, message, type } = dispatch(removeFromCart(productId, true))
+        const { removedFromCart, message } = dispatch(removeFromCart(productId, true))
 
         if (removedFromCart) {
             toast.success(message)

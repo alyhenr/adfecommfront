@@ -9,7 +9,7 @@ import type { CategoriesResponse, Product, ProductsResponse, User } from "../../
 
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
-import type { RootState } from "../reducers/store";
+import { initialState, type RootState } from "../reducers/store";
 import { setCartItems } from "../reducers/cartReducer";
 import { truncateText } from "../../utils/common";
 import type { LoginRequest } from "../../components/auth/Login";
@@ -45,7 +45,7 @@ export const authenticateUser = (credentials: LoginRequest)  => async (dispatch:
   return { success: false, message: "Falha ao realizar login", redirectTo: "/login" }
 }
 
-export const registerUser = (userData : SignUpRequest) => async (dispatch: Dispatch) => {
+export const registerUser = (userData : SignUpRequest) => async (_dispatch: Dispatch) => {
   try {
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
     const { data }: AxiosResponse<User> = await api.post(`/auth/sign-up`, userData)
@@ -59,6 +59,14 @@ export const registerUser = (userData : SignUpRequest) => async (dispatch: Dispa
     }
   }
   return { success: false, message: "Failed to create account", redirectTo: "/sign-up" }
+}
+
+export const logoutUser = () => async (dispatch: Dispatch) => {
+  localStorage.removeItem("loggedInUser")
+  dispatch(setUser({
+    ...initialState.authState
+  }))
+  //TODO: invalid token in backend
 }
 
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {

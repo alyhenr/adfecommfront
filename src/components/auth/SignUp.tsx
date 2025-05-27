@@ -63,7 +63,7 @@ const SignUp = () => {
                     className=""
                     message="*Email é um campo obrigatório"
                     min={3}
-                    placeholder="email@gmail.com"
+                    placeholder="Digite seu e-mail aqui"
                     type="email"
                     value={1}
                 />
@@ -77,7 +77,7 @@ const SignUp = () => {
                     className=""
                     message="*Nome é um campo obrigatório"
                     min={5}
-                    placeholder="Nome Sobrenome"
+                    placeholder="Digite seu nome aqui"
                     type="text"
                     value={1}
                 />
@@ -91,7 +91,7 @@ const SignUp = () => {
                     className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
-                    placeholder="Senha"
+                    placeholder="Digite sua senha aqui"
                     type="password"
                     value={1}
                 />

@@ -10,20 +10,22 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { FaShoppingCart, FaSignInAlt } from "react-icons/fa";
+import { FaCheck, FaShoppingCart, FaSignInAlt, FaXbox, FaXingSquare } from "react-icons/fa";
 import Logo from "../../assets/YOUDE.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Badge } from "@mui/material";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../store/reducers/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../store/reducers/store";
+import { IoCloseCircle } from "react-icons/io5";
+import { logoutUser } from "../../store/actions";
 
 const pages = [{ title: "Produtos", to: "/products" }, 
                { title: "Sobre", to: "/about" },
-               { title: "Contato", to: "/contact"}];
+               { title: "Contato", to: "/contact" }];
 const settings = [{ title: "Perfil", to: "/profile" },
-                  { title: "Minha conta", to: "/account"}, 
-                  { title: "Minhas compras", to: "orders"}, 
-                  { title: "Logout", to: "/logout"}];
+                  { title: "Minha conta", to: "/account" }, 
+                  { title: "Minhas compras", to: "orders" }, 
+                  { title: "Logout", to: "/logout" }];
 
 const NavBar = () => {
 
@@ -31,13 +33,19 @@ const NavBar = () => {
     null
   );
 
+  const [logoutClicked, setLogoutClicked] = React.useState<boolean>(false)
+
+  const navigate = useNavigate()
+
+  const dispatch = useDispatch<AppDispatch>()
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
-
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+    setAnchorElUser(null)
+    setLogoutClicked(false)
   };
 
   const pathName = useLocation().pathname
@@ -49,6 +57,12 @@ const NavBar = () => {
   const user = useSelector(
     (state: RootState) => state.authState.user
   );
+
+  const handleLogout = () => {
+    dispatch(logoutUser())
+    setAnchorElUser(null)
+    navigate("/")
+  } 
 
   return (
     <AppBar position="sticky" color={"primary"} sx={{ bgcolor: "#E4E4DE" }}>
@@ -140,14 +154,21 @@ const NavBar = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <Link key={setting.title} to={setting.to}>
-                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography sx={{ textAlign: "center" }}>
-                        {setting.title}
-                      </Typography>
-                    </MenuItem>
-                  </Link>
+                  <MenuItem key={setting.title} onClick={() => setting.to != "/logout" ? navigate(setting.to) : setLogoutClicked(true)}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting.title}
+                    </Typography>
+                  </MenuItem>
                 ))}
+                <div className={`${logoutClicked ? "block" : "hidden"}`}>
+                  <Typography sx={{ textAlign: "center", mt: 2, borderTop: 1, pt: 1, mb: 1}}>
+                    Confirmar logout
+                  </Typography>
+                  <div className="flex w-full justify-between px-7">
+                    <FaCheck color="green" className="hover:cursor-pointer hover:scale-105" size={20} onClick={handleLogout}/>
+                    <IoCloseCircle color="red" className="hover:cursor-pointer hover:scale-105" size={20} onClick={() => setLogoutClicked(false)}/>
+                  </div>
+                </div>
               </Menu>
             </Box>
                 <Box sx={{ flexGrow: 0, display: `${user?.userId <= 0 ? "flex" : "none"}` }}>
