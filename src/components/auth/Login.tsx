@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../store/reducers/store"
 import { authenticateUser } from "../../store/actions"
 import toast from "react-hot-toast"
+import SubmitBtn from "./SubmitBtn"
 
 export type LoginRequest = {
     email: string,
@@ -63,7 +64,7 @@ const Login = () => {
                     className=""
                     message="*Email é um campo obrigatório"
                     min={3}
-                    placeholder="Digite seu e-mail aqui"
+                    placeholder="Digite seu e-mail"
                     type="email"
                     value={1}
                 />
@@ -77,18 +78,12 @@ const Login = () => {
                     className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
-                    placeholder="Digite sua senha aqui"
+                    placeholder="Digite sua senha"
                     type="password"
                     value={1}
                 />
 
-                <button
-                    disabled={loading}
-                    className={`bg-gradient-to-tr from-red-600 to-purple-900 text-white font-bold p-2 rounded-sm w-full transition-colors duration-100 my-3 ${loading ? "" : "hover:cursor-pointer hover:opacity-90"}`}
-                    type="submit"
-                >
-                    {loading ? "Carregando..." : "Entrar"}
-                </button>
+                <SubmitBtn loading={loading}/>
 
                 <p className="text-center text-sm text-slate-700 mt-6">
                     <Link to="/signup" className="font-semibold hover:text-black underline">

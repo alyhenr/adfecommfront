@@ -7,10 +7,19 @@ import type { AppDispatch } from "../../store/reducers/store"
 import { registerUser } from "../../store/actions"
 import toast from "react-hot-toast"
 import { FaUserPlus } from "react-icons/fa"
+import SubmitBtn from "./SubmitBtn"
 
 export type SignUpRequest = {
     email: string,
+    username: string,
     password: string,
+}
+
+type SignUpForm = {
+    email: string,
+    username: string,
+    password: string,
+    passwordConfirmation: string,
 }
 
 const SignUp = () => {
@@ -21,13 +30,24 @@ const SignUp = () => {
 
     const {
         register, handleSubmit, formState: { errors }, reset
-    } = useForm<SignUpRequest>({
+    } = useForm<SignUpForm>({
         mode: "onTouched"
     })
 
-    const registerHandler: SubmitHandler<SignUpRequest> = async (data: SignUpRequest) => {
+    const registerHandler: SubmitHandler<SignUpForm> = async (data: SignUpForm) => {
         setLoading(true)
-        const { success, message, redirectTo } = await dispatch(registerUser(data))
+
+        if (data.password != data.passwordConfirmation) {
+            toast.error("As senhas devem ser iguais, favor verificar")
+            setLoading(false)
+            return
+        }
+
+        const { success, message, redirectTo } = await dispatch(registerUser({
+            email: data.email,
+            username: data.username,
+            password: data.password
+        }))
         if (success) {
             toast.success(message)
             navigate(redirectTo)
@@ -63,7 +83,7 @@ const SignUp = () => {
                     className=""
                     message="*Email é um campo obrigatório"
                     min={3}
-                    placeholder="Digite seu e-mail aqui"
+                    placeholder="Digite seu e-mail"
                     type="email"
                     value={1}
                 />
@@ -77,7 +97,7 @@ const SignUp = () => {
                     className=""
                     message="*Nome é um campo obrigatório"
                     min={5}
-                    placeholder="Digite seu nome aqui"
+                    placeholder="Digite seu nome"
                     type="text"
                     value={1}
                 />
@@ -91,18 +111,26 @@ const SignUp = () => {
                     className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
-                    placeholder="Digite sua senha aqui"
+                    placeholder="Digite sua senha"
                     type="password"
                     value={1}
                 />
 
-                <button
-                    disabled={loading}
-                    className={`bg-gradient-to-tr from-red-600 to-purple-900 text-white font-bold p-2 rounded-sm w-full transition-colors duration-100 my-3 ${loading ? "" : "hover:cursor-pointer hover:opacity-90"}`}
-                    type="submit"
-                >
-                    {loading ? "Carregando..." : "Criar conta"}
-                </button>
+                <InputField 
+                    label="Corfime a Senha"
+                    required
+                    id="passwordConfirmation"
+                    register={register}
+                    errors={errors}
+                    className=""
+                    message="*Senha é um campo obrigatório"
+                    min={5}
+                    placeholder="Digite sua senha novamente"
+                    type="password"
+                    value={1}
+                />
+
+                <SubmitBtn loading={loading}/>
 
                 <p className="text-center text-sm text-slate-700 mt-6">
                     <Link to="/login" className="font-semibold hover:text-black underline">
