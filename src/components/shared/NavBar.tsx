@@ -20,26 +20,21 @@ import type { RootState } from "../../store/reducers/store";
 const pages = [{ title: "Produtos", to: "/products" }, 
                { title: "Sobre", to: "/about" },
                { title: "Contato", to: "/contact"}];
-const settings = ["Perfil", "Minha conta", "Minhas compras", "Logout"];
+const settings = [{ title: "Perfil", to: "/profile" },
+                  { title: "Minha conta", to: "/account"}, 
+                  { title: "Minhas compras", to: "orders"}, 
+                  { title: "Logout", to: "/logout"}];
 
 const NavBar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
+
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -49,6 +44,10 @@ const NavBar = () => {
 
   const cartCount = useSelector(
     (state: RootState) => state.cartState.products.length
+  );
+
+  const user = useSelector(
+    (state: RootState) => state.authState.user
   );
 
   return (
@@ -72,39 +71,6 @@ const NavBar = () => {
           >
             <img src={Logo} alt="Logo" width={250} />
           </Typography>
-
-          {/* <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="primary"
-            ></IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page.title} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center", color: "black" }}>{page.title}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box> */}
           <Typography
             variant="h5"
             noWrap
@@ -127,7 +93,6 @@ const NavBar = () => {
             {pages.map((page) => (
               <Link key={page.title} to={page.to} className={`${pathName == page.to ? "opacity-60" : ""}`}>
                 <Button
-                  onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "black", display: "block" }}
                 >
                   {page.title}
@@ -152,10 +117,10 @@ const NavBar = () => {
                 />
               </Badge>
             </Link>
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 0, display: `${user?.userId > 0 ? "flex" : "none"}` }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt={user.username} src="" />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -175,21 +140,25 @@ const NavBar = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
-                  </MenuItem>
+                  <Link to={setting.to}>
+                    <MenuItem key={setting.title} onClick={handleCloseUserMenu}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        {setting.title}
+                      </Typography>
+                    </MenuItem>
+                  </Link>
                 ))}
               </Menu>
             </Box>
-              <Link 
-                to="login"
-                className="hidden md:flex items-center space-x-2 px-4 py-[6px] bg-gradient-to-r from purple-600 to-red-500 text-white font-semibold rounded-md shadow-lg hover:from-purple-500 hover:to-red-400 transition duration-300 ease-in-out transform bg-pink-900"
-              >
-                <FaSignInAlt />
-                <span>Login</span>
-              </Link>
+                <Box sx={{ flexGrow: 0, display: `${user?.userId <= 0 ? "flex" : "none"}` }}>
+                  <Link 
+                    to="login"
+                    className="hidden md:flex items-center space-x-2 px-4 py-[6px] bg-gradient-to-r from-purple-600 to-red-500 text-white font-semibold rounded-md shadow-lg hover:from-purple-500 hover:to-red-400 transition duration-300 ease-in-out transform bg-pink-900}"
+                  >
+                    <FaSignInAlt />
+                    <span>Login</span>
+                  </Link>
+                </Box>
           </div>
         </Toolbar>
       </Container>

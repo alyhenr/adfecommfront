@@ -3,6 +3,8 @@ import productReducer, { type ProductState } from "../reducers/productReducer.ts
 import errorReducer, { type ErrorState } from "../reducers/errorReducer.ts";
 import categoryReducer, { type CategoryState } from "../reducers/categoryReducer.ts";
 import cartReducer, { type CartState } from "../reducers/cartReducer.ts";
+import authReducer, { type  AuthState } from "../reducers/authReducer.ts";
+
 
 const pagination = {
     pageNumber: 0,
@@ -13,9 +15,10 @@ const pagination = {
 }
 const initialState : {
     errorsState : ErrorState,
-    productsState : ProductState
-    categoriesState: CategoryState
-    cartState: CartState
+    productsState : ProductState,
+    categoriesState: CategoryState,
+    cartState: CartState,
+    authState: AuthState,
 } = {
     errorsState: {
         isLoading: false,
@@ -32,15 +35,26 @@ const initialState : {
     cartState: {
         products: [],
         totalPrice: 0
+    },
+    authState: {
+        user: {
+            userId: 0,
+            username: "",
+            email: "",
+            roles: []
+        },
     }
 }
 
 try {
     const cartItemsState = localStorage.getItem("cartItems")
-    if (cartItemsState) initialState.cartState = JSON.parse(cartItemsState)
+    if (cartItemsState) initialState.cartState = JSON.parse(cartItemsState)     
 } catch (error) {}
 
-
+try {
+    const authState = localStorage.getItem("loggedInUser")
+    if (authState) initialState.authState = JSON.parse(authState)
+} catch (error) {}
 
 export const store = configureStore({
     reducer: {
@@ -48,6 +62,7 @@ export const store = configureStore({
         productsState: productReducer,
         categoriesState: categoryReducer,
         cartState: cartReducer,
+        authState: authReducer
     },
     preloadedState: initialState,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(),

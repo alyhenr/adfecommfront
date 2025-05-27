@@ -5,7 +5,8 @@ import Home from "./components/home/Home";
 import About from "./components/shared/About";
 import Contact from "./components/shared/Contact";
 import { Toaster } from "react-hot-toast";
-import Cart from "./components/cart/cart";
+import Cart from "./components/cart/Cart";
+import Login from "./components/auth/Login";
 
 
 
@@ -20,6 +21,7 @@ function App() {
           <Route path='/about' element={<About />}/>
           <Route path='/contact' element={<Contact />}/>
           <Route path='/cart' element={<Cart />}/>
+          <Route path='/login' element={<Login />}/>
         </Routes>
       </BrowserRouter>
       <Toaster position="bottom-center"/>

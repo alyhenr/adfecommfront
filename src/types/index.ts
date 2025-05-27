@@ -39,3 +39,26 @@ export interface Cart {
     products: Product[],
     totalPrice: number,
 }
+
+export enum Role {
+    ROLE_ADMIN,
+    ROLE_USER
+}
+
+export interface User {
+    userId: number,
+    username: string,
+    email: string,
+    roles: Role[],
+}
+
+export interface Address {
+    addressId: number,
+    city: string,
+    state: string,
+    zipCode: string,
+    number: number,
+    reference: string,
+    buildingName: string,
+    streetName: string,
+}

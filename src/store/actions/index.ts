@@ -5,23 +5,56 @@ import type { Dispatch } from "@reduxjs/toolkit";
 
 import api from "../../api/api";
 
-import type { CategoriesResponse, Product, ProductsResponse } from "../../types";
+import type { CategoriesResponse, Product, ProductsResponse, User } from "../../types";
 
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
 import type { RootState } from "../reducers/store";
 import { setCartItems } from "../reducers/cartReducer";
 import { truncateText } from "../../utils/common";
+import type { LoginRequest } from "../../components/auth/Login";
+import { fetchUser as setUser } from "../reducers/authReducer";
+
+export const authenticateUser = (credentials: LoginRequest)  => async (dispatch: Dispatch) : Promise<{
+  success: boolean, message: string, redirectTo: string
+}> => {
+  try {
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    const { data : user }: AxiosResponse<User> = await api.post(`/auth/sign-in`, credentials)
+    
+    if (user instanceof AxiosError) throw user;
+
+    localStorage.setItem("loggedInUser", JSON.stringify({
+      user
+    }))
+    
+    dispatch(
+      setUser({
+        user: user
+      })
+    )
+    
+    return { success: true, message: `Bem vindo novamente ${user.username}`, redirectTo: "/" }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return { success: false, message: error?.response?.data?.message, redirectTo: "/login" }
+    }
+  }
+
+  return { success: false, message: "Falha ao realizar login", redirectTo: "/login" }
+}
 
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
   // console.log("fetching products");
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
-    // console.log(`/public/products?${queryString}`);
+
     
     const { data }: AxiosResponse<ProductsResponse> = await api.get(`/public/products?${queryString}`);
-    // console.log(data);
+    
+    if (data instanceof AxiosError) throw data;
+
     dispatch(
       setProducts({
         content: data.content,
@@ -47,10 +80,11 @@ export const fetchCategoriesThunk = (queryString: string = "")  => async (dispat
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
-    // console.log(`/public/categories?${queryString}`);
     
     const { data }: AxiosResponse<CategoriesResponse> = await api.get(`/public/categories?${queryString}`);
-    // console.log(data);
+    
+    if (data instanceof AxiosError) throw data;
+
     dispatch(
       setCategories({
         content: data.content,
