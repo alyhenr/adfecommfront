@@ -40,6 +40,13 @@ export interface Cart {
     totalPrice: number,
 }
 
+export interface CartItem {
+    product: Product,
+    quantity: number,
+    discount: number,
+    price: number,
+}
+
 export enum Role {
     ROLE_ADMIN,
     ROLE_USER
@@ -61,4 +68,8 @@ export interface Address {
     reference: string,
     buildingName: string,
     streetName: string,
+}
+
+export enum AddressFormOperation {
+    CREATE, EDIT, DELETE
 }

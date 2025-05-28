@@ -5,7 +5,7 @@ import type { Dispatch } from "@reduxjs/toolkit";
 
 import api from "../../api/api";
 
-import type { Address, CategoriesResponse, Product, ProductsResponse, User } from "../../types";
+import type { Address, Cart, CartItem, CategoriesResponse, Product, ProductsResponse, User } from "../../types";
 
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
@@ -176,6 +176,46 @@ export const addToCart = (data: Product, updateQtde: boolean = false) => (dispat
   );
 
   return {addedToCart: true, message: `${truncateText(data.productName, 50)} added to cart`, type: "ok"};
+};
+
+export const createCart = (products : Product[]) => async (dispatch: Dispatch) : Promise<{ success: boolean, message: string }> => {
+  const cartItems : CartItem[] = []
+  for (let i = 0; i < products.length; i++) {
+    cartItems.push({
+      product: products[i],
+      discount: products[i].discount,
+      price: products[i].price,
+      quantity: products[i].quantity,
+    })    
+  }
+  const totalPrice = cartItems.reduce(
+    (sum, p) => sum + p.price * p.quantity,
+    0
+  );  
+
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    console.log("Body data: ", {
+      cartItems, totalPrice
+    });
+    
+    const { data }: AxiosResponse<Cart> = await api.post(`/users/carts`, {
+      cartItems, totalPrice
+    });
+    console.log(data);
+    
+    if (data instanceof AxiosError) throw data;
+
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+    return { success: true, message: "Cart saved" }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError)     
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to create cart...", isLoading: false}))
+  }
+
+  return { success: false, message: "Failed to create cart for user" }
 };
 
 export const removeFromCart = (productId: number, clean: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { removedFromCart: boolean, message: string, type: string } => {

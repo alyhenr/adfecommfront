@@ -4,9 +4,9 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
 import { fetchAddressThunk } from "../../store/actions"
 import Loader, { LoaderType } from "../shared/Loader"
 import { FaAddressBook, FaBuilding, FaCheckCircle, FaEdit, FaTrash } from "react-icons/fa"
-import type { Address } from "../../types"
+import { AddressFormOperation, type Address } from "../../types"
 import AddressInforModal from "./AddressInfoModal"
-import AddressForm, { AddressFormOperation } from "./AddressForm"
+import AddressForm from "./AddressForm"
 
 const AddresInfo = ({ selectedAddress, setSelectedAddress } : {
     selectedAddress: Address,

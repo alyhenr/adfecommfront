@@ -1,8 +1,8 @@
-const SubmitBtn = ({ loading = false, text = "Entrar" } ) => {
+const SubmitBtn = ({ loading = false, text = "Entrar", classes = ""} ) => {
   return (
     <button
         disabled={loading}
-        className={`text-white font-bold p-2 rounded-sm w-full transition-colors duration-100 my-3 ${loading ? "bg-gray-400" : "bg-gradient-to-tr from-red-600 to-purple-900 hover:cursor-pointer hover:opacity-90"}`}
+        className={`text-white font-bold p-2 rounded-sm w-full transition-colors duration-100 my-3 ${loading ? "bg-gray-400" : classes.length > 0 ? classes : "bg-gradient-to-tr from-red-600 to-purple-900 hover:cursor-pointer hover:opacity-90 "}`}
         type="submit"
     >
         {loading 

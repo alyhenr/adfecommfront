@@ -3,7 +3,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                montserrat: ["Montserrat", "snas-serif"],
+                montserrat: ["Montserrat", "sans-serif"],
             },
             bonxShadow: {
                 custom: "0 0 15px rgba(0, 0, 0, 0.3)",

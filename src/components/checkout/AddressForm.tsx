@@ -7,11 +7,7 @@ import { addAddress, deleteAddress, editAddress } from "../../store/actions"
 import toast from "react-hot-toast"
 import SubmitBtn from "../shared/SubmitBtn"
 import { FaSearchLocation } from "react-icons/fa"
-import type { Address } from "../../types"
-
-export enum AddressFormOperation {
-    CREATE, EDIT, DELETE
-}
+import { AddressFormOperation, type Address } from "../../types"
 
 const AddressForm = ({ setIsOpen, address, operation } : { 
     setIsOpen: Dispatch<SetStateAction<boolean>>, 
@@ -22,7 +18,7 @@ const AddressForm = ({ setIsOpen, address, operation } : {
     const dispatch = useDispatch<AppDispatch>();
 
     const {
-        register, handleSubmit, formState: { errors }, reset
+        register, handleSubmit, formState: { errors }, reset, setValue
     } = useForm<Address>({
         mode: "onTouched"
     })
@@ -65,7 +61,7 @@ const AddressForm = ({ setIsOpen, address, operation } : {
             {operation == AddressFormOperation.DELETE ? <h1 className="font-semibold text-lg">
                 Tem certeza que quer deletar esse endereço?
             </h1> : <>
-                <div className="flex flex-col items-center justify-center space-y-4">
+                <div className="flex items-center justify-center gap-4">
                     <FaSearchLocation className="text-slate-800 text-5xl"/>
                     <h1 className="text-slate-800 text-center font-serif font-bold">
                     Cadastro de endereço
@@ -205,7 +201,7 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                     </button>
                 </div>
                 <div className="w-70">
-                    <SubmitBtn loading={loading} text={AddressFormOperation.DELETE ? "Confirmar" : "Salvar"}/>
+                    <SubmitBtn loading={loading} text={operation == AddressFormOperation.DELETE ? "Confirmar" : "Salvar"} classes={operation == AddressFormOperation.DELETE ? "bg-red-600 cursor-pointer" : "bg-blue-700 cursor-pointer"}/>
                 </div>
             </div>
         </form>
