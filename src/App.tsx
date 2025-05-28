@@ -9,6 +9,7 @@ import Cart from "./components/cart/Cart";
 import Login from "./components/auth/Login";
 import PrivateRouter from "./components/auth/PrivateRouter";
 import SignUp from "./components/auth/SignUp";
+import Checkout from "./components/checkout/Checkout";
 
 
 
@@ -31,7 +32,7 @@ function App() {
           </Route>
 
           <Route path="/" element={<PrivateRouter isPublic={false} />}>
-
+            <Route path='/checkout' element={<Checkout />}/>
           </Route>
         </Routes>
       </BrowserRouter>

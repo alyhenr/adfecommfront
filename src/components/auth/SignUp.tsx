@@ -7,7 +7,7 @@ import type { AppDispatch } from "../../store/reducers/store"
 import { registerUser } from "../../store/actions"
 import toast from "react-hot-toast"
 import { FaUserPlus } from "react-icons/fa"
-import SubmitBtn from "./SubmitBtn"
+import SubmitBtn from "../shared/SubmitBtn"
 
 export type SignUpRequest = {
     email: string,
@@ -83,6 +83,7 @@ const SignUp = () => {
                     className=""
                     message="*Email é um campo obrigatório"
                     min={3}
+                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu e-mail"
                     type="email"
                     value={1}
@@ -97,6 +98,7 @@ const SignUp = () => {
                     className=""
                     message="*Nome é um campo obrigatório"
                     min={5}
+                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu nome"
                     type="text"
                     value={1}
@@ -111,6 +113,7 @@ const SignUp = () => {
                     className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
+                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha"
                     type="password"
                     value={1}
@@ -125,6 +128,7 @@ const SignUp = () => {
                     className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
+                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha novamente"
                     type="password"
                     value={1}

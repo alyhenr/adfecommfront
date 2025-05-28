@@ -1,4 +1,4 @@
-const SubmitBtn = ({ loading = false } ) => {
+const SubmitBtn = ({ loading = false, text = "Entrar" } ) => {
   return (
     <button
         disabled={loading}
@@ -13,7 +13,7 @@ const SubmitBtn = ({ loading = false } ) => {
     </svg>
                 Carregando...
             </div>
-            : "Entrar"}
+            : text}
     </button>
   )
 }

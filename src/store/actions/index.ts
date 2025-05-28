@@ -5,7 +5,7 @@ import type { Dispatch } from "@reduxjs/toolkit";
 
 import api from "../../api/api";
 
-import type { CategoriesResponse, Product, ProductsResponse, User } from "../../types";
+import type { Address, CategoriesResponse, Product, ProductsResponse, User } from "../../types";
 
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
@@ -15,6 +15,7 @@ import { truncateText } from "../../utils/common";
 import type { LoginRequest } from "../../components/auth/Login";
 import { fetchUser as setUser } from "../reducers/authReducer";
 import type { SignUpRequest } from "../../components/auth/SignUp";
+import { fetchAddresses as setAddresses} from "../reducers/addressReducer";
 
 export const authenticateUser = (credentials: LoginRequest)  => async (dispatch: Dispatch) : Promise<{
   success: boolean, message: string, redirectTo: string
@@ -64,9 +65,11 @@ export const registerUser = (userData : SignUpRequest) => async (_dispatch: Disp
 export const logoutUser = () => async (dispatch: Dispatch) => {
   localStorage.removeItem("loggedInUser")
   dispatch(setUser({
-    ...initialState.authState
+    user: {
+      userId: -1, email: "", username: "", roles: [], 
+    }
   }))
-  //TODO: invalid token in backend
+  //TODO: invalidate token on backend
 }
 
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
@@ -213,4 +216,59 @@ export const removeFromCart = (productId: number, clean: boolean = false) => (di
   )
 
   return { removedFromCart: true, message: `${truncateText(existingProduct.productName, 50)} removed from cart`, type: "alert" };
+}
+
+export const fetchAddressThunk = () => async (dispatch: Dispatch) : Promise<void> => {
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    
+    const { data }: AxiosResponse<Address[]> = await api.get(`/users/addresses/user`);
+    console.log(data);
+    
+    if (data instanceof AxiosError) throw data;
+
+    dispatch(
+      setAddresses({
+        addresses: data
+      }),
+    );
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to fetch addresses...", isLoading: false}))
+    }
+  }
+}
+
+export const addAddress = (address: Address) => async (dispatch: Dispatch, currState: () => RootState) : Promise<{ success: boolean, message: string }> => {
+  const state = currState();
+  const { addresses } = state.addressState;
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    
+    const { data }: AxiosResponse<Address> = await api.post(`/users/addresses/user/address`, address);
+    
+    if (data instanceof AxiosError) throw data;
+
+    dispatch(
+      setAddresses({
+        addresses: [...addresses, data]
+      }),
+    );
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+
+    return { success: true, message: "Endereço cadastrado com sucesso" }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to fetch addresses...", isLoading: false}))
+
+      return { success: false, message: "Falha ao cadastrar endereço: " + error?.response?.data?.message }
+    }
+    
+    return { success: false, message: "Falha ao cadastrar endereço"}
+  }
 }

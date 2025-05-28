@@ -11,6 +11,7 @@ export type InputFieldProps = {
     message: string,
     className: string,
     min: number,
+    max: number,
     value: string | number,
     placeholder: string,
 }
@@ -24,6 +25,7 @@ const InputField = ({
     className = "",
     message,
     min,
+    max = Number.MAX_SAFE_INTEGER,
     placeholder,
     required,
     value,
@@ -46,6 +48,9 @@ const InputField = ({
                 minLength: min 
                     ? { value: min, message: `Mínimo de ${min} caracteres` }
                     : null,
+                maxLength: max 
+                ? { value: max, message: `Máximo de ${max} caracteres` }
+                : null,
                 pattern: (() => {
                     switch (type) {
                         case "email":

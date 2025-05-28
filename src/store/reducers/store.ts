@@ -4,6 +4,8 @@ import errorReducer, { type ErrorState } from "../reducers/errorReducer.ts";
 import categoryReducer, { type CategoryState } from "../reducers/categoryReducer.ts";
 import cartReducer, { type CartState } from "../reducers/cartReducer.ts";
 import authReducer, { type  AuthState } from "../reducers/authReducer.ts";
+import type { AddressState } from "./addressReducer.ts";
+import addressReducer from "./addressReducer.ts";
 
 
 const pagination = {
@@ -19,6 +21,7 @@ export const initialState : {
     categoriesState: CategoryState,
     cartState: CartState,
     authState: AuthState,
+    addressState: AddressState
 } = {
     errorsState: {
         isLoading: false,
@@ -43,6 +46,9 @@ export const initialState : {
             email: "",
             roles: []
         },
+    },
+    addressState: {
+        addresses: []
     }
 }
 
@@ -62,7 +68,8 @@ export const store = configureStore({
         productsState: productReducer,
         categoriesState: categoryReducer,
         cartState: cartReducer,
-        authState: authReducer
+        authState: authReducer,
+        addressState: addressReducer,
     },
     preloadedState: initialState,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(),

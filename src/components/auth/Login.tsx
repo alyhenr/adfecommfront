@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../store/reducers/store"
 import { authenticateUser } from "../../store/actions"
 import toast from "react-hot-toast"
-import SubmitBtn from "./SubmitBtn"
+import SubmitBtn from "../shared/SubmitBtn"
 
 export type LoginRequest = {
     email: string,
@@ -64,6 +64,7 @@ const Login = () => {
                     className=""
                     message="*Email é um campo obrigatório"
                     min={3}
+                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu e-mail"
                     type="email"
                     value={1}
@@ -78,6 +79,7 @@ const Login = () => {
                     className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
+                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha"
                     type="password"
                     value={1}

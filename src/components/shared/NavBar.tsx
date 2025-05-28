@@ -10,7 +10,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { FaCheck, FaShoppingCart, FaSignInAlt, FaXbox, FaXingSquare } from "react-icons/fa";
+import { FaCheck, FaShoppingCart, FaSignInAlt } from "react-icons/fa";
 import Logo from "../../assets/YOUDE.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Badge } from "@mui/material";
@@ -58,7 +58,7 @@ const NavBar = () => {
     (state: RootState) => state.authState.user
   );
 
-  const handleLogout = () => {
+  const handleLogout = () => {    
     dispatch(logoutUser())
     setAnchorElUser(null)
     navigate("/")
