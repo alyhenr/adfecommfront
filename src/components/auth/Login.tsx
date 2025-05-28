@@ -67,7 +67,7 @@ const Login = () => {
                     max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu e-mail"
                     type="email"
-                    value={1}
+                    value={""}
                 />
 
                 <InputField 
@@ -82,7 +82,7 @@ const Login = () => {
                     max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha"
                     type="password"
-                    value={1}
+                    value={""}
                 />
 
                 <SubmitBtn loading={loading}/>

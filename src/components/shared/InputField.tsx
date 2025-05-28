@@ -38,7 +38,7 @@ const InputField = ({
         >
             {label}
         </label>
-        <input 
+        <input
             id={id}
             type={type}
             placeholder={placeholder}
@@ -48,9 +48,10 @@ const InputField = ({
                 minLength: min 
                     ? { value: min, message: `Mínimo de ${min} caracteres` }
                     : null,
-                maxLength: max 
+                maxLength: max
                 ? { value: max, message: `Máximo de ${max} caracteres` }
                 : null,
+                value,
                 pattern: (() => {
                     switch (type) {
                         case "email":

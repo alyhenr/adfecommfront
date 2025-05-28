@@ -86,7 +86,7 @@ const SignUp = () => {
                     max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu e-mail"
                     type="email"
-                    value={1}
+                    value={""}
                 />
 
                 <InputField 
@@ -101,7 +101,7 @@ const SignUp = () => {
                     max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu nome"
                     type="text"
-                    value={1}
+                    value={""}
                 />
 
                 <InputField 
@@ -116,7 +116,7 @@ const SignUp = () => {
                     max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha"
                     type="password"
-                    value={1}
+                    value={""}
                 />
 
                 <InputField 
@@ -131,7 +131,7 @@ const SignUp = () => {
                     max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha novamente"
                     type="password"
-                    value={1}
+                    value={""}
                 />
 
                 <SubmitBtn loading={loading}/>

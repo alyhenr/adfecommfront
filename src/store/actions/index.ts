@@ -224,7 +224,6 @@ export const fetchAddressThunk = () => async (dispatch: Dispatch) : Promise<void
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
     
     const { data }: AxiosResponse<Address[]> = await api.get(`/users/addresses/user`);
-    console.log(data);
     
     if (data instanceof AxiosError) throw data;
 
@@ -270,5 +269,67 @@ export const addAddress = (address: Address) => async (dispatch: Dispatch, currS
     }
     
     return { success: false, message: "Falha ao cadastrar endereço"}
+  }
+}
+
+export const editAddress = (address: Address) => async (dispatch: Dispatch, currState: () => RootState) : Promise<{ success: boolean, message: string }> => {
+  const state = currState();
+  const { addresses } = state.addressState;
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    
+    const { data }: AxiosResponse<Address> = await api.put(`/users/addresses/${address.addressId}`, address);
+    
+    if (data instanceof AxiosError) throw data;
+
+    dispatch(
+      setAddresses({
+        addresses: addresses.map(a => a.addressId == data.addressId ? data : a)
+      }),
+    );
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+
+    return { success: true, message: "Endereço alterado com sucesso" }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to edit addresses...", isLoading: false}))
+
+      return { success: false, message: "Falha ao editar endereço: " + error?.response?.data?.message }
+    }
+    
+    return { success: false, message: "Falha ao cadastrar endereço"}
+  }
+}
+
+export const deleteAddress = (addressId: number) => async (dispatch: Dispatch, currState: () => RootState) : Promise<{ success: boolean, message: string }> => {
+  const state = currState();
+  const { addresses } = state.addressState;
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    
+    const { data }: AxiosResponse<Address> = await api.delete(`/users/addresses/${addressId}`);
+    
+    if (data instanceof AxiosError) throw data;
+
+    dispatch(
+      setAddresses({
+        addresses: addresses.filter(a => a.addressId != data.addressId)
+      }),
+    );
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+
+    return { success: true, message: "Endereço excluido com sucesso" }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to delete addresses...", isLoading: false}))
+
+      return { success: false, message: "Falha ao excluir endereço: " + error?.response?.data?.message }
+    }
+    
+    return { success: false, message: "Falha ao excluir endereço"}
   }
 }
