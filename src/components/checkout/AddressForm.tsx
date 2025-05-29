@@ -80,7 +80,6 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                         className="hidden"
                         message=""
                         min={0}
-                        max={Number.MAX_SAFE_INTEGER}
                         placeholder="ID"
                         type="number"
                         value={operation == AddressFormOperation.EDIT ? address.addressId : -1}
@@ -92,10 +91,8 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                         id="city"
                         register={register}
                         errors={errors}
-                        className=""
                         message="*Cidade é um campo obrigatório"
                         min={3}
-                        max={Number.MAX_SAFE_INTEGER}
                         placeholder="Cidade"
                         type="text"
                         value={operation == AddressFormOperation.EDIT ? address.city : ""}
@@ -107,10 +104,8 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                         id="state"
                         register={register}
                         errors={errors}
-                        className=""
                         message="*Estado é um campo obrigatório"
                         min={4}
-                        max={Number.MAX_SAFE_INTEGER}
                         placeholder="Estado"
                         type="text"
                         value={operation == AddressFormOperation.EDIT ? address.state : ""}
@@ -137,10 +132,8 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                         id="number"
                         register={register}
                         errors={errors}
-                        className=""
                         message="*Número é um campo obrigatório"
                         min={1}
-                        max={Number.MAX_SAFE_INTEGER}
                         placeholder="Número"
                         type="number"
                         value={operation == AddressFormOperation.EDIT ? address.number : ""}
@@ -152,10 +145,8 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                         id="reference"
                         register={register}
                         errors={errors}
-                        className=""
                         message=""
                         min={3}
-                        max={Number.MAX_SAFE_INTEGER}
                         placeholder="Referência"
                         type="text"
                         value={operation == AddressFormOperation.EDIT ? address.reference : ""}
@@ -167,10 +158,8 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                         id="buildingName"
                         register={register}
                         errors={errors}
-                        className=""
                         message=""
                         min={3}
-                        max={Number.MAX_SAFE_INTEGER}
                         placeholder="Nome do prédio"
                         type="text"
                         value={operation == AddressFormOperation.EDIT ? address.buildingName : ""}
@@ -182,10 +171,8 @@ const AddressForm = ({ setIsOpen, address, operation } : {
                         id="streetName"
                         register={register}
                         errors={errors}
-                        className=""
                         message="*Nome da rua é um campo obrigatório"
                         min={3}
-                        max={Number.MAX_SAFE_INTEGER}
                         placeholder="Nome da rua"
                         type="text"
                         value={operation == AddressFormOperation.EDIT ? address.streetName : ""}

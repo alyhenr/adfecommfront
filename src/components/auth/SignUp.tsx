@@ -80,10 +80,8 @@ const SignUp = () => {
                     id="email"
                     register={register}
                     errors={errors}
-                    className=""
                     message="*Email é um campo obrigatório"
                     min={3}
-                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu e-mail"
                     type="email"
                     value={""}
@@ -95,10 +93,8 @@ const SignUp = () => {
                     id="username"
                     register={register}
                     errors={errors}
-                    className=""
                     message="*Nome é um campo obrigatório"
                     min={5}
-                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite seu nome"
                     type="text"
                     value={""}
@@ -110,10 +106,8 @@ const SignUp = () => {
                     id="password"
                     register={register}
                     errors={errors}
-                    className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
-                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha"
                     type="password"
                     value={""}
@@ -125,10 +119,8 @@ const SignUp = () => {
                     id="passwordConfirmation"
                     register={register}
                     errors={errors}
-                    className=""
                     message="*Senha é um campo obrigatório"
                     min={5}
-                    max={Number.MAX_SAFE_INTEGER}
                     placeholder="Digite sua senha novamente"
                     type="password"
                     value={""}

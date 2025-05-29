@@ -5,7 +5,7 @@ import type { Dispatch } from "@reduxjs/toolkit";
 
 import api from "../../api/api";
 
-import type { Address, Cart, CartItem, CartResponse, CategoriesResponse, Product, ProductsResponse, User } from "../../types";
+import type { Address, Cart, CartItem, CartResponse, CategoriesResponse, Order, OrderStatus, Product, ProductsResponse, User } from "../../types";
 
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
@@ -417,5 +417,91 @@ export const deleteAddress = (addressId: number) => async (dispatch: Dispatch, c
     }
     
     return { success: false, message: "Falha ao excluir endereço"}
+  }
+}
+
+export const createStripePaymentSecret = (amount: number) =>  async (dispatch: Dispatch) : Promise<{ success: boolean, clientSecret: string, paymentId: string }> => {
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    
+    const { data }: AxiosResponse<{ success: boolean, clientSecret: string, paymentId: string }> = await api.post(`/users/order/payments/stripe`, {
+      amount, currency: "brl"
+    });
+    console.log(data);
+    
+    if (data instanceof AxiosError) throw data;
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+
+    return { ...data  }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to create payment intent...", isLoading: false}))
+
+      return { success: false, clientSecret: "", paymentId: "" }
+    }
+    
+    return { success: false, clientSecret: "", paymentId: "" }
+  }
+}
+
+type OrderRequest = {
+  addressId: number,
+  pgPaymentId: string,
+  pgStatus: OrderStatus,
+  pgResponseMessage: string,
+}
+export const confirmStripePayment = (paymentId: string, pgResponseMessage: string) =>  async (dispatch: Dispatch) : Promise<{ success: boolean, message: string }> => {
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    
+    const { data }: AxiosResponse<Order> = await api.post(`/users/order/payments/confirm/${paymentId}/${pgResponseMessage}`);
+    console.log(data);
+  
+    if (data instanceof AxiosError) throw data;
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+
+    localStorage.removeItem("cartItems")
+
+    return { success: true, message: data.payment.pgResponseMessage /*secret key here*/ }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to submit payment...", isLoading: false}))
+
+      return { success: false, message: "Falha ao confirmar o pagamento com o provedor: " + error?.response?.data?.message }
+    }
+    
+    return { success: false, message: "Falha ao confirmar o pagamento com o provedor"}
+  }
+}
+
+export const createOrder = ({  paymentMethod, orderRequest } : {
+  paymentMethod: string, orderRequest: OrderRequest
+}) => async (dispatch: Dispatch) : Promise<{ success: boolean, message: string }> => {
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    console.log(orderRequest);
+    
+    const { data }: AxiosResponse<Order> = await api.post(`/users/orders/${paymentMethod}`, {
+       ...orderRequest 
+    });
+    console.log(data);
+  
+    if (data instanceof AxiosError) throw data;
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+
+    localStorage.removeItem("cartItems")
+
+    return { success: true, message: data.payment.pgResponseMessage /*secret key here*/ }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to submit payment...", isLoading: false}))
+
+      return { success: false, message: "Falha ao confirmar o pagamento com o provedor: " + error?.response?.data?.message }
+    }
+    
+    return { success: false, message: "Falha ao confirmar o pagamento com o provedor"}
   }
 }

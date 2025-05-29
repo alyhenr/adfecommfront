@@ -30,7 +30,9 @@ const useProductFilter = () => {
 
     const queryString = params.toString()
     // console.log(queryString);
-    dispatch(fetchProductsThunk(queryString))
+    new Promise(async () => {
+      await dispatch(fetchProductsThunk(queryString))
+    })
   }, [dispatch, searchParams])
   
 }

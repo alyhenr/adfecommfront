@@ -43,8 +43,8 @@ const Summary = ({
                             Items:
                         </h2>
                         <div className="space-y-2">
-                            {products.map(p => <>
-                                <div key={p.productId} className="flex items-center justify-between w-full">
+                            {products.map(p => <div key={p.productId}>
+                                <div className="flex items-center justify-between w-full">
                                     <div className="flex gap-2">
                                         <img 
                                             src={p.imageUrl} 
@@ -59,7 +59,7 @@ const Summary = ({
                                     <p className="text-slate-600 font-thin">RS${" "}{(p.quantity*p.price*(1-p.discount)).toFixed(2)}</p>
                                 </div>
                                 <hr className="text-slate-500"/>
-                            </>
+                            </div>
                         )}
                         <p className="text-end font-bold">R${" "}{totalPrice.toFixed(2)}</p>
                         </div>

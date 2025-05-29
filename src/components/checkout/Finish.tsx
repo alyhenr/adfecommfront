@@ -13,7 +13,7 @@ const Finish = () => {
     return (
         <>
             <div>Finish</div>
-            <button onClick={createUserCart}>
+            <button onClick={createUserCart} className='border-slate-700 rounded-md w-[70px]'>
                 OK
             </button>
         </>

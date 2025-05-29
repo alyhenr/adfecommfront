@@ -9,9 +9,9 @@ export type InputFieldProps = {
     register: Function,
     required: boolean,
     message: string,
-    className: string,
-    min: number,
-    max: number,
+    className?: string,
+    min?: number,
+    max?: number,
     value: string | number,
     placeholder: string,
 }

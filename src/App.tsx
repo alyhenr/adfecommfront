@@ -10,8 +10,7 @@ import Login from "./components/auth/Login";
 import PrivateRouter from "./components/auth/PrivateRouter";
 import SignUp from "./components/auth/SignUp";
 import Checkout from "./components/checkout/Checkout";
-
-
+import OrderConfirmation from "./components/checkout/OrderConfirm";
 
 function App() {
   return (
@@ -33,6 +32,7 @@ function App() {
 
           <Route path="/" element={<PrivateRouter isPublic={false} />}>
             <Route path='/checkout' element={<Checkout />}/>
+            <Route path='/order-confirm' element={<OrderConfirmation />}/>
           </Route>
         </Routes>
       </BrowserRouter>

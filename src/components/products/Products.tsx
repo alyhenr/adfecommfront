@@ -24,9 +24,11 @@ const Products = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  useProductFilter()
+  useProductFilter() //fetch products here
   useEffect(() => {
-    dispatch(fetchCategoriesThunk());
+    const {} = new Promise(async () => {
+      await dispatch(fetchCategoriesThunk())
+    })
   }, [dispatch]);
 
 

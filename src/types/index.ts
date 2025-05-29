@@ -80,3 +80,40 @@ export interface Address {
 export enum AddressFormOperation {
     CREATE, EDIT, DELETE
 }
+
+export enum OrderStatus {
+    "WAITING_PAYMENT",
+    "PAYED",
+    "IN_ROUTE",
+    "DELIVERED",
+}
+
+export interface OrderItem {
+    orderItemId: number,
+    product: Product,
+    quantity: number,
+    discount: number,
+    orderedProductPrice: number,
+}
+
+export interface Order {
+    orderId: number,
+    email: string,
+    totalPrice: number,
+    orderStatus: OrderStatus,
+    orderDate: Date,
+    orderItems: OrderItem[],
+    addressId: number,
+    payment: Payment,
+}
+
+export interface Payment {
+    paymentId: number,
+    paymentMethod: string,
+
+    //pg == payment gateway
+    pgPaymentId: string,
+    pgStatus: string,
+    pgResponseMessage: string,
+    pgName: string, //"stripe"
+}

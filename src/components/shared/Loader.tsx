@@ -21,7 +21,7 @@ const SkeletonLoader = () => {
     </div>
 }
 
-const Loader = ({ text = "", variant = LoaderType.DEFAULT} : { text: string, variant: LoaderType }) => {
+const Loader = ({ text = "", variant = LoaderType.DEFAULT} : { text?: string, variant?: LoaderType }) => {
     const { isLoading } = useSelector((state: RootState) => state.errorsState)
 
     if (!isLoading) return <></>
