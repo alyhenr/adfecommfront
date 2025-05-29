@@ -12,3 +12,14 @@ export const formatPhoneNumber = (phone : string) : string => {
                 : cleanedPhone.slice(2))
     : phone
 }
+
+export const validateLocalStoredItems = (item: string) : boolean =>  {
+    switch (item) {
+        case "cartItems":
+            return true;
+        case "loggedInUser":
+            return true;
+        default:
+            return false;
+    }
+}

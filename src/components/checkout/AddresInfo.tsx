@@ -7,6 +7,7 @@ import { FaAddressBook, FaBuilding, FaCheckCircle, FaEdit, FaTrash } from "react
 import { AddressFormOperation, type Address } from "../../types"
 import AddressInforModal from "./AddressInfoModal"
 import AddressForm from "./AddressForm"
+import AddressInfoCard from "./AddressInfoCard"
 
 const AddresInfo = ({ selectedAddress, setSelectedAddress } : {
     selectedAddress: Address,
@@ -66,29 +67,7 @@ const AddresInfo = ({ selectedAddress, setSelectedAddress } : {
                                 </p>
                                 {selectedAddress.addressId == a.addressId && <FaCheckCircle className="text-green-500 ml-2"/>}
                             </div>
-                            <div>
-                                <p className="text-sm">
-                                    <span className="font-semibold">Cidade:</span>{" "}{a.city}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-semibold">Estado:</span>{" "}{a.state}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-semibold">CEP:</span>{" "}{a.zipCode}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-semibold">Número:</span>{" "} {a.number}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-semibold">Referência</span>{" "}{a.reference}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-semibold">Nome do prédio:</span>{" "}{a.buildingName}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-semibold">Nome da rua:</span>{" "}{a.streetName}
-                                </p>
-                            </div>
+                            <AddressInfoCard address={a}/>
                         </div>
                     </div>
                 </div>)}

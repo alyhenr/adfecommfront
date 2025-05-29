@@ -5,11 +5,11 @@ import type { Dispatch } from "@reduxjs/toolkit";
 
 import api from "../../api/api";
 
-import type { Address, Cart, CartItem, CategoriesResponse, Product, ProductsResponse, User } from "../../types";
+import type { Address, Cart, CartItem, CartResponse, CategoriesResponse, Product, ProductsResponse, User } from "../../types";
 
 import { AxiosError, type AxiosResponse } from "axios";
 import { setError } from "../reducers/errorReducer";
-import { initialState, type RootState } from "../reducers/store";
+import { type RootState } from "../reducers/store";
 import { setCartItems } from "../reducers/cartReducer";
 import { truncateText } from "../../utils/common";
 import type { LoginRequest } from "../../components/auth/Login";
@@ -131,6 +131,45 @@ export const fetchCategoriesThunk = (queryString: string = "")  => async (dispat
   
 }
 
+export const getUserCart = () => async (dispatch: Dispatch, currState: () => RootState) : Promise<{ success: boolean, message: string }> => {
+  const state = currState()
+  if (state.cartState.products.length > 0) return { success: true, message: "Carrinho salvo" };
+  try {
+    dispatch(setError({ errorMessage: "", isLoading: true}))
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+        
+    const { data }: AxiosResponse<CartResponse> = await api.get(`/users/carts/user`);
+    console.log(data);
+    
+    if (data instanceof AxiosError) throw data;
+
+    if (data.cartId > 0 && state.cartState.cartId <= 0) {
+        const products: Product[] = data.cartItems.map(ci => ci.product)
+        dispatch(
+          setCartItems({
+            cartId: data.cartId,
+            products: products,
+            totalPrice: data.totalPrice,
+          })
+        )
+
+        localStorage.setItem("cartItems", JSON.stringify({
+          cartId: data.cartId,
+          products: products,
+          totalPrice: data.totalPrice,
+        }))
+    }
+
+    dispatch(setError({ errorMessage: "", isLoading: false}))
+    return { success: true, message: "Carrinho salvo" }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError)     
+      dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to fetch cart...", isLoading: false}))
+    return { success: true, message: "Carrinho salvo" }
+  }
+}
+
 export const addToCart = (data: Product, updateQtde: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { addedToCart: boolean, message: string, type: string } => {
   const state = currState();
   const { products: cartItems } = state.cartState;
@@ -164,12 +203,14 @@ export const addToCart = (data: Product, updateQtde: boolean = false) => (dispat
   );  
 
   localStorage.setItem("cartItems", JSON.stringify({
+    cartItems: state.cartState.cartId,
     products: updatedCartItems,
     totalPrice: updatedTotal,
   }))
 
   dispatch(
     setCartItems({
+      ...state.cartState,
       products: updatedCartItems,
       totalPrice: updatedTotal,
     })
@@ -178,7 +219,8 @@ export const addToCart = (data: Product, updateQtde: boolean = false) => (dispat
   return {addedToCart: true, message: `${truncateText(data.productName, 50)} added to cart`, type: "ok"};
 };
 
-export const createCart = (products : Product[]) => async (dispatch: Dispatch) : Promise<{ success: boolean, message: string }> => {
+export const createCart = (products : Product[]) => async (dispatch: Dispatch, currState: () => RootState) : Promise<{ success: boolean, message: string }> => {
+  const state = currState();
   const cartItems : CartItem[] = []
   for (let i = 0; i < products.length; i++) {
     cartItems.push({
@@ -196,17 +238,19 @@ export const createCart = (products : Product[]) => async (dispatch: Dispatch) :
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
-    console.log("Body data: ", {
-      cartItems, totalPrice
-    });
-    
+        
     const { data }: AxiosResponse<Cart> = await api.post(`/users/carts`, {
       cartItems, totalPrice
     });
     console.log(data);
     
     if (data instanceof AxiosError) throw data;
-
+    dispatch(
+      setCartItems({
+        ...state.cartState,
+        cartId: data.cartId
+      })
+    )
     dispatch(setError({ errorMessage: "", isLoading: false}))
     return { success: true, message: "Cart saved" }
   } catch (error) {
@@ -244,12 +288,14 @@ export const removeFromCart = (productId: number, clean: boolean = false) => (di
   )
 
   localStorage.setItem("cartItems", JSON.stringify({
+    cartItems: state.cartState.cartId,
     products: updatedCartItems,
     totalPrice: updatedTotal,
   }))
 
   dispatch(
     setCartItems({
+      ...state.cartState,
       products: updatedCartItems,
       totalPrice: updatedTotal
     })

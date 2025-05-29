@@ -5,6 +5,8 @@ import PaymentMethod from "./PaymentMethod"
 import type { Address } from "../../types"
 import Finish from "./Finish"
 import Summary from "./Summary"
+import { useSelector } from "react-redux"
+import type { RootState } from "../../store/reducers/store"
 
 export enum PaymentMethodEnum {
     CREDIT_CARD = "CREDIT_CARD", PIX = "PIX"
@@ -14,6 +16,7 @@ const Checkout = () => {
     const steps = ["Endereço", "Forma de pagamento", "Resumo", "Pagamento"]
 
     const [currStep, setCurrStep] = useState(0)
+    const { products, totalPrice } = useSelector((state: RootState) => state.cartState)
 
     const [selectedAddress, setSelectedAddress] = useState<Address>({
         addressId: 0,
@@ -53,7 +56,12 @@ const Checkout = () => {
         <div className="mt-5 px-5">
             {currStep == 0 && <AddresInfo selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />}
             {currStep == 1 && <PaymentMethod selectedMethod={selectedPaymentMethod} setSelectedMethod={setSelectedPaymentMethod}/>}
-            {currStep == 2 && <Summary />}
+            {currStep == 2 && <Summary 
+                                selectedAddress={selectedAddress} 
+                                selectedMethod={selectedPaymentMethod} 
+                                products={products}
+                                totalPrice={totalPrice}
+                            />}
             {currStep == 3 && <Finish />}
         </div>
 

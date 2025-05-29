@@ -6,6 +6,7 @@ import cartReducer, { type CartState } from "../reducers/cartReducer.ts";
 import authReducer, { type  AuthState } from "../reducers/authReducer.ts";
 import type { AddressState } from "./addressReducer.ts";
 import addressReducer from "./addressReducer.ts";
+import { validateLocalStoredItems } from "../../utils/common.ts";
 
 
 const pagination = {
@@ -36,6 +37,7 @@ export const initialState : {
         pagination
     },
     cartState: {
+        cartId: 0,
         products: [],
         totalPrice: 0
     },
@@ -54,7 +56,7 @@ export const initialState : {
 
 try {
     const cartItemsState = localStorage.getItem("cartItems")
-    if (cartItemsState) initialState.cartState = JSON.parse(cartItemsState)     
+    if (cartItemsState && validateLocalStoredItems("cartItems")) initialState.cartState = JSON.parse(cartItemsState)     
 } catch (error) {}
 
 try {

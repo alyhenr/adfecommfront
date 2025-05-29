@@ -36,7 +36,14 @@ export interface DispatchState<T> extends Pagination {
 }
 
 export interface Cart {
+    cartId: number,
     products: Product[],
+    totalPrice: number,
+}
+
+export interface CartResponse {
+    cartId: number,
+    cartItems: CartItem[],
     totalPrice: number,
 }
 

@@ -5,6 +5,7 @@ import type { Cart } from "../../types"
 export type CartState = Cart
 
 const initialState: CartState = {
+    cartId: 0,
     products: [],
     totalPrice: 0,
 }
