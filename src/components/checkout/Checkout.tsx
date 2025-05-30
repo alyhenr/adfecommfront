@@ -1,7 +1,5 @@
-import { Button, Step, StepLabel, Stepper } from "@mui/material"
 import { useEffect, useState } from "react"
 import AddresInfo from "./AddresInfo"
-import PaymentMethod from "./PaymentMethod"
 import { OrderStatus, type Address } from "../../types"
 import Summary from "./Summary"
 import { useDispatch, useSelector } from "react-redux"
@@ -11,14 +9,36 @@ import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import { createCart, createOrder, createStripePaymentSecret } from "../../store/actions"
 import toast from "react-hot-toast"
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
+import { Stepper, Step, StepLabel } from "@mui/material"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
 
 export enum PaymentMethodEnum {
     CREDIT_CARD = "CREDIT_CARD", PIX = "PIX"
 }
 
 const clientPublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
-
 const stripePromise = loadStripe(clientPublishableKey)
+
+// Create a custom theme for the stepper
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#111827', // gray-900
+        },
+    },
+    components: {
+        MuiStepIcon: {
+            styleOverrides: {
+                root: {
+                    '&.Mui-completed': {
+                        color: '#111827', // gray-900
+                    },
+                },
+            },
+        },
+    },
+})
 
 const Checkout = () => {
     const steps = ["Endereço", "Resumo", "Pagamento"]
@@ -55,16 +75,15 @@ const Checkout = () => {
 
     useEffect(() => {
         if (pgPaymentId == "") return
-        //place order pointing to client secret, after confirmation just update status to paid and stripe response
         new Promise(async () => {
             await dispatch(createOrder({
-            paymentMethod: "stripe",
-            orderRequest: {
-                addressId: selectedAddress.addressId,
-                pgPaymentId: pgPaymentId,
-                pgResponseMessage: "",
-                pgStatus: OrderStatus.WAITING_PAYMENT
-            }
+                paymentMethod: "stripe",
+                orderRequest: {
+                    addressId: selectedAddress.addressId,
+                    pgPaymentId: pgPaymentId,
+                    pgResponseMessage: "",
+                    pgStatus: OrderStatus.WAITING_PAYMENT
+                }
             }))
         })
     }, [pgPaymentId])
@@ -83,61 +102,86 @@ const Checkout = () => {
         const nextStep = Math.min(currStep + 1, steps.length - 1)
         
         if (nextStep == 2) {        
-            await dispatch(createCart(products)) //Create cart on backend now
-            await handlePaymentConfiguration() //Generate stripe form and get clientSecret
+            await dispatch(createCart(products))
+            await handlePaymentConfiguration()
         }
         setCurrStep(prev => Math.min(prev + 1, steps.length - 1))
     }
 
     return (
-    <div className="py-14 min-h-[calc(100vh-100px)]">
-        <Stepper alternativeLabel activeStep={currStep}>
-            {steps.map(label => <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-            </Step>)}
-        </Stepper>
+        <div className="min-h-[calc(100vh-64px)] bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+                {/* Progress Steps */}
+                <ThemeProvider theme={theme}>
+                    <Stepper activeStep={currStep} alternativeLabel className="mb-12">
+                        {steps.map((label) => (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                </ThemeProvider>
 
-        <div className="mt-5 px-5">
-            {currStep == 0 && <AddresInfo selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />}
-            {currStep == 1 && <Summary 
-                                selectedAddress={selectedAddress} 
-                                selectedMethod={""} 
-                                products={products}
-                                totalPrice={totalPrice}
-                            />}
-            {currStep == 2 && <Elements options={{ clientSecret }} stripe={stripePromise}>
-                    <PaymentForm totalPrice={Number(totalPrice.toFixed(2))} clientSecret={clientSecret}/>
-                </Elements>}
+                {/* Content */}
+                <div className="mt-16">
+                    {currStep === 0 && <AddresInfo selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />}
+                    {currStep === 1 && <Summary 
+                        selectedAddress={selectedAddress} 
+                        selectedMethod={""} 
+                        products={products}
+                        totalPrice={totalPrice}
+                    />}
+                    {currStep === 2 && <Elements options={{ clientSecret }} stripe={stripePromise}>
+                        <PaymentForm totalPrice={Number(totalPrice.toFixed(2))} clientSecret={clientSecret}/>
+                    </Elements>}
+                </div>
+
+                {/* Navigation */}
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                    <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between items-center">
+                            <button
+                                type="button"
+                                onClick={() => setCurrStep(prev => prev - 1)}
+                                disabled={currStep === 0}
+                                className={`
+                                    inline-flex items-center px-4 py-2 text-sm font-medium rounded-md
+                                    ${currStep === 0 
+                                        ? 'text-gray-400 cursor-not-allowed' 
+                                        : 'text-gray-700 hover:text-gray-900'}
+                                `}
+                            >
+                                <HiChevronLeft className="mr-1 h-5 w-5" />
+                                Anterior
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleNextStep}
+                                disabled={!canGoToNextStep() || isLoading}
+                                className={`
+                                    inline-flex items-center px-6 py-3 text-sm font-medium rounded-md
+                                    ${!canGoToNextStep() || isLoading
+                                        ? 'bg-gray-300 cursor-not-allowed'
+                                        : 'bg-gray-900 hover:bg-black text-white'}
+                                `}
+                            >
+                                {currStep === 2 
+                                    ? (canGoToNextStep() 
+                                        ? "Finalizar compra"
+                                        : "Processando pagamento...") 
+                                    : currStep === 1
+                                        ? (isLoading 
+                                            ? "Preparando pagamento..." 
+                                            : "Prosseguir para pagamento") 
+                                        : "Próximo"}
+                                <HiChevronRight className="ml-1 h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div className="flex justify-between items-center px-4 fixed z-50 h-24 bottom-0 bg-white left-0 w-full py-4 border-slate-200"
-            style={{ boxShadow: "0 -2px 4px rgba(100, 100, 100, 0.15)" }}
-        >
-                <Button 
-                    variant="outlined" 
-                    disabled={currStep == 0}
-                    onClick={() => setCurrStep(prev => prev - 1)}
-                >
-                    Anterior
-                </Button>
-                <Button 
-                    variant="outlined" 
-                    disabled={!canGoToNextStep() || isLoading}
-                    onClick={() => handleNextStep()}
-                >
-                    {currStep 
-                        == 2 ? (canGoToNextStep() 
-                            ? "Finalizar"
-                            : "Realizando pagamento...") 
-
-                            : currStep == 1
-                            ? (isLoading ? "Gerando formulario para o pagamento..." : "Prosseguir para o pagamento") 
-                            
-                            : "Próximo" }
-                </Button>
-        </div>
-
-    </div>
     )
 }
 

@@ -1,83 +1,77 @@
-import type { FieldErrors, FieldValues } from "react-hook-form";
+import { type UseFormRegister } from "react-hook-form"
 
-
-export type InputFieldProps = {
-    id: string,
-    type: string,
+type InputFieldProps = {
     label: string,
-    errors: FieldErrors<FieldValues>,
-    register: Function,
     required: boolean,
+    id: string,
+    register: UseFormRegister<any>,
+    errors: any,
     message: string,
-    className?: string,
-    min?: number,
-    max?: number,
-    value: string | number,
+    min: number,
     placeholder: string,
+    type: string,
+    value: string,
 }
 
 const InputField = ({
-    id,
-    type,
     label,
-    errors,
+    required,
+    id,
     register,
-    className = "",
+    errors,
     message,
     min,
-    max = Number.MAX_SAFE_INTEGER,
     placeholder,
-    required,
+    type,
     value,
-} : InputFieldProps) => {
+}: InputFieldProps) => {
   return (
-    <div className="flex flex-col gap-1 w-full" >
+    <div>
         <label 
             htmlFor={id}
-            className={`${className} font-semibold text-sm text-slate-800`}
+            className="block text-sm font-medium text-gray-700 mb-1"
         >
             {label}
         </label>
-        <input
-            id={id}
-            type={type}
-            placeholder={placeholder}
-            className={`${className} px-2 py-2 border outline-none bg-transparent text-slate-800 rounded-md ${errors[id]?.message ? "border-red-500" : "border-slate-700"}`}
-            {...register(id, {
-                required: { value: required, message },
-                minLength: min 
-                    ? { value: min, message: `Mínimo de ${min} caracteres` }
-                    : null,
-                maxLength: max
-                ? { value: max, message: `Máximo de ${max} caracteres` }
-                : null,
-                value,
-                pattern: (() => {
-                    switch (type) {
-                        case "email":
-                            return {
-                                value: /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+com+$/,
-                                message: "E-mail inválido",
-                            };
-                        case "url":
-                            return {
-                                value: /^(https?:\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/,
-                                message: "URL inválida",
-                            };
-                        default:
-                            return null
+        <div className="relative">
+            <input
+                {...register(id, {
+                    required: {
+                        value: required,
+                        message: message
+                    },
+                    minLength: {
+                        value: min,
+                        message: `${label} deve ter no mínimo ${min} caracteres`
                     }
-                })()
-            })}
-        />
-
-        {
-            errors[id]?.message && (
-                <p className="text-sm font-semibold text-red-600 mt-1">
-                    {errors[id].message.toString()}
-                </p>
-            )
-        }
+                })}
+                type={type}
+                id={id}
+                defaultValue={value}
+                placeholder={placeholder}
+                className={`
+                    block w-full px-4 py-2.5
+                    text-gray-900 placeholder-gray-400
+                    border ${errors[id] ? 'border-red-500' : 'border-gray-300'}
+                    rounded-sm
+                    focus:outline-none focus:ring-1 
+                    ${errors[id] ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-red-500 focus:border-red-500'}
+                    transition-colors
+                `}
+            />
+            {errors[id] && (
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                </div>
+            )}
+        </div>
+        {errors[id] && (
+            <p className="mt-1 text-sm text-red-600">
+                {errors[id].message?.toString()}
+            </p>
+        )}
     </div>
   )
 }

@@ -1,39 +1,33 @@
-import { MdArrowBack, MdShoppingCart } from "react-icons/md"
+import { MdArrowBack } from "react-icons/md"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../../store/reducers/store"
 import { Link } from "react-router-dom"
 import ItemContent from "./ItemContent"
 import { useEffect } from "react"
 import { getUserCart } from "../../store/actions"
-import Loader, { LoaderType } from "../shared/Loader"
+import Loader from "../shared/Loader"
+import { FiShoppingBag } from "react-icons/fi"
 
 const EmptyCart = () => {
-    // return <div className="flex gap-2 items-center justify-start mt-5">
-    //     <Link to="/products" className="flex gap-2 items-center text-slate-800 font-extrabold">
-    //         <MdArrowBack size={20} className="hover:scale-110"/>
-    //     </Link>
-    //     <h1>Seu carrinho está vazio</h1>
-    // </div>
-
-    return <div className="min-h-[800px] flex flex-col items-center justify-center">
-        <div className="flex flex-col items-center">
-            <MdShoppingCart size={80} className="mb-4 text-slate-500"/>
-            <h1 className="text-2xl font-bold text-slate-700">
+    return (
+        <div className="min-h-[600px] flex flex-col items-center justify-center max-w-md mx-auto text-center px-4">
+            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+                <FiShoppingBag className="w-8 h-8 text-gray-400" />
+            </div>
+            <h1 className="text-2xl font-medium text-gray-900 mb-2">
                 Seu carrinho está vazio
             </h1>
-            <Link to="/products" className="hover:cursor-pointer hover:opacity-80">
-                <h3 className="text-lg text-slate-500 mt-2">
-                    Começar a adicionar produtos ao carrinho
-                </h3>
+            <p className="text-gray-500 mb-8">
+                Parece que você ainda não adicionou nenhum item ao seu carrinho.
+            </p>
+            <Link 
+                to="/products" 
+                className="inline-flex items-center justify-center bg-gray-900 text-white px-6 py-3 font-medium hover:bg-black transition-colors"
+            >
+                Continuar comprando
             </Link>
         </div>
-        <div className="mt-6">
-            <Link to="/" className="flex gap-2 items-center text-blue-500 font-extrabold hover:text-blue-600 transition">
-                <MdArrowBack size={24} className="hover:scale-110"/>
-                <span className="font-medium">Voltar ao inicio</span>
-            </Link>
-        </div>
-    </div>
+    )
 }
 
 const Cart = () => {
@@ -41,77 +35,91 @@ const Cart = () => {
     const { isLoading } = useSelector((state : RootState) => state.errorsState)
     const dispatch = useDispatch<AppDispatch>()
 
-
     useEffect(() => {
-        console.log(cartId);
-        
         if (cartId <= 0) {
             dispatch(getUserCart())
         }
     },[dispatch])
 
+    if (isLoading) {
+        return (
+            <div className="min-h-[600px] flex items-center justify-center">
+                <Loader text="Carregando seu carrinho..." />
+            </div>
+        )
+    }
+
+    if (!products?.length) {
+        return <EmptyCart />
+    }
+
     return (
-        <div className="lg:px-14 sm:px-8 px-4 py-10">
-            <Loader text="Buscando carrinho" variant={LoaderType.DEFAULT}/>
-            {products?.length > 0 && <>
-                <div className="flex flex-col items-center mb-12">
-                    <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-                        <MdShoppingCart size={36} className="text-gray-700"/>
-                        Carrinho:
-                    </h1>
-                    <p className="text-lg text-gray-600 mt-2">Itens selecionados</p>
+        <div className="bg-gray-50 min-h-[calc(100vh-64px)]">
+            <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="max-w-3xl mx-auto mb-12 text-center">
+                    <h1 className="text-3xl font-medium text-gray-900 mb-2">Carrinho</h1>
+                    <p className="text-gray-500">{products.length} {products.length === 1 ? 'item' : 'itens'} no seu carrinho</p>
                 </div>
-        
-                <div className="grid md:grid-cols-5 grid-cols-4 gap-4 pb-2 font-semibold items-center">
-                    <div className="md:col-span-2 justify-self-start text-lg text-slate-800">
-                        Produto
-                    </div>
-        
-                    <div className="justify-self-center text-lg text-slate-800">
-                        Preço
-                    </div>
-        
-                    <div className="justify-self-center text-lg text-slate-800">
-                        Quantidade
-                    </div>
-        
-                    <div className="justify-self-center text-lg text-slate-800">
-                        Total
-                    </div>
-                </div>
-        
-                {/* Render Items */}
-                {products.map(p => <ItemContent key={p.productId} product={p}/>)}
-        
-                <div className="border-t-[1.5px] border-slate-200 py-4 flex sm:flex-row sm:px-0 px-2 flex-col sm:justify-between gap-4">
-                    <div></div>
-                    <div className="flex text-sm gap-1 flex-col">
-                        <div className="flex justify-between w-full md:text-lg text-sm font-semibold">
-                            <span>Subtotal{" "}</span>
-                            <span>{totalPrice.toFixed(2)}</span>
+
+                <div className="lg:grid lg:grid-cols-12 lg:gap-12">
+                    {/* Cart Items */}
+                    <div className="lg:col-span-7">
+                        <div className="bg-white shadow-sm border border-gray-100 sm:rounded-lg overflow-hidden">
+                            <ul role="list" className="divide-y divide-gray-200">
+                                {products.map(p => (
+                                    <li key={p.productId} className="p-4 sm:p-6">
+                                        <ItemContent product={p} />
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-        
-                        <p className="text-slate-500">
-                            Taxas e frete são calculados no checkout
-                        </p>
-        
-                        <Link to="/checkout" className="w-full flex justify-end">
-                            <button
-                                className="font-semibold w-[300px] py-2 px-4 rounded-sm bg-green-700 hover:cursor-pointer hover:opacity-85 text-white flex items-center justify-center gap-2 transition duration-300"
+
+                        <div className="mt-6">
+                            <Link 
+                                to="/products" 
+                                className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
                             >
-                                <MdShoppingCart size={20}/>
-                                Finalizar
-                            </button>
-                        </Link>
-                        <Link to="/products" className="flex gap-2 items-center mt-2 text-slate-500">
-                            <MdArrowBack />
-                            <span>Continuar comprando</span>
-                        </Link>
+                                <MdArrowBack className="mr-2 h-4 w-4" />
+                                Continuar comprando
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Summary */}
+                    <div className="lg:col-span-5 mt-8 lg:mt-0">
+                        <div className="bg-white shadow-sm border border-gray-100 sm:rounded-lg p-6">
+                            <h2 className="text-lg font-medium text-gray-900 mb-6">Resumo do pedido</h2>
+                            
+                            <div className="flow-root">
+                                <dl className="-my-4 divide-y divide-gray-200">
+                                    <div className="py-4 flex items-center justify-between">
+                                        <dt className="text-gray-600">Subtotal</dt>
+                                        <dd className="font-medium text-gray-900">R$ {totalPrice.toFixed(2)}</dd>
+                                    </div>
+                                    <div className="py-4 flex items-center justify-between">
+                                        <dt className="text-gray-600">Frete</dt>
+                                        <dd className="font-medium text-gray-900">Calculado no checkout</dd>
+                                    </div>
+                                    <div className="py-4 flex items-center justify-between">
+                                        <dt className="text-base font-medium text-gray-900">Total</dt>
+                                        <dd className="text-base font-medium text-gray-900">R$ {totalPrice.toFixed(2)}</dd>
+                                    </div>
+                                </dl>
+                            </div>
+
+                            <div className="mt-6">
+                                <Link 
+                                    to="/checkout"
+                                    className="w-full flex items-center justify-center bg-gray-900 text-white px-6 py-3 font-medium hover:bg-black transition-colors"
+                                >
+                                    Finalizar compra
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </>
-                || (!isLoading && <EmptyCart />)
-            }
+            </div>
         </div>
     )
 }

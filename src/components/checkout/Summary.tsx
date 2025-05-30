@@ -1,10 +1,7 @@
-import { dividerClasses } from "@mui/material"
 import type { Address, Product } from "../../types"
 import AddressInfoCard from "./AddressInfoCard"
-import ProductCard from "../products/ProductCard"
 import { truncateText } from "../../utils/common"
 import { getSpecialPriceStr } from "../../utils/productsUtils"
-import { useState } from "react"
 import { PaymentMethodEnum } from "./Checkout"
 
 const Summary = ({
@@ -15,79 +12,111 @@ const Summary = ({
     const taxesPct = 2
     const taxesValue = totalPrice * (taxesPct/100)
     const total = totalPrice + taxesValue
+
     return (
-    <div className="container mx-auto px-4">
-        <div className="flex flex-wrap">
-            <div className="w-full lg:w-8/12 pr-4">
-                <div className="space-y-4">
-                    
-                    <div className="p-4 border-slate-400 rounded-lg shadow-sm">
-                        <h2 className="text-2xl font-semibold mb-2">
-                            Endereço de cobrança:
+        <div className="max-w-4xl mx-auto">
+            <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+                {/* Order details */}
+                <div className="lg:col-span-7">
+                    {/* Address */}
+                    <div className="bg-white shadow-sm border border-gray-100 rounded-lg p-6 mb-6">
+                        <h2 className="text-lg font-medium text-gray-900 mb-4">
+                            Endereço de entrega
                         </h2>
                         <AddressInfoCard address={selectedAddress} />
                     </div>
-                    
-                    <div className="p-4 border-slate-400 rounded-lg shadow-sm">
-                        <h2 className="text-2xl font-semibold mb-2">
-                            Forma de pagamento: 
-                        </h2>
-                        <p>
-                            {selectedMethod == PaymentMethodEnum.PIX ? "PIX" : 
-                                selectedMethod == PaymentMethodEnum.CREDIT_CARD ? "Cartão de crédito" : "Forma de pagamento não selecionada"}
-                        </p>
-                    </div>
 
-                    <div className="p-4 border-slate-400 rounded-lg shadow-sm">
-                        <h2 className="text-2xl font-semibold mb-2">
-                            Items:
-                        </h2>
-                        <div className="space-y-2">
-                            {products.map(p => <div key={p.productId}>
-                                <div className="flex items-center justify-between w-full">
-                                    <div className="flex gap-2">
-                                        <img 
-                                            src={p.imageUrl} 
-                                            alt={p.productName} 
-                                            className="w-12 h-12 rounded"
-                                        />
-                                        <div className="text-gray-500 ml-3">
-                                            <p>{truncateText(p.productName, 30)}</p>
-                                            <p>{p.quantity} x {getSpecialPriceStr(p.price, p.discount)}</p>
+                    {/* Items */}
+                    <div className="bg-white shadow-sm border border-gray-100 rounded-lg overflow-hidden">
+                        <div className="p-6">
+                            <h2 className="text-lg font-medium text-gray-900 mb-4">
+                                Itens do pedido
+                            </h2>
+                        </div>
+                        <ul role="list" className="divide-y divide-gray-200">
+                            {products.map(p => (
+                                <li key={p.productId} className="p-6">
+                                    <div className="flex items-center">
+                                        <div className="flex-shrink-0 w-20 h-20 border border-gray-200 rounded-md overflow-hidden">
+                                            <img 
+                                                src={p.imageUrl} 
+                                                alt={p.productName} 
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <div className="ml-6 flex-1">
+                                            <div className="flex items-start justify-between">
+                                                <div>
+                                                    <h3 className="text-sm font-medium text-gray-900">
+                                                        {truncateText(p.productName, 30)}
+                                                    </h3>
+                                                    <p className="mt-1 text-sm text-gray-500">
+                                                        Quantidade: {p.quantity}
+                                                    </p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm font-medium text-gray-900">
+                                                        {getSpecialPriceStr(p.price * p.quantity, p.discount)}
+                                                    </p>
+                                                    {p.discount > 0 && (
+                                                        <p className="mt-1 text-sm text-gray-500 line-through">
+                                                            R$ {(p.price * p.quantity).toFixed(2)}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p className="text-slate-600 font-thin">RS${" "}{(p.quantity*p.price*(1-p.discount)).toFixed(2)}</p>
-                                </div>
-                                <hr className="text-slate-500"/>
-                            </div>
-                        )}
-                        <p className="text-end font-bold">R${" "}{totalPrice.toFixed(2)}</p>
-                        </div>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
-            </div>
-            
-            <div className="w-full lg:w-4/12 mt-4 lg:mt-0">
-                <div className="border-slate-400 shadow-sm p-4 space-y-4">
-                    <h2 className="text-2xl font-semibold mb-2">
-                        Resumo
-                    </h2>
-                    <p className="flex justify-between w-full">
-                        Subtotal: <span>R${" "}{totalPrice.toFixed(2)}
-                        </span>
-                    </p>
-                    <p className="flex justify-between w-full">
-                        Frete ({taxesPct}%): <span>R${" "}{taxesValue.toFixed(2)}
-                        </span>
-                    </p>
-                    <p className="flex justify-between w-full font-extrabold">
-                        Total: <span>R${" "}{total.toFixed(2)}
-                        </span>
-                    </p>
+
+                {/* Order summary */}
+                <div className="lg:col-span-5 mt-8 lg:mt-0">
+                    <div className="bg-white shadow-sm border border-gray-100 rounded-lg p-6 space-y-6 sticky top-4">
+                        <h2 className="text-lg font-medium text-gray-900">
+                            Resumo do pedido
+                        </h2>
+
+                        <dl className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <dt className="text-sm text-gray-600">Subtotal</dt>
+                                <dd className="text-sm font-medium text-gray-900">R$ {totalPrice.toFixed(2)}</dd>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <dt className="text-sm text-gray-600">
+                                    Frete ({taxesPct}%)
+                                </dt>
+                                <dd className="text-sm font-medium text-gray-900">
+                                    R$ {taxesValue.toFixed(2)}
+                                </dd>
+                            </div>
+
+                            <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
+                                <dt className="text-base font-medium text-gray-900">Total</dt>
+                                <dd className="text-base font-medium text-gray-900">R$ {total.toFixed(2)}</dd>
+                            </div>
+                        </dl>
+
+                        {selectedMethod && (
+                            <div className="border-t border-gray-200 pt-4">
+                                <dt className="text-sm font-medium text-gray-900 mb-2">
+                                    Forma de pagamento
+                                </dt>
+                                <dd className="text-sm text-gray-600">
+                                    {selectedMethod === PaymentMethodEnum.PIX ? "PIX" : 
+                                    selectedMethod === PaymentMethodEnum.CREDIT_CARD ? "Cartão de crédito" : 
+                                    "Forma de pagamento não selecionada"}
+                                </dd>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     )
 }
 

@@ -11,14 +11,16 @@ import PrivateRouter from "./components/auth/PrivateRouter";
 import SignUp from "./components/auth/SignUp";
 import Checkout from "./components/checkout/Checkout";
 import OrderConfirmation from "./components/checkout/OrderConfirm";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 function App() {
   return (
-    <>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <NavBar />
         <Routes>
-
           <Route path='/' element={<Home />}/>
           <Route path='/products' element={<Products />}/>
           <Route path='/about' element={<About />}/>
@@ -37,7 +39,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       <Toaster position="bottom-center" />
-    </>
+    </GoogleOAuthProvider>
   );
 }
 

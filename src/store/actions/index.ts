@@ -512,3 +512,36 @@ export const setFilteredProducts = (products: Product[]) => ({
   type: SET_FILTERED_PRODUCTS,
   payload: products,
 });
+
+export type GoogleAuthRequest = {
+  credential: string;
+}
+
+export const authenticateWithGoogle = (credentials: GoogleAuthRequest) => async (dispatch: Dispatch) : Promise<{
+  success: boolean, message: string, redirectTo: string
+}> => {
+  try {
+    await new Promise(r => setTimeout(r, 1000)); //testing loading state
+    const { data : user }: AxiosResponse<User> = await api.post(`/auth/google`, credentials)
+    
+    if (user instanceof AxiosError) throw user;
+
+    localStorage.setItem("loggedInUser", JSON.stringify({
+      user
+    }))
+    
+    dispatch(
+      setUser({
+        user: user
+      })
+    )
+    
+    return { success: true, message: `Bem vindo ${user.username}`, redirectTo: "/" }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return { success: false, message: error?.response?.data?.message, redirectTo: "/login" }
+    }
+  }
+
+  return { success: false, message: "Falha ao realizar login com Google", redirectTo: "/login" }
+}

@@ -1,6 +1,6 @@
 import type { Product } from "../../types"
 import { truncateText } from "../../utils/common";
-import { IoCloseCircle } from "react-icons/io5";
+import { HiX, HiMinus, HiPlus } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../../store/actions";
 import type { AppDispatch } from "../../store/reducers/store";
@@ -8,7 +8,8 @@ import toast from "react-hot-toast";
 import { getSpecialPriceStr } from "../../utils/productsUtils";
 
 const toastWatcher : Set<string> = new Set()
-export const QuantityHanlder = ({ product } : { product: Product }) => {
+
+export const QuantityHandler = ({ product } : { product: Product }) => {
     const { productId, quantity } = product
     const dispatch = useDispatch<AppDispatch>();
 
@@ -41,35 +42,38 @@ export const QuantityHanlder = ({ product } : { product: Product }) => {
         toasterController(removedFromCart, message)
     }
 
-    const btnStyles = "border-[1.2px] border-slate-800 px-3 py-1 rounded-full w-10 h-10 hover:cursor-pointer hover:bg-slate-800 hover:text-white transition duration-300";
-
-    return <div className="flex gap-8 items-center">
-        <div className="flex md:flex-row flex-col gap-4 items-center lg:text-[22px] text-sm">
+    return (
+        <div className="inline-flex items-center border border-gray-200 rounded-md">
             <button
-                disabled={quantity == 0}
                 onClick={handleSubtractFromCart}
-                className={btnStyles}
+                disabled={quantity <= 1}
+                className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-                -
+                <HiMinus className="h-4 w-4 text-gray-600" />
             </button>
+            <span className="px-4 py-2 text-sm text-gray-900 font-medium border-x border-gray-200">
                 {quantity}
+            </span>
             <button
                 onClick={handleAddToCart}
-                className={btnStyles}
+                className="p-2 hover:bg-gray-50 transition-colors"
             >
-                +
+                <HiPlus className="h-4 w-4 text-gray-600" />
             </button>
         </div>
-    </div>
+    )
 }
 
 const ItemContent = ({ product } : { product: Product }) => {
-    const { productId, 
-            productName, 
-            imageUrl, 
-            price, 
-            discount, 
-            quantity } = product
+    const { 
+        productId, 
+        productName, 
+        imageUrl, 
+        price, 
+        discount, 
+        quantity,
+        category 
+    } = product
     
     const dispatch = useDispatch<AppDispatch>();
 
@@ -84,45 +88,48 @@ const ItemContent = ({ product } : { product: Product }) => {
     }
 
     return (
-        <div>
-            <IoCloseCircle 
-                size={25} 
-                color="red"
-                className="sm:hidden relative top-6 left-[95%] hover:scale-105 hover:cursor-pointer hover:opacity-80"
-                onClick={handleRemoveFromCart}
-            />
-            <div className="grid md:grid-cols-5 grid-cols-4 md:text-md text-sm gap-4 items-center border-[1px] border-slate-300 rounded-md px-2 lg:px-4 py-2 my-2">
-                <div className="md:col-span-2 justify-self-start flex flex-col gap-2">
-                    <div className="flex md:flex-row flex-col lg:gap-4 sm:gap-3 gap-1 items-start">
-                        <h3 className="lg:text-[15px] text-sm font-semibold text-slate-600">
+        <div className="flex items-start space-x-6">
+            {/* Product Image */}
+            <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
+                <img 
+                    src={imageUrl}
+                    alt={productName}
+                    className="w-full h-full object-cover"
+                />
+            </div>
+
+            {/* Product Details */}
+            <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between">
+                    <div>
+                        <h3 className="text-base font-medium text-gray-900">
                             {truncateText(productName, 50)}
                         </h3>
+                        <p className="mt-1 text-sm text-gray-500">
+                            {category.categoryName}
+                        </p>
                     </div>
+                    <button
+                        onClick={handleRemoveFromCart}
+                        className="ml-4 p-2 -m-2 text-gray-400 hover:text-gray-500"
+                    >
+                        <span className="sr-only">Remover</span>
+                        <HiX className="h-5 w-5" />
+                    </button>
+                </div>
 
-                    <div className="flex md:h-36 sm:w-48 w-12 shadow-md">
-                        <IoCloseCircle 
-                            size={32} 
-                            color="red"
-                            className="relative hidden sm:flex sm:-top-3 left-[90%] hover:scale-105 hover:cursor-pointer hover:opacity-80"
-                            onClick={handleRemoveFromCart}
-                        />
-                        <img 
-                            src={imageUrl}
-                            alt={truncateText(productName, 50)}
-                            className="md:h-36 sm:h-24 h-12 w-full object-cover rounded-md"
-                        />
+                <div className="mt-4 flex items-center justify-between">
+                    <QuantityHandler product={product} />
+                    <div className="text-right">
+                        <p className="text-sm font-medium text-gray-900">
+                            {getSpecialPriceStr(price * quantity, discount)}
+                        </p>
+                        {discount > 0 && (
+                            <p className="mt-1 text-sm text-gray-500 line-through">
+                                R$ {(price * quantity).toFixed(2)}
+                            </p>
+                        )}
                     </div>
-                </div>
-                <div className="justify-self-center lg:text-[17px] text-sm text-slate-600 font-semibold">
-                    {getSpecialPriceStr(price, discount)}
-                </div>
-
-                <div className="justify-self-center lg:text-[17px] text-sm text-slate-600 font-semibold">
-                    <QuantityHanlder product={product} />
-                </div>
-
-                <div className="justify-self-center lg:text-[17px] text-sm text-slate-600 font-semibold">
-                    {getSpecialPriceStr(price * quantity, discount)}
                 </div>
             </div>
         </div>
