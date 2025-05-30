@@ -1,64 +1,206 @@
 import { useDispatch, useSelector } from "react-redux"
 import HeroBanner from "./HeroBanner"
-import { fetchProductsThunk } from "../../store/actions"
+import { fetchProductsThunk, fetchCategoriesThunk } from "../../store/actions"
 import type { AppDispatch, RootState } from "../../store/reducers/store"
 import { useEffect } from "react"
-import type { Product } from "../../types"
+import type { Product, Category } from "../../types"
 import ProductCard from "../products/ProductCard"
 import Loader from "../shared/Loader"
 import ErrorMessage from "../shared/ErrorMessage"
+import { FaAward, FaLeaf, FaTruck, FaStore } from "react-icons/fa6"
+import { Link } from "react-router-dom"
+
+const features = [
+  {
+    icon: FaAward,
+    title: "Produtos Autênticos",
+    description: "Importados diretamente da Ásia, garantindo a autenticidade dos sabores"
+  },
+  {
+    icon: FaLeaf,
+    title: "Ingredientes Frescos",
+    description: "Produtos frescos e de alta qualidade selecionados diariamente"
+  },
+  {
+    icon: FaTruck,
+    title: "Entrega Rápida",
+    description: "Entregamos em toda a região com cuidado e agilidade"
+  },
+  {
+    icon: FaStore,
+    title: "Desde 1995",
+    description: "Mais de 25 anos trazendo a culinária asiática para sua mesa"
+  }
+];
+
+// Define type for category images
+type CategoryImageMap = {
+  [key: string]: string;
+};
+
+// Default category images - will be used if no image is provided in the category data
+const categoryImages: CategoryImageMap = {
+  "Molhos": "https://images.unsplash.com/photo-1606483956061-46a898dce538",
+  "Massas": "https://images.unsplash.com/photo-1552611052-33e04de081de",
+  "Bebidas": "https://images.unsplash.com/photo-1621267860478-fa4c5988a4bb",
+  "Snacks": "https://images.unsplash.com/photo-1582461833047-2afd0994b746",
+  "default": "https://images.unsplash.com/photo-1550367363-ea12860cc124"
+};
 
 const Home = () => {
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
   const topSellingProducts: Product[] = useSelector(
     (state: RootState) => state.productsState.products
   );
-  const { errorMessage, isLoading } =  useSelector(
+  const categories = useSelector(
+    (state: RootState) => state.categoriesState.categories
+  );
+  const { errorMessage, isLoading } = useSelector(
     (state: RootState) => state.errorsState
   );
 
   useEffect(() => {
-    const params = new URLSearchParams()
-    params.set("pageNumber", "0")
-    params.set("pageSize", "10")
-    params.set("sortBy", "price")
-    params.set("sortOrder", "desc")
-    dispatch(fetchProductsThunk(params.toString()))
-  }, [dispatch])
+    // Fetch categories
+    dispatch(fetchCategoriesThunk());
+
+    // Fetch top selling products
+    const params = new URLSearchParams();
+    params.set("pageNumber", "0");
+    params.set("pageSize", "8");
+    params.set("sortBy", "price");
+    params.set("sortOrder", "desc");
+    dispatch(fetchProductsThunk(params.toString()));
+  }, [dispatch]);
+
+  // Helper function to get category image
+  const getCategoryImage = (categoryName: string): string => {
+    const key = Object.keys(categoryImages).find(k => categoryName.toLowerCase().includes(k.toLowerCase()));
+    return key ? categoryImages[key] : categoryImages.default;
+  };
   
   return (
-    <div className="lg:px-14 sm:px-8 px-4">
-      <div className="py-6">
-        <HeroBanner />
-      </div>
+    <div className="bg-white">
+      {/* Hero Banner */}
+      <HeroBanner />
 
-      <div className="py-5">
-        <div className="flex flex-col justify-center items-center space-y-2">
-          <h1 className="text-slate-700 text-4xl font-bold">
-            Produtos
-          </h1>
-          <span className="text-slate-700">
-            Confira os mais vendidos do momento
-          </span>
+      {/* Features Section */}
+      <div className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="flex flex-col items-center text-center p-6 bg-white border border-gray-100 hover:border-red-100 transition-all">
+                <div className="w-12 h-12 flex items-center justify-center bg-red-50 rounded-sm mb-4">
+                  <feature.icon className="w-6 h-6 text-red-600" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {isLoading ? (
-          <Loader text="Carregando produtos..."/>
-        ) : errorMessage ? (
-          <ErrorMessage errorMessage={errorMessage} />
-        ) : (
-          <div className="min-h-[700px]">
-            <div className="pb-6 pt-14 grid 2xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 gap-y-6 gap-x-6">
-              {topSellingProducts &&
-                topSellingProducts.map((p: Product, i: number) => (
-                  <ProductCard key={i} {...p} />
-                ))}
-            </div>
+      {/* Categories Section */}
+      <div className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Nossas Categorias
+            </h2>
+            <p className="text-lg text-gray-600">
+              Explore nossa seleção de produtos asiáticos autênticos
+            </p>
           </div>
-        )}
-    </div>
-  )
-}
 
-export default Home
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {categories.map((category: Category) => (
+              <Link 
+                key={category.categoryId}
+                to={`/products?category=${category.categoryName}`}
+                className="group relative h-64 overflow-hidden bg-gray-100"
+              >
+                <div className="absolute inset-0">
+                  <img 
+                    src={getCategoryImage(category.categoryName)}
+                    alt={category.categoryName}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>
+                </div>
+                <div className="relative h-full flex flex-col justify-end p-6 text-white">
+                  <h3 className="text-xl font-bold mb-2">{category.categoryName}</h3>
+                  <p className="text-sm text-gray-200">
+                    Explore nossa seleção de {category.categoryName.toLowerCase()}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Products Section */}
+      <div className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Mais Vendidos
+            </h2>
+            <p className="text-lg text-gray-600">
+              Os produtos favoritos de nossos clientes
+            </p>
+          </div>
+
+          {isLoading ? (
+            <Loader text="Carregando produtos..." />
+          ) : errorMessage ? (
+            <ErrorMessage errorMessage={errorMessage} />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {topSellingProducts.slice(0, 8).map((product: Product, index: number) => (
+                <ProductCard key={index} {...product} />
+              ))}
+            </div>
+          )}
+
+          <div className="text-center mt-12">
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 font-medium hover:bg-black transition-colors"
+            >
+              Ver Todos os Produtos
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="relative bg-gray-900 py-24">
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1550367363-ea12860cc124"
+            alt="Background"
+            className="w-full h-full object-cover opacity-20"
+          />
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Descubra os Sabores da Ásia
+          </h2>
+          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+            Encontre todos os ingredientes necessários para preparar 
+            pratos autênticos da culinária asiática na sua casa.
+          </p>
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 bg-red-600 text-white px-8 py-4 font-medium hover:bg-red-700 transition-colors"
+          >
+            Explorar Produtos
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Home;

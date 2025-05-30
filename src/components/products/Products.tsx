@@ -60,7 +60,6 @@ const Products = () => {
     }
     navigate(`${path}?${params}`);
   }
-      console.log(filteredProducts);
       
   return (
     <div className="flex min-h-screen bg-white">
