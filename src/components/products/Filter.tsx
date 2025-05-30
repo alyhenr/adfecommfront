@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Category, Product } from "../../types";
+import type { Category } from "../../types";
 import { FiRefreshCcw, FiCheck } from "react-icons/fi";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import useProductFilter from "../../hooks/useProductFilter";

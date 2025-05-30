@@ -23,8 +23,6 @@ const ContactInfoCard = ({ icon: Icon, title, content }: {
 )
 
 const Contact = () => {
-  const inputStyle: string = "mt-1 block w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-
   const [formattedNumber, setFormattedNumber] = useState<string>()
 
   return (

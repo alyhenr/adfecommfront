@@ -11,7 +11,6 @@ import { toast } from "react-hot-toast"
 
 const ProductCard = (product: Product) => {
   let {
-    productId,
     productName,
     description,
     price,
@@ -24,7 +23,7 @@ const ProductCard = (product: Product) => {
   const [openModal, setOpenModal] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   let btnLoader = false;
-  const [selectedViewProduct, setSelectedViewProduct] = useState<Product>();
+  const [_selectedViewProduct, setSelectedViewProduct] = useState<Product>();
   const isAvailable: boolean = Boolean(quantity && quantity > 0);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -37,7 +36,7 @@ const ProductCard = (product: Product) => {
   };
 
   const handleAddToCart = () => {
-    const { addedToCart, message, type } = dispatch(addToCart(product))
+    const { message, type } = dispatch(addToCart(product))
     
     switch (type) {
       case "ok":

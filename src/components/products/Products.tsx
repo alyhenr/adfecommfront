@@ -19,7 +19,7 @@ const Products = () => {
   const { products, pagination } = useSelector(
     (state: RootState) => state.productsState
   );
-  const { filteredProducts, pagination: filteredPagination } = useSelector(
+  const { filteredProducts } = useSelector(
     (state: RootState) => state.filteredProductsState
   );
 

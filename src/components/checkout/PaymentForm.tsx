@@ -1,14 +1,13 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { type StripePaymentElementChangeEvent } from "@stripe/stripe-js"
 import { type FormEvent, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
 import Loader, { LoaderType } from "../shared/Loader"
 import { HiLockClosed } from "react-icons/hi"
 
 const PaymentForm = ({ clientSecret, totalPrice } : { clientSecret: string, totalPrice: number}) => {
     const stripe = useStripe()
     const elements = useElements()
-    const navigate = useNavigate()
+
     const [isLoading, setIsLoading] = useState(false)
     const [isFormComplete, setIsFormComplete] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
