@@ -1,54 +1,30 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import { FaCheck, FaShoppingCart, FaSignInAlt } from "react-icons/fa";
-import Logo from "../../assets/YOUDE.png";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Badge } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../store/reducers/store";
-import { IoCloseCircle } from "react-icons/io5";
+import { FaShoppingCart, FaSignInAlt, FaUserCircle } from "react-icons/fa";
 import { logoutUser } from "../../store/actions";
+import Logo from "../../assets/YOUDE.png";
 
-const pages = [{ title: "Produtos", to: "/products" }, 
-               { title: "Sobre", to: "/about" },
-               { title: "Contato", to: "/contact" }];
-const settings = [{ title: "Perfil", to: "/profile" },
-                  { title: "Minha conta", to: "/account" }, 
-                  { title: "Minhas compras", to: "orders" }, 
-                  { title: "Logout", to: "/logout" }];
+const pages = [
+  { title: "Produtos", to: "/products" }, 
+  { title: "Sobre", to: "/about" },
+  { title: "Contato", to: "/contact" }
+];
+
+const settings = [
+  { title: "Perfil", to: "/profile" },
+  { title: "Minha conta", to: "/account" }, 
+  { title: "Minhas compras", to: "orders" }, 
+  { title: "Logout", to: "/logout" }
+];
 
 const NavBar = () => {
-
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
-
-  const [logoutClicked, setLogoutClicked] = React.useState<boolean>(false)
-
-  const navigate = useNavigate()
-
-  const dispatch = useDispatch<AppDispatch>()
-
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null)
-    setLogoutClicked(false)
-  };
-
-  const pathName = useLocation().pathname
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [logoutClicked, setLogoutClicked] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const pathName = useLocation().pathname;
 
   const cartCount = useSelector(
     (state: RootState) => state.cartState.products.length
@@ -59,131 +35,118 @@ const NavBar = () => {
   );
 
   const handleLogout = () => {    
-    dispatch(logoutUser())
-    setAnchorElUser(null)
-    navigate("/")
-  } 
+    dispatch(logoutUser());
+    setIsUserMenuOpen(false);
+    navigate("/");
+  };
 
   return (
-    <AppBar position="sticky" color={"primary"} sx={{ bgcolor: "#E4E4DE" }}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            <img src={Logo} alt="Logo" width={250} />
-          </Typography>
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            <img src={Logo} alt="Logo" width={250} />
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+    <header className="sticky top-0 left-0 right-0 bg-white border-b border-gray-100 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link to="/" className="flex-shrink-0">
+            <img src={Logo} alt="Logo" className="h-20 w-auto" />
+          </Link>
+
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
             {pages.map((page) => (
-              <Link key={page.title} to={page.to} className={`${pathName == page.to ? "opacity-60" : ""}`}>
-                <Button
-                  sx={{ my: 2, color: "black", display: "block" }}
-                >
-                  {page.title}
-                </Button>
+              <Link
+                key={page.title}
+                to={page.to}
+                className={`text-sm font-medium ${
+                  pathName === page.to
+                    ? "text-gray-900"
+                    : "text-gray-500 hover:text-gray-900"
+                } transition-colors`}
+              >
+                {page.title}
               </Link>
             ))}
-          </Box>
-          <div className="flex items-center gap-5">
-            <Link to="cart">
-              <Badge 
-                showZero
-                badgeContent={cartCount}
-                color="primary"
-                overlap="circular"
-                anchorOrigin={{
-                  vertical: 'top', horizontal: 'right'
-                }}
-              >
-                <FaShoppingCart
-                  size={28}
-                  className="hover:cursor-pointer shadow-2xl text-[#1B1B1B]"
-                />
-              </Badge>
+          </nav>
+
+          {/* Right section */}
+          <div className="flex items-center space-x-6">
+            {/* Cart */}
+            <Link to="/cart" className="relative text-gray-400 hover:text-gray-500">
+              <FaShoppingCart className="h-6 w-6" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
+              )}
             </Link>
-            <Box sx={{ flexGrow: 0, display: `${user?.userId > 0 ? "flex" : "none"}` }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={user.username} src="" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting.title} onClick={() => setting.to != "/logout" ? navigate(setting.to) : setLogoutClicked(true)}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting.title}
-                    </Typography>
-                  </MenuItem>
-                ))}
-                <div className={`${logoutClicked ? "block" : "hidden"}`}>
-                  <Typography sx={{ textAlign: "center", mt: 2, borderTop: 1, pt: 1, mb: 1}}>
-                    Confirmar logout
-                  </Typography>
-                  <div className="flex w-full justify-between px-7">
-                    <FaCheck color="green" className="hover:cursor-pointer hover:scale-105" size={20} onClick={handleLogout}/>
-                    <IoCloseCircle color="red" className="hover:cursor-pointer hover:scale-105" size={20} onClick={() => setLogoutClicked(false)}/>
+
+            {/* User Menu */}
+            {user?.userId > 0 ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center text-gray-400 hover:text-gray-500"
+                >
+                  <FaUserCircle className="h-6 w-6" />
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-sm shadow-lg py-1">
+                    {settings.map((setting) => (
+                      setting.to !== "/logout" ? (
+                        <Link
+                          key={setting.title}
+                          to={setting.to}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {setting.title}
+                        </Link>
+                      ) : (
+                        !logoutClicked ? (
+                          <button
+                            key={setting.title}
+                            onClick={() => setLogoutClicked(true)}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          >
+                            {setting.title}
+                          </button>
+                        ) : (
+                          <div key={setting.title} className="px-4 py-2 border-t border-gray-100">
+                            <p className="text-sm text-gray-500 mb-2">Confirmar logout?</p>
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={handleLogout}
+                                className="flex-1 px-3 py-1 text-sm text-white bg-red-500 hover:bg-red-600"
+                              >
+                                Sim
+                              </button>
+                              <button
+                                onClick={() => setLogoutClicked(false)}
+                                className="flex-1 px-3 py-1 text-sm border border-gray-200 hover:bg-gray-50"
+                              >
+                                Não
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      )
+                    ))}
                   </div>
-                </div>
-              </Menu>
-            </Box>
-                <Box sx={{ flexGrow: 0, display: `${user?.userId <= 0 ? "flex" : "none"}` }}>
-                  <Link 
-                    to="login"
-                    className="hidden md:flex items-center space-x-2 px-4 py-[6px] bg-gradient-to-r from-purple-600 to-red-500 text-white font-semibold rounded-md shadow-lg hover:from-purple-500 hover:to-red-400 transition duration-300 ease-in-out transform bg-pink-900}"
-                  >
-                    <FaSignInAlt />
-                    <span>Login</span>
-                  </Link>
-                </Box>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-black transition-colors"
+              >
+                <FaSignInAlt className="h-4 w-4" />
+                <span>Login</span>
+              </Link>
+            )}
           </div>
-        </Toolbar>
-      </Container>
-    </AppBar>
+        </div>
+      </div>
+    </header>
   );
 };
+
 export default NavBar;

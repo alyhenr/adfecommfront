@@ -505,3 +505,10 @@ export const createOrder = ({  paymentMethod, orderRequest } : {
     return { success: false, message: "Falha ao confirmar o pagamento com o provedor"}
   }
 }
+
+export const SET_FILTERED_PRODUCTS = "SET_FILTERED_PRODUCTS";
+
+export const setFilteredProducts = (products: Product[]) => ({
+  type: SET_FILTERED_PRODUCTS,
+  payload: products,
+});

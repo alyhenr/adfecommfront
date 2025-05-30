@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Product } from "../../types";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaHeart, FaRegHeart } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
 import { getSpecialPriceStr } from "../../utils/productsUtils";
 import { truncateText } from "../../utils/common";
@@ -22,6 +22,7 @@ const ProductCard = (product: Product) => {
   } = product;
 
   const [openModal, setOpenModal] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
   let btnLoader = false;
   const [selectedViewProduct, setSelectedViewProduct] = useState<Product>();
   const isAvailable: boolean = Boolean(quantity && quantity > 0);
@@ -49,63 +50,81 @@ const ProductCard = (product: Product) => {
         toast.error("Product not added to cart.")
         break;
     }  
-    
   }
-
+  
   return (
-    <div className="border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300 min-w-60 flex flex-col justify-between">
+    <div className="group bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 flex flex-col justify-between">
+      {discount > 0 && (
+        <div className="absolute top-3 left-3 bg-red-50 text-red-600 px-2 py-1 text-xs font-medium z-10">
+          -{(discount * 100).toFixed(0)}% OFF
+        </div>
+      )}
+      <button 
+        onClick={() => setIsWishlisted(!isWishlisted)}
+        className="absolute top-3 right-3 p-2 hover:bg-gray-100 transition-colors z-10"
+      >
+        {isWishlisted ? (
+          <FaHeart className="text-red-500 w-4 h-4" />
+        ) : (
+          <FaRegHeart className="text-gray-400 w-4 h-4" />
+        )}
+      </button>
       <div
-        className="w-full overflow-hidden aspect-[1.3] sm:aspect-[1]"
-        onClick={() => {
-          handleProductView();
-        }}
+        className="relative overflow-hidden aspect-square cursor-pointer bg-gray-50"
+        onClick={handleProductView}
       >
         <img
-          className="w-full h-full cursor-pointer transiction-transform duration-300 transform hover:scale-105"
+          className="w-full h-1/2 object-cover object-center group-hover:opacity-90 transition-opacity duration-200"
           src={imageUrl}
           alt={productName}
         />
       </div>
-      <div className="p-4">
-        <h2
-          onClick={() => {
-            handleProductView();
-          }}
-          className="text-lg font-semibold mb-2 cursor-pointer"
-        >
-          {truncateText(productName, 70)}
-        </h2>
-        <div className="min-h-30 max-h-30">
-          <p className="text-gray-600 text-sm">{truncateText(description)}</p>
+      <div className="p-4 flex flex-col gap-1 justify-between h-1/2">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1">
+            {String(category.categoryName)}
+          </span>
         </div>
-        <div className="flex items-center justify-between gap-5">
-          {discount > 0 ? (
-            <div className="flex flex-col">
-              <span className="text-gray-400 line-through">
-                R${price.toFixed(2).toString().replace(".", ",")}
+        <h2
+          onClick={handleProductView}
+          className="font-medium text-gray-900 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+        >
+          {truncateText(productName, 50)}
+        </h2>
+        <p className="text-sm text-gray-500 line-clamp-2">
+          {truncateText(description, 80)}
+        </p>
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex flex-col">
+            {discount > 0 ? (
+              <>
+                <span className="text-sm text-gray-500 line-through">
+                  R${price.toFixed(2).replace(".", ",")}
+                </span>
+                <span className="text-lg font-medium text-gray-900">
+                  {getSpecialPriceStr(price, discount)}
+                </span>
+              </>
+            ) : (
+              <span className="text-lg font-medium text-gray-900">
+                R${price.toFixed(2).replace(".", ",")}
               </span>
-              <span className="text-xl font-bold text-slate-700">
-                {getSpecialPriceStr(product.price, product.discount)}
-              </span>
-            </div>
-          ) : (
-            <span className="text-xl font-bold text-slate-700">
-              {"  "}
-              R${price.toFixed(2).toString().replace(".", ",")}
-            </span>
-          )}
+            )}
+          </div>
           <button
             disabled={!isAvailable || btnLoader}
             onClick={handleAddToCart}
-            className={`bg-blue-500 ${
-              isAvailable
-                ? "hover:cursor-pointer opacity-100 hover:bg-blue-600"
-                : "opacity-70"
-            } text-white py-2 px-3 rounded-lg items-center transition-colors duration-300 md:w-28 w-20 flex justify-center`}
+            className={`
+              flex items-center gap-2 px-4 py-2
+              ${isAvailable 
+                ? 'bg-gray-900 hover:bg-black text-white cursor-pointer' 
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'}
+              transition-all duration-200
+            `}
           >
-            <FaShoppingCart className="mr-2" />
-            <span className="hidden md:flex">
-              {isAvailable ? "Comprar" : "Esgotado"}
+            <FaShoppingCart className="w-4 h-4" />
+            <span className="hidden md:inline text-sm font-medium">
+              {isAvailable ? "Adicionar" : "Esgotado"}
             </span>
           </button>
         </div>

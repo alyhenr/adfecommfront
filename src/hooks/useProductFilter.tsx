@@ -12,12 +12,13 @@ const useProductFilter = () => {
     const params = new URLSearchParams()
 
     const currPage = Number(searchParams.get("page") || 1)
-    const sortOrder = searchParams.get("sortBy") || "asc"
+    const sortBy = searchParams.get("sortBy") || "productId"
+    const sortOrder = searchParams.get("sortOrder") || "asc"
     const category = searchParams.get("category")
     const keyword = searchParams.get("keyword")
 
     params.set("pageNumber", (currPage - 1).toString())
-    params.set("sortBy", "price")
+    params.set("sortBy", sortBy)
     params.set("sortOrder", sortOrder)
 
     if (category) {
@@ -29,7 +30,6 @@ const useProductFilter = () => {
     }
 
     const queryString = params.toString()
-    // console.log(queryString);
     new Promise(async () => {
       await dispatch(fetchProductsThunk(queryString))
     })

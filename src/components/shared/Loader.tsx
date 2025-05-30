@@ -1,54 +1,65 @@
-import { MagnifyingGlass } from "react-loader-spinner"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../store/reducers/store"
-import { Skeleton } from "@mui/material"
 
 export enum LoaderType {
     DEFAULT, SKELETON, 
 }
 
 const SkeletonLoader = () => {
-    return <div className="flex flex-col w-full gap-2 items-center">
-        {/* For variant="text", adjust the height via font-size */}
-        {/* <Skeleton variant="text" sx={{ fontSize: '10rem' }} /> */}
-
-        {/* For other variants, adjust the size with `width` and `height` */}
-        <div className="flex justify-center gap-3 w-[90%]">
-            <Skeleton animation="wave" variant="rounded" width="30%" height={260} />
-            <Skeleton animation="wave" variant="rounded" width="70%" height={260} />
+    return (
+        <div className="w-full space-y-4 animate-pulse">
+            <div className="flex gap-6">
+                <div className="w-1/3">
+                    <div className="aspect-square bg-gray-100"></div>
+                    <div className="h-4 bg-gray-100 mt-4 w-3/4"></div>
+                    <div className="h-4 bg-gray-100 mt-2 w-1/2"></div>
+                </div>
+                <div className="w-1/3">
+                    <div className="aspect-square bg-gray-100"></div>
+                    <div className="h-4 bg-gray-100 mt-4 w-3/4"></div>
+                    <div className="h-4 bg-gray-100 mt-2 w-1/2"></div>
+                </div>
+                <div className="w-1/3">
+                    <div className="aspect-square bg-gray-100"></div>
+                    <div className="h-4 bg-gray-100 mt-4 w-3/4"></div>
+                    <div className="h-4 bg-gray-100 mt-2 w-1/2"></div>
+                </div>
+            </div>
         </div>
-        <Skeleton animation="wave" variant="rounded" width="90%" height={200} />
-    </div>
+    )
 }
+
+const LoadingSpinner = () => (
+    <div className="flex items-center justify-center">
+        <div className="relative">
+            <div className="h-12 w-12">
+                <div className="absolute h-12 w-12 rounded-full border-4 border-solid border-gray-200"></div>
+                <div className="absolute h-12 w-12 rounded-full border-4 border-solid border-red-500 border-t-transparent animate-spin"></div>
+            </div>
+        </div>
+    </div>
+)
 
 const Loader = ({ text = "", variant = LoaderType.DEFAULT} : { text?: string, variant?: LoaderType }) => {
     const { isLoading } = useSelector((state: RootState) => state.errorsState)
 
-    if (!isLoading) return <></>
+    if (!isLoading) return null;
 
     switch (variant) {
         case LoaderType.SKELETON:
             return <SkeletonLoader />;
-    
+        default:
+            return (
+                <div className="flex flex-col items-center justify-center space-y-4 p-8">
+                    <LoadingSpinner />
+                    {text && (
+                        <p className="text-sm text-gray-500 animate-pulse">
+                            {text || "Carregando..."}
+                        </p>
+                    )}
+                </div>
+            )
     }
-
-    return (
-    <div className="flex justify-center items-center w-full h-[450px]">
-        <div className="flex flex-col items-center gap-1">
-            <MagnifyingGlass
-                visible={true}
-                height="80"
-                width="80"
-                ariaLabel="magnifying-glass-loading"
-                wrapperStyle={{}}
-                wrapperClass="magnifying-glass-wrapper"
-                glassColor="#c0efff"
-                color="#e15b64"
-            />
-            <p className="text-slate-800 font-bold">{text || "Carregando..."}</p>
-        </div>
-    </div>
-    )
 }
 
 export default Loader

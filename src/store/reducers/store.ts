@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import productReducer, { type ProductState } from "../reducers/productReducer.ts"
+import filteredProductReducer, { type FilteredProductState } from "../reducers/filteredProductReducer.ts";  
 import errorReducer, { type ErrorState } from "../reducers/errorReducer.ts";
 import categoryReducer, { type CategoryState } from "../reducers/categoryReducer.ts";
 import cartReducer, { type CartState } from "../reducers/cartReducer.ts";
@@ -11,7 +12,6 @@ import type { OrderState } from "../reducers/orderReducer.ts";
 import orderReducer from "../reducers/orderReducer.ts";
 import { OrderStatus } from "../../types/index.ts";
 
-
 const pagination = {
     pageNumber: 0,
     pageSize: 0,
@@ -22,6 +22,7 @@ const pagination = {
 export const initialState : {
     errorsState : ErrorState,
     productsState : ProductState,
+    filteredProductsState: FilteredProductState,
     categoriesState: CategoryState,
     cartState: CartState,
     authState: AuthState,
@@ -35,6 +36,16 @@ export const initialState : {
     productsState: {
         products: [],
         pagination
+    },
+    filteredProductsState: {
+        filteredProducts: [],
+        pagination: {
+            pageNumber: 0,
+            pageSize: 0,
+            totalElements: 0,
+            totalPages: 0,
+            lastPage: false
+        }
     },
     categoriesState: {
         categories: [],
@@ -78,6 +89,7 @@ export const store = configureStore({
     reducer: {
         errorsState: errorReducer,
         productsState: productReducer,
+        filteredProductsState: filteredProductReducer,
         categoriesState: categoryReducer,
         cartState: cartReducer,
         authState: authReducer,
