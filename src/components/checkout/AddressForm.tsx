@@ -74,11 +74,11 @@ const AddressForm = ({ setIsOpen, address, operation } : {
     }> => {
         switch (operation) {
             case AddressFormOperation.CREATE:
-                return await dispatch(addAddress(data))
+                return await dispatch(addAddress(data)).unwrap()    
             case AddressFormOperation.EDIT:
-                return await dispatch(editAddress({ ...data, addressId: address.addressId }))
+                return await dispatch(editAddress({ ...data, addressId: address.addressId })).unwrap()
             case AddressFormOperation.DELETE:
-                return await dispatch(deleteAddress(address.addressId))
+                return await dispatch(deleteAddress(address.addressId)).unwrap()
             default:
                 return { success: false, message: "Invalid operation" };
         }

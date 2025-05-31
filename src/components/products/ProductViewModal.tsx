@@ -9,6 +9,9 @@ import { getSpecialPriceStr } from "../../utils/productsUtils";
 import { MdClose, MdDone, MdLocalShipping } from "react-icons/md";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useState } from "react";
+import { addToCart } from "../../store/actions";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/reducers/store";
 
 type ProductViewModalProps = {
   product: Product;
@@ -24,6 +27,13 @@ const ProductViewModal = ({
   setIsOpen,
 }: ProductViewModalProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const handleAddToCart = async () => {
+    const { type } = await dispatch(addToCart({data: product})).unwrap()
+    if (type === "ok") {
+      setIsOpen(false)
+    }
+  }
 
   return (
     <Dialog
@@ -134,6 +144,7 @@ const ProductViewModal = ({
                   {isAvailable && (
                     <button
                       className="flex-1 px-6 py-2.5 bg-gray-900 text-white font-medium hover:bg-black transition-colors"
+                      onClick={handleAddToCart}
                     >
                       Adicionar ao carrinho
                     </button>

@@ -32,13 +32,13 @@ export const QuantityHandler = ({ product } : { product: Product }) => {
     }
 
     const handleAddToCart = async () => {
-        const { addedToCart, message } = await dispatch(addToCart(product, true))
+        const { addedToCart, message } = await dispatch(addToCart({data: product, updateQtde: true})).unwrap()
         toasterController(addedToCart, message)
     }
 
     const handleSubtractFromCart = async () => {
         if (quantity <= 1) return;
-        const { removedFromCart, message } = await dispatch(removeFromCart(productId, !(quantity > 1)))
+        const { removedFromCart, message } = await dispatch(removeFromCart({ productId, clean: false })).unwrap()
         toasterController(removedFromCart, message)
     }
 
@@ -78,7 +78,7 @@ const ItemContent = ({ product } : { product: Product }) => {
     const dispatch = useDispatch<AppDispatch>();
 
     const handleRemoveFromCart = async () => {
-        const { removedFromCart, message } = await dispatch(removeFromCart(productId, true))
+        const { removedFromCart, message } = await dispatch(removeFromCart({productId, clean: true})).unwrap()
 
         if (removedFromCart) {
             toast.success(message)

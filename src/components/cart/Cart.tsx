@@ -36,10 +36,13 @@ const Cart = () => {
     const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
-        if (cartId <= 0) {
-            dispatch(getUserCart())
+        const handler = async () => {
+            if (cartId <= 0) {
+                await dispatch(getUserCart())
+            }
         }
-    },[dispatch])
+        handler()
+    },[dispatch, cartId])
 
     if (isLoading) {
         return (

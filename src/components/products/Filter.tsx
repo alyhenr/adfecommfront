@@ -86,6 +86,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
     
     if (isPriceFilterActive) {
       dispatch(filterProducts(filtered));
+      params.delete("page")
     } else {
       dispatch(filterProducts(products));
     }
@@ -117,11 +118,16 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
 
   const handleApplyPriceFilter = () => {
     setFilterByPrice(true);
+    setAppliedPriceRange(priceRange);
+    setIsPriceFilterActive(true);
     onFilterApply?.();
   };
 
   const handleRemovePriceFilter = () => {
     setFilterByPrice(false);
+    setAppliedPriceRange([0, 1000]);
+    setPriceRange([0, 1000]);
+    setIsPriceFilterActive(false);
     onFilterApply?.();
   };
 

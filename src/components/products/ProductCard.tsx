@@ -1,16 +1,17 @@
 import { useState } from "react";
 import type { Product } from "../../types";
-import { FaShoppingCart, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaShoppingCart, FaHeart, FaRegHeart, FaTrash } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
 import { getSpecialPriceStr } from "../../utils/productsUtils";
 import { truncateText } from "../../utils/common";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../../store/reducers/store";
-import { addToCart } from "../../store/actions";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../store/reducers/store";
+import { addToCart, removeFromCart } from "../../store/actions";
 import { toast } from "react-hot-toast"
 
 const ProductCard = (product: Product) => {
   let {
+    productId,
     productName,
     description,
     price,
@@ -22,11 +23,14 @@ const ProductCard = (product: Product) => {
 
   const [openModal, setOpenModal] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   let btnLoader = false;
   const [_selectedViewProduct, setSelectedViewProduct] = useState<Product>();
   const isAvailable: boolean = Boolean(quantity && quantity > 0);
 
   const dispatch = useDispatch<AppDispatch>();
+  const cartItems = useSelector((state: RootState) => state.cartState.products);
+  const isInCart = cartItems.some(item => item.productId === productId);
 
   if (discount >= 1) discount = 0;
 
@@ -36,7 +40,7 @@ const ProductCard = (product: Product) => {
   };
 
   const handleAddToCart = async () => {
-    const { message, type } = await dispatch(addToCart(product))
+    const { message, type } = await dispatch(addToCart({data: product})).unwrap()
     
     switch (type) {
       case "ok":
@@ -50,9 +54,20 @@ const ProductCard = (product: Product) => {
         break;
     }  
   }
+
+  const handleRemoveFromCart = async () => {
+    console.log(productId);
+    
+    const { removedFromCart, message } = await dispatch(removeFromCart({productId, clean: true})).unwrap()  
+    if (removedFromCart) {
+      toast.success(message)
+    } else {
+      toast.error(message)
+    }
+  }
   
   return (
-    <div className="group bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 flex flex-col h-full">
+    <div className="group bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 flex flex-col h-full relative">
       {discount > 0 && (
         <div className="absolute top-3 left-3 bg-red-50 text-red-600 px-2 py-1 text-xs font-medium z-10">
           -{(discount * 100).toFixed(0)}% OFF
@@ -93,7 +108,7 @@ const ProductCard = (product: Product) => {
         <p className="text-sm text-gray-500 line-clamp-2 flex-grow">
           {truncateText(description, 80)}
         </p>
-        <div className="flex items-center justify-between flex-wrap mt-auto pt-3 sm:flex-row flex-col sm:items-start">
+        <div className="flex items-center justify-between flex-wrap mt-auto pt-3 sm:items-start flex-col gap-2">
           <div className="flex flex-col">
             {discount > 0 ? (
               <>
@@ -112,18 +127,34 @@ const ProductCard = (product: Product) => {
           </div>
           <button
             disabled={!isAvailable || btnLoader}
-            onClick={handleAddToCart}
-            className={`
-              flex items-center gap-2 px-4 py-2 rounded
-              ${isAvailable 
-                ? 'bg-gray-900 hover:bg-black text-white cursor-pointer' 
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed'}
+            onClick={isInCart ? handleRemoveFromCart : handleAddToCart}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className={`cursor-pointer
+              flex items-center gap-2 px-4 py-2 rounded w-full sm:w-auto justify-center
               transition-all duration-200
+              ${!isAvailable 
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                : isInCart
+                  ? isHovered
+                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    : 'bg-green-50 text-green-600 hover:bg-red-500 hover:text-white'
+                  : 'bg-gray-900 hover:bg-black text-white cursor-pointer'}
             `}
           >
-            <FaShoppingCart className="w-4 h-4" />
+            {isInCart ? (
+              isHovered ? <FaTrash className="w-4 h-4" /> : <FaShoppingCart className="w-4 h-4" />
+            ) : (
+              <FaShoppingCart className="w-4 h-4" />
+            )}
             <span className="text-sm font-medium whitespace-nowrap">
-              {isAvailable ? "Adicionar" : "Esgotado"}
+              {!isAvailable 
+                ? "Esgotado" 
+                : isInCart 
+                  ? isHovered 
+                    ? "Remover" 
+                    : "No carrinho" 
+                  : "Adicionar"}
             </span>
           </button>
         </div>
