@@ -14,7 +14,7 @@ const Summary = ({
     const total = totalPrice + taxesValue
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto mb-20 sm:mb-0">
             <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
                 {/* Order details */}
                 <div className="lg:col-span-7">

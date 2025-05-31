@@ -1,12 +1,13 @@
 import { useLocation } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store/reducers/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Loader, { LoaderType } from '../shared/Loader'
 import { confirmStripePayment } from '../../store/actions'
 import Lottie from 'lottie-react'
 import { motion } from 'framer-motion'
 import successAnimation from '../../assets/animations/chinese-success.json'
+import type { Order } from '../../types'
 
 const OrderConfirmation = () => {
     const location = useLocation()
@@ -14,18 +15,25 @@ const OrderConfirmation = () => {
     const dispatch = useDispatch<AppDispatch>()
     const { 
         errorsState : { isLoading },
-        cartState: { products, totalPrice }
     } = useSelector((state: RootState) => state)
+
+    const [order, setOrder] = useState<Order | null>(null)
     
     const paymentIntent = searchParams.get("payment_intent")
     const clientSecret = searchParams.get("payment_intent_client_secret")
     const redirectStatus = searchParams.get("redirect_status")
 
     useEffect(() => {
-        if (paymentIntent && clientSecret && redirectStatus) {
-            dispatch(confirmStripePayment(paymentIntent, redirectStatus))
+        const handler = async () => {
+            if (paymentIntent && clientSecret && redirectStatus) {
+                const { success, order } = await dispatch(confirmStripePayment(paymentIntent, redirectStatus))
+                if (success) {
+                    setOrder(order)
+                }
+            }
         }
-    }, [dispatch, paymentIntent, clientSecret, redirectStatus])
+        handler()
+    }, [dispatch, paymentIntent, clientSecret, redirectStatus, location])
 
     if (isLoading) {
         return (
@@ -84,31 +92,31 @@ const OrderConfirmation = () => {
                             </h2>
                             
                             <div className='space-y-4'>
-                                {products.map((product, index) => (
+                                {order?.orderItems.map((product, index) => (
                                     <motion.div
-                                        key={product.productId}
+                                        key={product.product.productId}
                                         initial={{ x: -20, opacity: 0 }}
                                         animate={{ x: 0, opacity: 1 }}
                                         transition={{ delay: 0.6 + index * 0.1 }}
-                                        className='flex items-center justify-between border-b border-red-200 pb-4'
+                                        className='flex items-end justify-between border-b border-red-200 pb-4'
                                     >
                                         <div className='flex items-center'>
                                             <img 
-                                                src={product.imageUrl} 
-                                                alt={product.productName}
+                                                src={product.product.imageUrl} 
+                                                alt={product.product.productName}
                                                 className='w-16 h-16 object-cover rounded-md'
                                             />
                                             <div className='ml-4'>
                                                 <h3 className='text-lg font-medium text-gray-900'>
-                                                    {product.productName}
+                                                    {product.product.productName}
                                                 </h3>
-                                                <p className='text-gray-500'>
+                                                <p className='text-gray-500 text-sm'>
                                                     Quantidade: {product.quantity}
                                                 </p>
                                             </div>
                                         </div>
                                         <p className='text-lg font-semibold text-gray-900'>
-                                            R$ {(product.price * product.quantity).toFixed(2)}
+                                            R$ {(product.product.price * (1 - product.product.discount) * product.quantity).toFixed(2)}
                                         </p>
                                     </motion.div>
                                 ))}
@@ -121,7 +129,7 @@ const OrderConfirmation = () => {
                                 >
                                     <div className='flex justify-between items-center text-lg font-semibold text-red-800'>
                                         <span>Total</span>
-                                        <span>R$ {totalPrice.toFixed(2)}</span>
+                                        <span>R$ {order?.totalPrice.toFixed(2)}</span>
                                     </div>
                                 </motion.div>
                             </div>

@@ -9,8 +9,9 @@ import useProductFilter from "../../hooks/useProductFilter";
 import Loader from "../shared/Loader";
 import CustomPagination from "../shared/CustomPagination";
 import ErrorMessage from "../shared/ErrorMessage";
-import { FiSearch, FiSliders } from "react-icons/fi";
+import { FiSearch, FiSliders, FiX } from "react-icons/fi";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { Dialog, DialogPanel } from "@headlessui/react";
 
 const Products = () => {
   const { isLoading, errorMessage } = useSelector(
@@ -33,6 +34,7 @@ const Products = () => {
   const path: string = useLocation().pathname;
   const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const [filterByPrice, setFilterByPrice] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   useProductFilter() //fetch products here
@@ -45,7 +47,7 @@ const Products = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       updateKeyword(keyword);
-    }, 1500);
+    }, 1000);
 
     return () => {
       clearTimeout(handler);
@@ -63,16 +65,16 @@ const Products = () => {
       
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Sidebar Filter */}
-      <aside className="w-64 border-r border-gray-100 p-6 hidden lg:block">
+      {/* Sidebar Filter - Hidden on mobile */}
+      <aside className="w-64 border-r border-gray-100 p-6 hidden sm:block">
         <Filter categories={categories} setFilterByPrice={setFilterByPrice}/>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1">
         {/* Search Bar */}
-        <div className="border-b border-gray-100">
-          <div className="max-w-2xl mx-auto px-6 py-4">
+        <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+          <div className="max-w-2xl mx-auto px-4 py-3">
             <div className="relative">
               <input
                 type="text"
@@ -84,7 +86,7 @@ const Products = () => {
                     updateKeyword(e.currentTarget.value);
                   }
                 }}
-                className="w-full bg-gray-50 border border-gray-200 rounded-sm py-2.5 px-4 pl-11 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-shadow"
+                className="w-full bg-gray-50 border border-gray-200 rounded-full py-2 px-4 pl-11 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-shadow text-sm"
               />
               <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 cursor-pointer" onClick={() => updateKeyword(keyword)}/>
             </div>
@@ -92,7 +94,7 @@ const Products = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="px-6 py-8">
+        <div className="px-3 py-4 md:px-6 md:py-8">
           {isLoading ? (
             <div className="flex justify-center items-center min-h-[400px]">
               <Loader text="Carregando produtos..." />
@@ -103,7 +105,7 @@ const Products = () => {
             </div>
           ) : (
             <div className="min-h-[700px]">
-              <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-6 gap-y-8">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-2 gap-y-4 md:gap-x-6 md:gap-y-8">
                 {(filteredProducts.length > 0 ?
                   filteredProducts.map((p: Product, i: number) => (
                     <ProductCard key={i} {...p} />
@@ -114,7 +116,7 @@ const Products = () => {
                   ))}
               </div>
               {!filterByPrice && 
-                <div className="flex justify-center pt-12">
+                <div className="flex justify-center pt-8 md:pt-12">
                   <CustomPagination paginationInfo={pagination}/>
                 </div>
               }
@@ -124,9 +126,41 @@ const Products = () => {
       </main>
 
       {/* Mobile Filter Button */}
-      <button className="lg:hidden fixed bottom-6 right-6 bg-white text-gray-700 p-3 rounded-sm shadow-lg border border-gray-200">
+      <button 
+        onClick={() => setIsMobileFilterOpen(true)}
+        className="sm:hidden fixed bottom-6 right-6 bg-red-500 text-white p-3 rounded-full shadow-lg"
+      >
         <FiSliders className="w-5 h-5" />
       </button>
+
+      {/* Mobile Filter Modal */}
+      <Dialog
+        open={isMobileFilterOpen}
+        onClose={() => setIsMobileFilterOpen(false)}
+        className="relative z-50 sm:hidden"
+      >
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        
+        <div className="fixed inset-0 flex items-center justify-center">
+          <DialogPanel className="w-full h-full bg-white p-6 overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-medium text-gray-900">Filtros</h2>
+              <button
+                onClick={() => setIsMobileFilterOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-500"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <Filter 
+              categories={categories} 
+              setFilterByPrice={setFilterByPrice}
+              onFilterApply={() => setIsMobileFilterOpen(false)}
+            />
+          </DialogPanel>
+        </div>
+      </Dialog>
     </div>
   );
 };

@@ -9,7 +9,8 @@ import { filterProducts } from "../../store/actions";
 
 type FilterProps = {
   categories: Category[];
-  setFilterByPrice: (filterByPrice: boolean) => void;
+  setFilterByPrice: (value: boolean) => void;
+  onFilterApply?: () => void;
 };
 
 type SortOption = {
@@ -26,7 +27,7 @@ const sortOptions: SortOption[] = [
   { label: "Maior preço", property: "price", order: "desc" },
 ];
 
-const Filter = ({ categories, setFilterByPrice }: FilterProps) => {
+const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const categoryMap: Record<number, string> = { [-1]: "" };
   categories.forEach((category) => {
@@ -115,24 +116,21 @@ const Filter = ({ categories, setFilterByPrice }: FilterProps) => {
   };
 
   const handleApplyPriceFilter = () => {
-    setAppliedPriceRange(priceRange);
-    setIsPriceFilterActive(true);
     setFilterByPrice(true);
+    onFilterApply?.();
   };
 
   const handleRemovePriceFilter = () => {
-    setIsPriceFilterActive(false);
-    setAppliedPriceRange([0, 1000]);
-    setPriceRange([0, 1000]);
     setFilterByPrice(false);
+    onFilterApply?.();
   };
 
   const clearFilters = () => {
-    setPriceRange([0, 1000]);
-    setAppliedPriceRange([0, 1000]);
-    setIsPriceFilterActive(false);
-    dispatch(filterProducts(products));
-    navigate({ pathname: window.location.pathname });
+    setCategory({ categoryId: -1, categoryName: "Todas" });
+    setPriceRange([0, 0]);
+    setSelectedSort("");
+    setFilterByPrice(false);
+    onFilterApply?.();
   };
 
   return (

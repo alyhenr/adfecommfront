@@ -35,8 +35,8 @@ const ProductCard = (product: Product) => {
     setOpenModal(true);
   };
 
-  const handleAddToCart = () => {
-    const { message, type } = dispatch(addToCart(product))
+  const handleAddToCart = async () => {
+    const { message, type } = await dispatch(addToCart(product))
     
     switch (type) {
       case "ok":
@@ -52,7 +52,7 @@ const ProductCard = (product: Product) => {
   }
   
   return (
-    <div className="group bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 flex flex-col justify-between">
+    <div className="group bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 flex flex-col h-full">
       {discount > 0 && (
         <div className="absolute top-3 left-3 bg-red-50 text-red-600 px-2 py-1 text-xs font-medium z-10">
           -{(discount * 100).toFixed(0)}% OFF
@@ -60,7 +60,7 @@ const ProductCard = (product: Product) => {
       )}
       <button 
         onClick={() => setIsWishlisted(!isWishlisted)}
-        className="absolute top-3 right-3 p-2 hover:bg-gray-100 transition-colors z-10"
+        className="absolute top-3 right-3 p-2 hover:bg-gray-100 rounded-full transition-colors z-10"
       >
         {isWishlisted ? (
           <FaHeart className="text-red-500 w-4 h-4" />
@@ -73,14 +73,14 @@ const ProductCard = (product: Product) => {
         onClick={handleProductView}
       >
         <img
-          className="w-full h-1/2 object-cover object-center group-hover:opacity-90 transition-opacity duration-200"
+          className="w-full h-full object-cover object-center group-hover:opacity-90 transition-opacity duration-200"
           src={imageUrl}
           alt={productName}
         />
       </div>
-      <div className="p-4 flex flex-col gap-1 justify-between h-1/2">
+      <div className="p-4 flex flex-col gap-2 flex-grow">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1">
+          <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
             {String(category.categoryName)}
           </span>
         </div>
@@ -90,10 +90,10 @@ const ProductCard = (product: Product) => {
         >
           {truncateText(productName, 50)}
         </h2>
-        <p className="text-sm text-gray-500 line-clamp-2">
+        <p className="text-sm text-gray-500 line-clamp-2 flex-grow">
           {truncateText(description, 80)}
         </p>
-        <div className="flex items-center justify-between mt-1">
+        <div className="flex items-center justify-between flex-wrap mt-auto pt-3 sm:flex-row flex-col sm:items-start">
           <div className="flex flex-col">
             {discount > 0 ? (
               <>
@@ -114,7 +114,7 @@ const ProductCard = (product: Product) => {
             disabled={!isAvailable || btnLoader}
             onClick={handleAddToCart}
             className={`
-              flex items-center gap-2 px-4 py-2
+              flex items-center gap-2 px-4 py-2 rounded
               ${isAvailable 
                 ? 'bg-gray-900 hover:bg-black text-white cursor-pointer' 
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'}
@@ -122,7 +122,7 @@ const ProductCard = (product: Product) => {
             `}
           >
             <FaShoppingCart className="w-4 h-4" />
-            <span className="hidden md:inline text-sm font-medium">
+            <span className="text-sm font-medium whitespace-nowrap">
               {isAvailable ? "Adicionar" : "Esgotado"}
             </span>
           </button>

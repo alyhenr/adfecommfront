@@ -25,7 +25,6 @@ export const authenticateUser = (credentials: LoginRequest)  => async (dispatch:
   success: boolean, message: string, redirectTo: string
 }> => {
   try {
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     const { data : user }: AxiosResponse<User> = await api.post(`/auth/sign-in`, credentials)
     
     if (user instanceof AxiosError) throw user;
@@ -52,7 +51,6 @@ export const authenticateUser = (credentials: LoginRequest)  => async (dispatch:
 
 export const registerUser = (userData : SignUpRequest) => async (_dispatch: Dispatch) => {
   try {
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     const { data }: AxiosResponse<User> = await api.post(`/auth/sign-up`, userData)
     
     if (data instanceof AxiosError) throw data;
@@ -80,8 +78,6 @@ export const fetchProductsThunk = (queryString: string = "") => async (dispatch:
   console.log("fetching products");
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
-
     
     const { data }: AxiosResponse<ProductsResponse> = await api.get(`/public/products?${queryString}`);
     
@@ -111,7 +107,6 @@ export const fetchCategoriesThunk = (queryString: string = "")  => async (dispat
 
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     
     const { data }: AxiosResponse<CategoriesResponse> = await api.get(`/public/categories?${queryString}`);
     
@@ -141,7 +136,6 @@ export const getUserCart = () => async (dispatch: Dispatch, currState: () => Roo
   if (state.cartState.products.length > 0) return { success: true, message: "Carrinho salvo" };
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
         
     const { data }: AxiosResponse<CartResponse> = await api.get(`/users/carts/user`);
     console.log(data);
@@ -251,7 +245,6 @@ export const createCart = (products : Product[]) => async (dispatch: Dispatch, c
 
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
         
     const { data }: AxiosResponse<Cart> = await api.post(`/users/carts`, {
       cartItems, totalPrice
@@ -327,7 +320,6 @@ export const removeFromCart = (productId: number, clean: boolean = false, forceF
 export const fetchAddressThunk = () => async (dispatch: Dispatch) : Promise<void> => {
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     
     const { data }: AxiosResponse<Address[]> = await api.get(`/users/addresses/user`);
     
@@ -352,7 +344,6 @@ export const addAddress = (address: Address) => async (dispatch: Dispatch, currS
   const { addresses } = state.addressState;
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     
     const { data }: AxiosResponse<Address> = await api.post(`/users/addresses/user/address`, address);
     
@@ -383,7 +374,6 @@ export const editAddress = (address: Address) => async (dispatch: Dispatch, curr
   const { addresses } = state.addressState;
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     
     const { data }: AxiosResponse<Address> = await api.put(`/users/addresses/${address.addressId}`, address);
     
@@ -414,7 +404,6 @@ export const deleteAddress = (addressId: number) => async (dispatch: Dispatch, c
   const { addresses } = state.addressState;
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     
     const { data }: AxiosResponse<Address> = await api.delete(`/users/addresses/${addressId}`);
     
@@ -471,7 +460,7 @@ type OrderRequest = {
   pgStatus: OrderStatus,
   pgResponseMessage: string,
 }
-export const confirmStripePayment = (paymentId: string, pgResponseMessage: string) =>  async (dispatch: Dispatch) : Promise<{ success: boolean, message: string }> => {
+export const confirmStripePayment = (paymentId: string, pgResponseMessage: string) =>  async (dispatch: Dispatch) : Promise<{ success: boolean, message: string, order: Order | null }> => {
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     
@@ -483,16 +472,16 @@ export const confirmStripePayment = (paymentId: string, pgResponseMessage: strin
 
     localStorage.removeItem("cartItems")
 
-    return { success: true, message: data.payment.pgResponseMessage /*secret key here*/ }
+    return { success: true, message: data.payment.pgResponseMessage /*secret key here*/ , order: data }
   } catch (error) {
     console.log(error);
     if (error instanceof AxiosError) {
       dispatch(setError({ errorMessage: error?.response?.data?.message || "Fail to submit payment...", isLoading: false}))
 
-      return { success: false, message: "Falha ao confirmar o pagamento com o provedor: " + error?.response?.data?.message }
+      return { success: false, message: "Falha ao confirmar o pagamento com o provedor: " + error?.response?.data?.message, order: null }
     }
     
-    return { success: false, message: "Falha ao confirmar o pagamento com o provedor"}
+    return { success: false, message: "Falha ao confirmar o pagamento com o provedor", order: null }
   }
 }
 
@@ -538,7 +527,6 @@ export const authenticateWithGoogle = (credentials: GoogleAuthRequest) => async 
   success: boolean, message: string, redirectTo: string
 }> => {
   try {
-    await new Promise(r => setTimeout(r, 1000)); //testing loading state
     const { data : user }: AxiosResponse<User> = await api.post(`/auth/google`, credentials)
     
     if (user instanceof AxiosError) throw user;
