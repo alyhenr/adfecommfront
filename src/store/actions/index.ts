@@ -16,6 +16,10 @@ import type { LoginRequest } from "../../components/auth/Login";
 import { fetchUser as setUser } from "../reducers/authReducer";
 import type { SignUpRequest } from "../../components/auth/SignUp";
 import { fetchAddresses as setAddresses} from "../reducers/addressReducer";
+import { setFilteredProducts } from "../reducers/filteredProductReducer";
+
+// Action Types
+export const SET_FILTERED_PRODUCTS = 'SET_FILTERED_PRODUCTS';
 
 export const authenticateUser = (credentials: LoginRequest)  => async (dispatch: Dispatch) : Promise<{
   success: boolean, message: string, redirectTo: string
@@ -506,12 +510,9 @@ export const createOrder = ({  paymentMethod, orderRequest } : {
   }
 }
 
-export const SET_FILTERED_PRODUCTS = "SET_FILTERED_PRODUCTS";
-
-export const setFilteredProducts = (products: Product[]) => ({
-  type: SET_FILTERED_PRODUCTS,
-  payload: products,
-});
+export const filterProducts = (products: Product[]) => (dispatch: Dispatch) => {
+  dispatch(setFilteredProducts(products));
+};
 
 export type GoogleAuthRequest = {
   credential: string;

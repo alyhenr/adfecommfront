@@ -19,6 +19,7 @@ const pagination = {
     totalPages: 0,
     lastPage: false
 }
+
 export const initialState : {
     errorsState : ErrorState,
     productsState : ProductState,
@@ -75,15 +76,26 @@ export const initialState : {
     },
 }
 
-try {
-    const cartItemsState = localStorage.getItem("cartItems")
-    if (cartItemsState && validateLocalStoredItems("cartItems")) initialState.cartState = JSON.parse(cartItemsState)     
-} catch (error) {}
+// Only access localStorage in browser environment
+if (typeof window !== 'undefined') {
+    try {
+        const cartItemsState = localStorage.getItem("cartItems")
+        if (cartItemsState && validateLocalStoredItems("cartItems")) {
+            initialState.cartState = JSON.parse(cartItemsState)
+        }
+    } catch (error) {
+        console.error('Error loading cart state:', error)
+    }
 
-try {
-    const authState = localStorage.getItem("loggedInUser")
-    if (authState) initialState.authState = JSON.parse(authState)
-} catch (error) {}
+    try {
+        const authState = localStorage.getItem("loggedInUser")
+        if (authState) {
+            initialState.authState = JSON.parse(authState)
+        }
+    } catch (error) {
+        console.error('Error loading auth state:', error)
+    }
+}
 
 export const store = configureStore({
     reducer: {
@@ -97,7 +109,9 @@ export const store = configureStore({
         orderState: orderReducer,
     },
     preloadedState: initialState,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false // Disable serializable check if needed
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

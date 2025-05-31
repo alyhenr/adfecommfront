@@ -1,5 +1,5 @@
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Product, Pagination } from "../../types";
-import { SET_FILTERED_PRODUCTS } from "../actions";
 
 export type FilteredProductState = {
   filteredProducts: Product[];
@@ -17,16 +17,15 @@ const initialState: FilteredProductState = {
   },
 };
 
-const filteredProductReducer = (state = initialState, action: any) => {
-  switch (action.type) {
-    case SET_FILTERED_PRODUCTS:
-      return {
-        ...state,
-        filteredProducts: action.payload,
-      };
-    default:
-      return state;
-  }
-};
+const filteredProductsSlice = createSlice({
+  name: 'filteredProducts',
+  initialState,
+  reducers: {
+    setFilteredProducts: (state, action: PayloadAction<Product[]>) => {
+      state.filteredProducts = action.payload;
+    },
+  },
+});
 
-export default filteredProductReducer; 
+export const { setFilteredProducts } = filteredProductsSlice.actions;
+export default filteredProductsSlice.reducer; 

@@ -4,8 +4,8 @@ import { FiRefreshCcw, FiCheck } from "react-icons/fi";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import useProductFilter from "../../hooks/useProductFilter";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../../store/reducers/store";
-import { setFilteredProducts } from "../../store/actions";
+import type { AppDispatch, RootState } from "../../store/reducers/store";
+import { filterProducts } from "../../store/actions";
 
 type FilterProps = {
   categories: Category[];
@@ -27,7 +27,7 @@ const sortOptions: SortOption[] = [
 ];
 
 const Filter = ({ categories, setFilterByPrice }: FilterProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const categoryMap: Record<number, string> = { [-1]: "" };
   categories.forEach((category) => {
     categoryMap[category.categoryId] = category.categoryName;
@@ -84,9 +84,9 @@ const Filter = ({ categories, setFilterByPrice }: FilterProps) => {
     });
     
     if (isPriceFilterActive) {
-      dispatch(setFilteredProducts(filtered));
+      dispatch(filterProducts(filtered));
     } else {
-      dispatch(setFilteredProducts(products));
+      dispatch(filterProducts(products));
     }
   }, [products, appliedPriceRange, isPriceFilterActive, dispatch]);
 
@@ -131,7 +131,7 @@ const Filter = ({ categories, setFilterByPrice }: FilterProps) => {
     setPriceRange([0, 1000]);
     setAppliedPriceRange([0, 1000]);
     setIsPriceFilterActive(false);
-    dispatch(setFilteredProducts(products));
+    dispatch(filterProducts(products));
     navigate({ pathname: window.location.pathname });
   };
 
