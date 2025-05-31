@@ -17,7 +17,6 @@ import { fetchUser as setUser } from "../reducers/authReducer";
 import type { SignUpRequest } from "../../components/auth/SignUp";
 import { fetchAddresses as setAddresses} from "../reducers/addressReducer";
 import { setFilteredProducts } from "../reducers/filteredProductReducer";
-import { log } from "console";
 
 // Action Types
 export const SET_FILTERED_PRODUCTS = 'SET_FILTERED_PRODUCTS';
