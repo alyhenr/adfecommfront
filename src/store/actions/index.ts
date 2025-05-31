@@ -17,6 +17,7 @@ import { fetchUser as setUser } from "../reducers/authReducer";
 import type { SignUpRequest } from "../../components/auth/SignUp";
 import { fetchAddresses as setAddresses} from "../reducers/addressReducer";
 import { setFilteredProducts } from "../reducers/filteredProductReducer";
+import { log } from "console";
 
 // Action Types
 export const SET_FILTERED_PRODUCTS = 'SET_FILTERED_PRODUCTS';
@@ -77,6 +78,7 @@ export const logoutUser = () => async (dispatch: Dispatch) => {
 }
 
 export const fetchProductsThunk = (queryString: string = "") => async (dispatch: Dispatch) => {
+  console.log("fetching products");
   try {
     dispatch(setError({ errorMessage: "", isLoading: true}))
     await new Promise(r => setTimeout(r, 1000)); //testing loading state
@@ -174,11 +176,20 @@ export const getUserCart = () => async (dispatch: Dispatch, currState: () => Roo
   }
 }
 
-export const addToCart = (data: Product, updateQtde: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { addedToCart: boolean, message: string, type: string } => {
+export const addToCart = (data: Product, updateQtde: boolean = false, forceFetch: boolean = true) => async (dispatch: Dispatch, currState: () => RootState) : Promise<{ addedToCart: boolean, message: string, type: string }> => {
   const state = currState();
   const { products: cartItems } = state.cartState;
-  const existingProduct = state.productsState.products.find(p => p.productId === data.productId);
-  if (!existingProduct) return {addedToCart: false, message: "Product not found, please refresh the page", type: "alert" };
+  let existingProduct = state.productsState.products.find(p => p.productId === data.productId);
+  
+  if (!existingProduct) {
+    if (forceFetch) {
+      await fetchProductsThunk()(dispatch)
+      return addToCart(data, updateQtde, false)(dispatch, currState)
+    }
+    return {
+      addedToCart: false, message: "Product not found, please refresh the page", type: "alert" 
+    };
+  }
   
   let updatedCartItems = [...cartItems];
   let foundProduct = updatedCartItems.find(p => p.productId === data.productId)
@@ -266,11 +277,17 @@ export const createCart = (products : Product[]) => async (dispatch: Dispatch, c
   return { success: false, message: "Failed to create cart for user" }
 };
 
-export const removeFromCart = (productId: number, clean: boolean = false) => (dispatch: Dispatch, currState: () => RootState) : { removedFromCart: boolean, message: string, type: string } => {
+export const removeFromCart = (productId: number, clean: boolean = false, forceFetch: boolean = true) => async (dispatch: Dispatch, currState: () => RootState) : Promise<{ removedFromCart: boolean, message: string, type: string }> => {
   const state = currState();
   const { products: cartItems } = state.cartState;
-  const existingProduct = state.productsState.products.find(p => p.productId === productId);
-  if (!existingProduct) return { removedFromCart: false, message: "Product not found, please refresh the page", type: "alert" };
+  let existingProduct = state.productsState.products.find(p => p.productId === productId);
+  if (!existingProduct) {
+    if (forceFetch) {
+      await fetchProductsThunk()
+      return removeFromCart(productId, clean, false)(dispatch, currState)
+    }
+    return { removedFromCart: false, message: "Product not found, please refresh the page", type: "alert" };
+  }
 
   let updatedCartItems : Product[] = [ ...cartItems ]
   let foundProduct = updatedCartItems.find(p => p.productId === productId)  
