@@ -45,14 +45,14 @@ const SignUp = () => {
             return
         }
 
-        const { success, message, redirectTo } = await dispatch(registerUser({
+        const { success, message } = await dispatch(registerUser({
             email: data.email,
             username: data.username,
             password: data.password
         }))
         if (success) {
             toast.success(message)
-            navigate(redirectTo)
+            navigate("/login")
         } else {
             toast.error(message)
         }
@@ -63,12 +63,12 @@ const SignUp = () => {
     const handleGoogleLogin = useGoogleLogin({
         onSuccess: async (response) => {
             setGoogleLoading(true)
-            const { success, message, redirectTo } = await dispatch(
+            const { success, message } = await dispatch(
                 authenticateWithGoogle({ credential: response.access_token })
             )
             if (success) {
                 toast.success(message)
-                navigate(redirectTo)
+                navigate("/login")
             } else {
                 toast.error(message)
             }
