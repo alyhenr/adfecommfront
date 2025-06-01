@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AuthState } from "../../types/auth";
+import type { User } from "../../../types";
 
 const initialState: AuthState = {
     user: {
@@ -8,7 +9,8 @@ const initialState: AuthState = {
         email: "",
         username: "",
         roles: [],
-    }
+    },
+    expiresIn: 0,
 };
 
 const authSlice = createSlice({
@@ -17,9 +19,13 @@ const authSlice = createSlice({
     reducers: {
         setUser: (
             state,
-            action: PayloadAction<AuthState>
+            action: PayloadAction<{
+                user: User;
+                expiresIn: number;
+            }>
         ) => {
             state.user = action.payload.user;
+            state.expiresIn = action.payload.expiresIn;
         },
     },
 });

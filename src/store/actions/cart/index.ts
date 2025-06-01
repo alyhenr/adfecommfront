@@ -41,13 +41,20 @@ export const getUserCart = createAsyncThunk(
 
             dispatch(setError({ errorMessage: "", isLoading: false }));
             return { success: true, message: "Carrinho salvo" };
-        } catch (error) {
-            if (error instanceof AxiosError)     
+        } catch (error) {            
+            if (error instanceof AxiosError) {
                 dispatch(setError({ 
                     errorMessage: error?.response?.data?.message || "Falha ao buscar carrinho...", 
-                    isLoading: false 
+                    isLoading: false
                 }));
-            return { success: true, message: "Carrinho salvo" };
+            } else if (error instanceof Error) {
+                dispatch(setError({ 
+                    errorMessage: error.message, 
+                    isLoading: false
+                }));
+            }
+
+            return { success: false, message: "Falha ao buscar carrinho..." };
         }
     }
 );

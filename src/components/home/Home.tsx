@@ -66,7 +66,7 @@ const Home = () => {
     // Fetch top selling products
     const params = new URLSearchParams();
     params.set("pageNumber", "0");
-    params.set("pageSize", "8");
+    params.set("pageSize", "5");
     params.set("sortBy", "price");
     params.set("sortOrder", "desc");
     dispatch(fetchProductsThunk(params.toString()));

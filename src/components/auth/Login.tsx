@@ -28,12 +28,20 @@ const Login = () => {
         mode: "onTouched"
     })
 
+    const handleRedirectAfterLogin = () => {
+        const redirectUrl = localStorage.getItem('redirectAfterLogin')
+        localStorage.removeItem('redirectAfterLogin') // Clean up
+        console.log(redirectUrl);
+        if (redirectUrl?.includes('/login')) return '/'
+        return redirectUrl || '/'
+    }
+
     const loginHandler: SubmitHandler<LoginRequest> = async (data: LoginRequest) => {
         setLoading(true)
-        const { success, message, redirectTo } = await dispatch(authenticateUser(data))
+        const { success, message } = await dispatch(authenticateUser(data))
         if (success) {
             toast.success(message)
-            navigate(redirectTo)
+            navigate(handleRedirectAfterLogin())
         } else {
             toast.error(message)
         }
@@ -44,12 +52,12 @@ const Login = () => {
     const handleGoogleLogin = useGoogleLogin({
         onSuccess: async (response) => {
             setGoogleLoading(true)
-            const { success, message, redirectTo } = await dispatch(
+            const { success, message } = await dispatch(
                 authenticateWithGoogle({ credential: response.access_token })
             )
             if (success) {
                 toast.success(message)
-                navigate(redirectTo)
+                navigate(handleRedirectAfterLogin())
             } else {
                 toast.error(message)
             }

@@ -1,16 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit"
-import productReducer, { type ProductState } from "../reducers/productReducer.ts"
-import filteredProductReducer, { type FilteredProductState } from "../reducers/filteredProductReducer.ts";  
-import errorReducer, { type ErrorState } from "../reducers/errorReducer.ts";
-import categoryReducer, { type CategoryState } from "../reducers/categoryReducer.ts";
-import cartReducer, { type CartState } from "../reducers/cartReducer.ts";
-import authReducer, { type  AuthState } from "../reducers/authReducer.ts";
-import type { AddressState } from "./addressReducer.ts";
-import addressReducer from "./addressReducer.ts";
+import productReducer from "../reducers/products/productReducer.ts"
+import filteredProductReducer from "../reducers/products/filteredProductReducer.ts";  
+import errorReducer from "../reducers/errors/errorReducer.ts";
+import categoryReducer from "../reducers/categories/categoryReducer.ts";
+import cartReducer from "../reducers/cart/cartReducer.ts";
+import authReducer from "../reducers/auth/authReducer.ts";
+import addressReducer from "../reducers/address/addressReducer.ts";
+import type { ErrorState } from "../types/errors/index.ts";
+import type { ProductState } from "../types/products/index.ts";
+import type { FilteredProductState } from "../types/products/index.ts";
+import type { CategoryState } from "../types/categories/index.ts";
+import type { CartState } from "../types/cart/index.ts";
+import type { AuthState } from "../types/auth/index.ts";
 import { validateLocalStoredItems } from "../../utils/common.ts";
-import type { OrderState } from "../reducers/orderReducer.ts";
-import orderReducer from "../reducers/orderReducer.ts";
-import { OrderStatus } from "../../types/index.ts";
+import type { OrderState } from "../types/order/index.ts";
+import orderReducer from "../reducers/order/orderReducer.ts";
+import type { AddressState } from "../types/address/index.ts";
+import { getStoredAuthData, isTokenValid, clearAuthData } from "../../utils/auth.ts";
 
 const pagination = {
     pageNumber: 0,
@@ -40,13 +46,6 @@ export const initialState : {
     },
     filteredProductsState: {
         filteredProducts: [],
-        pagination: {
-            pageNumber: 0,
-            pageSize: 0,
-            totalElements: 0,
-            totalPages: 0,
-            lastPage: false
-        }
     },
     categoriesState: {
         categories: [],
@@ -59,20 +58,18 @@ export const initialState : {
     },
     authState: {
         user: {
-            userId: 0,
+            userId: -1,
             username: "",
             email: "",
             roles: []
         },
+        expiresIn: 0,
     },
     addressState: {
         addresses: []
     },
     orderState: {
-        addressId: 0,
-        products: [],
-        status: OrderStatus.WAITING_PAYMENT,
-        totalPrice: 0
+        orders: [],
     },
 }
 
@@ -88,12 +85,20 @@ if (typeof window !== 'undefined') {
     }
 
     try {
-        const authState = localStorage.getItem("loggedInUser")
-        if (authState) {
-            initialState.authState = JSON.parse(authState)
+        // Check for stored auth data and validate token
+        const authData = getStoredAuthData();
+        if (authData && isTokenValid()) {
+            initialState.authState = {
+                user: authData.user,
+                expiresIn: authData.expiresAt,
+            };
+        } else if (authData) {
+            // If token is expired, clear auth data
+            clearAuthData();
         }
     } catch (error) {
         console.error('Error loading auth state:', error)
+        clearAuthData();
     }
 }
 

@@ -16,7 +16,7 @@ const cartSlice = createSlice({
         setCartItems: (
             state,
             action: PayloadAction<CartState>
-        ) => {
+        ) => {         
             state.cartId = action.payload.cartId;
             state.products = action.payload.products;
             state.totalPrice = action.payload.totalPrice;

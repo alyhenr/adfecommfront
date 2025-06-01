@@ -12,6 +12,10 @@ import SignUp from "./components/auth/SignUp";
 import Checkout from "./components/checkout/Checkout";
 import OrderConfirmation from "./components/checkout/OrderConfirm";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import UserLayout from "./components/user/UserLayout";
+import Profile from "./components/user/Profile";
+import Purchases from "./components/user/Purchases";
+import Settings from "./components/user/Settings";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
@@ -35,6 +39,11 @@ function App() {
           <Route path="/" element={<PrivateRouter isPublic={false} />}>
             <Route path='/checkout' element={<Checkout />}/>
             <Route path='/order-confirm' element={<OrderConfirmation />}/>
+            <Route path="/user" element={<UserLayout />}>
+              <Route path="profile" element={<Profile />} />
+              <Route path="purchases" element={<Purchases />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,15 +1,23 @@
 import { useSelector } from "react-redux"
 import type { RootState } from "../../store/reducers/store"
-import { Navigate, Outlet } from "react-router-dom"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
 
 const PrivateRouter = ({ isPublic = false}) => {
-    const isLoggedIn = useSelector((state: RootState) => state.authState.user.userId > 0)
+    const user = useSelector((state: RootState) => state.authState.user)
+    const isLoggedIn = user.userId > 0
+    const location = useLocation()
     
     if(isPublic) {
-        return isLoggedIn ? <Navigate to="/profile" /> : <Outlet />
+        return isLoggedIn ? <Navigate to="/user/profile" /> : <Outlet />
     }
 
-    return isLoggedIn ? <Outlet /> : <Navigate to="/login" />
+    if (!isLoggedIn) {
+        // Store the attempted URL
+        localStorage.setItem('redirectAfterLogin', location.pathname + location.search)
+        return <Navigate to="/login" />
+    }
+
+    return <Outlet />
 }
 
 export default PrivateRouter

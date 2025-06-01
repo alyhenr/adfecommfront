@@ -49,7 +49,8 @@ export const initialState: RootState = {
             email: "",
             username: "",
             roles: []
-        }
+        },
+        expiresIn: 0,
     },
     addressState: {
         addresses: []

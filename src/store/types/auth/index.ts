@@ -2,6 +2,7 @@ import type { User } from "../../../types";
 
 export type AuthState = {
     user: User;
+    expiresIn: number;
 };
 
 export type LoginRequest = {
