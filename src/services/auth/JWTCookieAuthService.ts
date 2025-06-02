@@ -1,8 +1,11 @@
-import type { AuthService, AuthResponse, LoginCredentials, GoogleAuthCredentials, AuthStorageData } from './types';
+import type { AuthService, AuthResponse, LoginCredentials, GoogleAuthCredentials, AuthStorageData, TokenTransportationMethod } from './types';
 import api from '../../api/api';
+import type { AuthMethod } from '.';
 
 export class JWTCookieAuthService implements AuthService {
     private readonly storageKey = 'loggedInUser';
+    private authMethod: AuthMethod = 'jwt';
+    private tokenTransportationMethod: TokenTransportationMethod = 'cookie';
 
     async login(credentials: LoginCredentials): Promise<AuthResponse> {
         console.log(credentials);
@@ -26,6 +29,12 @@ export class JWTCookieAuthService implements AuthService {
         } finally {
             this.clearAuthData();
         }
+    }
+
+    isLoggedIn(): boolean {
+        const authData = this.getStoredAuthData();
+        if (!authData) return false;
+        return true;
     }
 
     isAuthenticated(): boolean {
@@ -57,5 +66,21 @@ export class JWTCookieAuthService implements AuthService {
         };
         
         localStorage.setItem(this.storageKey, JSON.stringify(authData));
+    }
+
+    getAuthMethod(): AuthMethod {
+        return this.authMethod;
+    }
+
+    setAuthMethod(method: AuthMethod): void {
+        this.authMethod = method;
+    }
+
+    getTokenTransportationMethod(): TokenTransportationMethod {
+        return this.tokenTransportationMethod;
+    }
+
+    setTokenTransportationMethod(method: TokenTransportationMethod): void {
+        this.tokenTransportationMethod = method;
     }
 } 

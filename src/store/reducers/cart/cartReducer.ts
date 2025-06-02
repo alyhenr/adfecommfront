@@ -29,7 +29,7 @@ const cartSlice = createSlice({
             state.products = state.products.filter((p: Product) => p.productId !== action.payload.productId);
             state.totalPrice -= action.payload.price;
         },  
-        getUserCart: (state, action: PayloadAction<CartResponse>) => {
+        getOrCreateUserCart: (state, action: PayloadAction<CartResponse>) => {
             state.cartId = action.payload.cartId;
             state.products = action.payload.cartItems.map((ci: CartItem) => ci.product);
             state.totalPrice = action.payload.totalPrice;
@@ -40,5 +40,5 @@ const cartSlice = createSlice({
 export const { setCartItems } = cartSlice.actions;
 export const { addToCart } = cartSlice.actions;
 export const { removeFromCart } = cartSlice.actions;
-export const { getUserCart } = cartSlice.actions;
+export const { getOrCreateUserCart } = cartSlice.actions;
 export default cartSlice.reducer; 

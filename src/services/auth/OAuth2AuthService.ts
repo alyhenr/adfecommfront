@@ -1,9 +1,18 @@
-import type { AuthService, AuthResponse, LoginCredentials, GoogleAuthCredentials, AuthStorageData } from './types';
+import type { AuthService, AuthResponse, LoginCredentials, GoogleAuthCredentials, AuthStorageData, TokenTransportationMethod } from './types';
 import api from '../../api/api';
+import type { AuthMethod } from '.';
 
 export class OAuth2AuthService implements AuthService {
     private readonly storageKey = 'loggedInUser';
     private refreshPromise: Promise<AuthResponse> | null = null;
+    private authMethod: AuthMethod = 'oauth2';
+    private tokenTransportationMethod: TokenTransportationMethod = 'header';
+
+    isLoggedIn(): boolean {
+        const authData = this.getStoredAuthData();
+        if (!authData) return false;
+        return true;
+    }
 
     async login(credentials: LoginCredentials): Promise<AuthResponse> {
         const { data } = await api.post<AuthResponse>('/oauth/token', {
@@ -98,5 +107,21 @@ export class OAuth2AuthService implements AuthService {
         };
         
         localStorage.setItem(this.storageKey, JSON.stringify(authData));
+    }
+
+    getAuthMethod(): AuthMethod {
+        return this.authMethod;
+    }
+
+    setAuthMethod(method: AuthMethod): void {
+        this.authMethod = method;
+    }
+
+    getTokenTransportationMethod(): TokenTransportationMethod {
+        return this.tokenTransportationMethod;
+    }
+
+    setTokenTransportationMethod(method: TokenTransportationMethod): void {
+        this.tokenTransportationMethod = method;
     }
 } 

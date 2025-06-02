@@ -10,9 +10,7 @@ import ErrorMessage from "../shared/ErrorMessage"
 import { FaAward, FaLeaf, FaTruck, FaStore } from "react-icons/fa6"
 import { Link } from "react-router-dom"
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { FreeMode, Mousewheel } from 'swiper/modules'
 import 'swiper/css'
-import 'swiper/css/free-mode'
 
 const features = [
   {
@@ -120,12 +118,9 @@ const Home = () => {
             <Swiper
               slidesPerView="auto"
               spaceBetween={24}
-              // freeMode={true}
-              // modules={[FreeMode]}
               centeredSlides={true}
-              loop={true}
               initialSlide={categories.length/2}
-              wrapperClass="items-stretch"
+              // wrapperClass="items-stretch"
             >
               {categories.map((category: Category) => (
                 <SwiperSlide key={category.categoryId} className="!w-[280px] !h-auto">

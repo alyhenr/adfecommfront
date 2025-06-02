@@ -4,7 +4,7 @@ import type { AppDispatch, RootState } from "../../store/reducers/store"
 import { Link } from "react-router-dom"
 import ItemContent from "./ItemContent"
 import { useEffect } from "react"
-import { getUserCart } from "../../store/actions"
+import { getOrCreateUserCart } from "../../store/actions"
 import Loader from "../shared/Loader"
 import { FiShoppingBag } from "react-icons/fi"
 
@@ -38,7 +38,7 @@ const Cart = () => {
     useEffect(() => {
         const handler = async () => {
             if (cartId <= 0) {
-                await dispatch(getUserCart())
+                await dispatch(getOrCreateUserCart())
             }
         }
         handler()

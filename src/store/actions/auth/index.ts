@@ -10,7 +10,6 @@ export const authenticateUser = (credentials: LoginRequest) => async (dispatch: 
 }> => {
     try {
         const authService = getAuthService();
-        console.log(authService);
         const response = await authService.login(credentials);
         
         dispatch(setUser({ 

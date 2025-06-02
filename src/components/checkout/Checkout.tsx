@@ -7,11 +7,12 @@ import type { AppDispatch, RootState } from "../../store/reducers/store"
 import PaymentForm from "./PaymentForm"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
-import { createCart, createOrder, createStripePaymentSecret } from "../../store/actions"
+import { createOrder, createStripePaymentSecret, getOrCreateUserCart } from "../../store/actions"
 import toast from "react-hot-toast"
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
 import { Stepper, Step, StepLabel } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
+import { useNavigate } from "react-router-dom"
 
 export enum PaymentMethodEnum {
     CREDIT_CARD = "CREDIT_CARD", PIX = "PIX"
@@ -42,7 +43,7 @@ const theme = createTheme({
 
 const Checkout = () => {
     const steps = ["Endereço", "Resumo", "Pagamento"]
-
+    const navigate = useNavigate()
     const [currStep, setCurrStep] = useState(0)
     const { cartState: { products, totalPrice },
     errorsState: { isLoading } } = useSelector((state: RootState) => state)
@@ -89,10 +90,16 @@ const Checkout = () => {
     }, [pgPaymentId])
 
     const dispatch = useDispatch<AppDispatch>()
-
+    const isLoggedIn = useSelector((state: RootState) => state.authState.user.userId > 0)
     const handlePaymentConfiguration = async () => {
         const { success, clientSecret, paymentId} = await dispatch(createStripePaymentSecret(Number(totalPrice.toFixed(2)) * 100))
-        if (!success) toast.error("Falha ao comunicar com o provedor de pagamento")
+        if (!success) {
+            if (isLoggedIn) {
+                toast.error("Falha ao comunicar com o provedor de pagamento")
+            } else {
+                toast.error("Sessão expirada, faça login novamente")
+            }
+        }
             
         setClientSecret(clientSecret)
         setPgPaymentId(paymentId)
@@ -101,8 +108,20 @@ const Checkout = () => {
     const handleNextStep = async () => {
         const nextStep = Math.min(currStep + 1, steps.length - 1)
         
-        if (nextStep == 2) {        
-            await dispatch(createCart(products))
+        if (nextStep == 1) {      
+            const { success, message, products: getUserCartProducts } = await dispatch(getOrCreateUserCart()).unwrap()
+            console.log(getUserCartProducts);
+                        
+            if (success) {
+                if (getUserCartProducts.length == 0) {
+                    toast.error("Seu carrinho está vazio")
+                    navigate("/cart")
+                }
+            } else {
+                setCurrStep(0)
+                toast.error(message)
+            }
+        } else if (nextStep == 2) {
             await handlePaymentConfiguration()
         }
         setCurrStep(prev => Math.min(prev + 1, steps.length - 1))

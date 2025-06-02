@@ -15,6 +15,12 @@ const PrivateRouter = ({ isPublic = false}) => {
         // Store the attempted URL
         localStorage.setItem('redirectAfterLogin', location.pathname + location.search)
         return <Navigate to="/login" />
+    } else {
+        const redirectUrl = localStorage.getItem('redirectAfterLogin');
+        if (redirectUrl) {
+            localStorage.removeItem('redirectAfterLogin')
+            return <Navigate to={redirectUrl} />
+        }
     }
 
     return <Outlet />

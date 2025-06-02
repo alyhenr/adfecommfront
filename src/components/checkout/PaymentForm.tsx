@@ -3,18 +3,20 @@ import { type StripePaymentElementChangeEvent } from "@stripe/stripe-js"
 import { type FormEvent, useEffect, useState } from "react"
 import Loader, { LoaderType } from "../shared/Loader"
 import { HiLockClosed } from "react-icons/hi"
+import { useSelector } from "react-redux"
+import type { RootState } from "../../store/reducers/store"
 
 const PaymentForm = ({ clientSecret, totalPrice } : { clientSecret: string, totalPrice: number}) => {
     const stripe = useStripe()
     const elements = useElements()
-
+    const isLoggedIn = useSelector((state: RootState) => state.authState.user.userId > 0)
     const [isLoading, setIsLoading] = useState(false)
     const [isFormComplete, setIsFormComplete] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
     const [isReady, setIsReady] = useState(false)
 
     useEffect(() => {
-        if (!stripe || !clientSecret) {
+        if (!stripe || !clientSecret || clientSecret == "") {
             return;
         }
         setIsReady(true)
@@ -105,6 +107,7 @@ const PaymentForm = ({ clientSecret, totalPrice } : { clientSecret: string, tota
                 <form onSubmit={handleSubmit}>
                     <div className="space-y-6">
                         <div className={`relative ${isLoading ? 'opacity-50' : ''}`}>
+                            {isLoggedIn ? (
                             <PaymentElement 
                                 options={paymentElementOptions}
                                 onChange={(event: StripePaymentElementChangeEvent) => {
@@ -112,6 +115,11 @@ const PaymentForm = ({ clientSecret, totalPrice } : { clientSecret: string, tota
                                     setErrorMessage("")
                                 }}
                             />
+                            ) : (
+                                <div className="bg-red-50 p-4 rounded-lg">
+                                    <p className="text-red-600 font-medium">Sessão expirada, por favor, faça login novamente</p>
+                                </div>
+                            )}
                             {isLoading && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
                                     <Loader text="" variant={LoaderType.DEFAULT} />

@@ -1,14 +1,14 @@
-import type { AuthService } from './types';
+import type { AuthService, TokenTransportationMethod } from './types';
 import { JWTCookieAuthService } from './JWTCookieAuthService';
 import { OAuth2AuthService } from './OAuth2AuthService';
 
-export type AuthMethod = 'jwt_cookie' | 'oauth2';
+export type AuthMethod = 'jwt' | 'oauth2';
 
 let authService: AuthService;
 
-export const initializeAuth = (method: AuthMethod = 'jwt_cookie'): AuthService => {
+export const initializeAuth = (method: AuthMethod = 'jwt', tokenTransportationMethod: TokenTransportationMethod = 'cookie'): AuthService => {
     switch (method) {
-        case 'jwt_cookie':
+        case 'jwt':
             authService = new JWTCookieAuthService();
             break;
         case 'oauth2':
@@ -17,6 +17,7 @@ export const initializeAuth = (method: AuthMethod = 'jwt_cookie'): AuthService =
         default:
             throw new Error(`Unsupported auth method: ${method}`);
     }
+    authService.setTokenTransportationMethod(tokenTransportationMethod);
     return authService;
 };
 
