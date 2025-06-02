@@ -9,6 +9,10 @@ import Loader from "../shared/Loader"
 import ErrorMessage from "../shared/ErrorMessage"
 import { FaAward, FaLeaf, FaTruck, FaStore } from "react-icons/fa6"
 import { Link } from "react-router-dom"
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { FreeMode, Mousewheel } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/free-mode'
 
 const features = [
   {
@@ -66,7 +70,7 @@ const Home = () => {
     // Fetch top selling products
     const params = new URLSearchParams();
     params.set("pageNumber", "0");
-    params.set("pageSize", "5");
+    params.set("pageSize", "8");
     params.set("sortBy", "price");
     params.set("sortOrder", "desc");
     dispatch(fetchProductsThunk(params.toString()));
@@ -112,29 +116,45 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {categories.map((category: Category) => (
-              <Link 
-                key={category.categoryId}
-                to={`/products?category=${category.categoryName}`}
-                className="group relative h-64 overflow-hidden bg-gray-100"
-              >
-                <div className="absolute inset-0">
-                  <img 
-                    src={getCategoryImage(category.categoryName)}
-                    alt={category.categoryName}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>
-                </div>
-                <div className="relative h-full flex flex-col justify-end p-6 text-white">
-                  <h3 className="text-xl font-bold mb-2">{category.categoryName}</h3>
-                  <p className="text-sm text-gray-200">
-                    Explore nossa seleção de {category.categoryName.toLowerCase()}
-                  </p>
-                </div>
-              </Link>
-            ))}
+          <div className="relative">
+            <Swiper
+              slidesPerView="auto"
+              spaceBetween={24}
+              // freeMode={true}
+              // modules={[FreeMode]}
+              centeredSlides={true}
+              loop={true}
+              initialSlide={categories.length/2}
+              wrapperClass="items-stretch"
+            >
+              {categories.map((category: Category) => (
+                <SwiperSlide key={category.categoryId} className="!w-[280px] !h-auto">
+                  <Link 
+                    to={`/products?category=${category.categoryName}`}
+                    className="group block relative h-[320px] overflow-hidden bg-gray-100 rounded-lg"
+                  >
+                    <div className="absolute inset-0">
+                      <img 
+                        src={getCategoryImage(category.categoryName)}
+                        alt={category.categoryName}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-colors"></div>
+                    </div>
+                    <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                      <h3 className="text-xl font-bold mb-2">{category.categoryName}</h3>
+                      <p className="text-sm text-gray-200 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                        Explore nossa seleção de {category.categoryName.toLowerCase()}
+                      </p>
+                    </div>
+                  </Link>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
           </div>
         </div>
       </div>
