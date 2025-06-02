@@ -30,8 +30,7 @@ const Login = () => {
 
     const handleRedirectAfterLogin = () => {
         const redirectUrl = localStorage.getItem('redirectAfterLogin')
-        localStorage.removeItem('redirectAfterLogin') // Clean up
-        console.log(redirectUrl);
+        localStorage.removeItem('redirectAfterLogin')
         if (redirectUrl?.includes('/login')) return '/'
         return redirectUrl || '/'
     }

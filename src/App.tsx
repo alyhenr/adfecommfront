@@ -1,5 +1,3 @@
-import NavBar from "./components/shared/NavBar";
-import Products from "./components/products/Products";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/home/Home";
 import About from "./components/shared/About";
@@ -16,6 +14,13 @@ import UserLayout from "./components/user/UserLayout";
 import Profile from "./components/user/Profile";
 import Purchases from "./components/user/Purchases";
 import Settings from "./components/user/Settings";
+import Layout from "./components/shared/Layout";
+import Products from "./components/products/Products";
+import FAQ from "./components/help/FAQ";
+import HelpCenter from "./components/help/HelpCenter";
+import PrivacyPolicy from "./components/legal/PrivacyPolicy";
+import Terms from "./components/legal/Terms";
+import CookiePolicy from "./components/legal/CookiePolicy";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
@@ -23,26 +28,32 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
-        <NavBar />
         <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/products' element={<Products />}/>
-          <Route path='/about' element={<About />}/>
-          <Route path='/contact' element={<Contact />}/>
-          <Route path='/cart' element={<Cart />}/>
+          <Route element={<Layout />}>
+            <Route path='/' element={<Home />}/>
+            <Route path='/products' element={<Products />}/>
+            <Route path='/about' element={<About />}/>
+            <Route path='/contact' element={<Contact />}/>
+            <Route path='/cart' element={<Cart />}/>
+            <Route path='/help' element={<HelpCenter />}/>
+            <Route path='/faq' element={<FAQ />}/>
+            <Route path='/privacy' element={<PrivacyPolicy />}/>
+            <Route path='/terms' element={<Terms />}/>
+            <Route path='/cookies' element={<CookiePolicy />}/>
 
-          <Route path="/" element={<PrivateRouter isPublic={true} />}>
-            <Route path='/login' element={<Login />}/>
-            <Route path='/signup' element={<SignUp />}/>
-          </Route>
+            <Route element={<PrivateRouter isPublic={true} />}>
+              <Route path='/login' element={<Login />}/>
+              <Route path='/signup' element={<SignUp />}/>
+            </Route>
 
-          <Route path="/" element={<PrivateRouter isPublic={false} />}>
-            <Route path='/checkout' element={<Checkout />}/>
-            <Route path='/order-confirm' element={<OrderConfirmation />}/>
-            <Route path="/user" element={<UserLayout />}>
-              <Route path="profile" element={<Profile />} />
-              <Route path="purchases" element={<Purchases />} />
-              <Route path="settings" element={<Settings />} />
+            <Route element={<PrivateRouter isPublic={false} />}>
+              <Route path='/checkout' element={<Checkout />}/>
+              <Route path='/order-confirm' element={<OrderConfirmation />}/>
+              <Route path="/user" element={<UserLayout />}>
+                <Route path="profile" element={<Profile />} />
+                <Route path="purchases" element={<Purchases />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
             </Route>
           </Route>
         </Routes>

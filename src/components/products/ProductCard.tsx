@@ -57,8 +57,6 @@ const ProductCard = (product: Product) => {
 
   const handleRemoveFromCart = async () => {
     const { removedFromCart, message } = await dispatch(removeFromCart({productId, clean: true})).unwrap()  
-    console.log(removedFromCart);
-    console.log(message);
     
     if (removedFromCart) {
       toast.success(message)
