@@ -147,7 +147,7 @@ const DemoProtection = ({ onAuthenticate }: DemoProtectionProps) => {
                     </p>
                     <div className="space-y-3">
                         <a
-                            href="https://adf.com.br"
+                            href="https://adf-digital-forge.vercel.app"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors"
