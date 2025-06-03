@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Lottie from 'lottie-react';
 import { FiLock, FiUser, FiGlobe, FiMail } from 'react-icons/fi';
 import Logo from '../../assets/YOUDE.png';
 
