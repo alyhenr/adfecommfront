@@ -75,7 +75,7 @@ const Products = () => {
         {/* Search Bar */}
         <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
           <div className="max-w-2xl mx-auto px-4 py-3">
-            <div className="relative">
+            <div className="relative flex items-center">
               <input
                 type="text"
                 placeholder="Buscar produtos..."
@@ -89,6 +89,12 @@ const Products = () => {
                 className="w-full bg-gray-50 border border-gray-200 rounded-full py-2 px-4 pl-11 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-shadow text-sm"
               />
               <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 cursor-pointer" onClick={() => updateKeyword(keyword)}/>
+              <button 
+                onClick={() => setIsMobileFilterOpen(true)}
+                className="sm:hidden ml-3 bg-red-500 text-white p-2 rounded-full"
+              >
+                <FiSliders className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
@@ -124,14 +130,6 @@ const Products = () => {
           )}
         </div>
       </main>
-
-      {/* Mobile Filter Button */}
-      <button 
-        onClick={() => setIsMobileFilterOpen(true)}
-        className="sm:hidden fixed bottom-6 right-6 bg-red-500 text-white p-3 rounded-full shadow-lg"
-      >
-        <FiSliders className="w-5 h-5" />
-      </button>
 
       {/* Mobile Filter Modal */}
       <Dialog

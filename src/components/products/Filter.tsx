@@ -140,7 +140,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
   };
 
   return (
-    <div className="text-gray-600">
+    <div className="text-gray-600 z-10000">
       <h2 className="text-sm font-medium uppercase tracking-wide text-gray-900 mb-6">Filtros</h2>
       
       {/* Categories */}

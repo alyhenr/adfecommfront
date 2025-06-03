@@ -50,10 +50,20 @@ const NavBar = () => {
       <header className="sticky top-0 left-0 right-0 bg-white border-b border-gray-100 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <Link to="/" className="flex-shrink-0">
-              <img src={Logo} alt="Logo" className="h-20 w-auto" />
-            </Link>
+            {/* Logo - Centered on mobile */}
+            <div className="flex-1 flex items-center justify-between sm:justify-start">
+              <div className="sm:hidden w-8" /> {/* Spacer for mobile */}
+              <Link to="/" className="flex-shrink-0 mx-auto sm:mx-0">
+                <img src={Logo} alt="Logo" className="h-20 w-auto" />
+              </Link>
+              {/* Mobile menu button - Only visible on mobile */}
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="sm:hidden p-2 text-gray-400 hover:text-gray-500"
+              >
+                <HiMenu className="h-6 w-6" />
+              </button>
+            </div>
 
             {/* Navigation - Desktop */}
             <nav className="hidden md:flex items-center space-x-8">
@@ -72,8 +82,8 @@ const NavBar = () => {
               ))}
             </nav>
 
-            {/* Right section */}
-            <div className="flex items-center space-x-6">
+            {/* Right section - Hidden on mobile */}
+            <div className="hidden sm:flex items-center space-x-6">
               {/* Cart */}
               <Link to="/cart" className="relative text-gray-400 hover:text-gray-500">
                 <FaShoppingCart className="h-6 w-6" />
@@ -148,14 +158,6 @@ const NavBar = () => {
                   </Link>
                 )}
               </div>
-
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden p-2 text-gray-400 hover:text-gray-500"
-              >
-                <HiMenu className="h-6 w-6" />
-              </button>
             </div>
           </div>
         </div>

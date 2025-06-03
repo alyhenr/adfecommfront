@@ -6,7 +6,7 @@ export const fetchUserProfile = createAsyncThunk(
     "user/fetchProfile",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.get<UserProfile>(`/users/profile`);
+            const response = await api.get<UserProfile>(`/users/user/profile`);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
@@ -18,7 +18,7 @@ export const updateUserProfile = createAsyncThunk(
     "user/updateProfile",
     async (data: UpdateProfileRequest, { rejectWithValue }) => {
         try {
-            const response = await api.put<UserProfile>(`/users/profile`, data);
+            const response = await api.put<UserProfile>(`/users/user/profile`, data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Failed to update profile");
@@ -30,7 +30,7 @@ export const updateUserAddress = createAsyncThunk(
     "user/updateAddress",
     async (data: UpdateAddressRequest, { rejectWithValue }) => {
         try {
-            const response = await api.put<UserProfile>(`/users/address`, data);
+            const response = await api.put<UserProfile>(`/users/user/address`, data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Failed to update address");
@@ -42,7 +42,7 @@ export const fetchUserPurchases = createAsyncThunk(
     "user/fetchPurchases",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.get<UserPurchase[]>(`/users/purchases`);
+            const response = await api.get<UserPurchase[]>(`/users/user/purchases`);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Failed to fetch purchases");

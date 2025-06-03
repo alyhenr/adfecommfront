@@ -74,12 +74,16 @@ const ProductCard = (product: Product) => {
       )}
       <button 
         onClick={() => setIsWishlisted(!isWishlisted)}
-        className="absolute top-3 right-3 p-2 hover:bg-gray-100 rounded-full transition-colors z-10"
+        className={`absolute top-3 right-3 p-2 rounded-full transition-all z-10 ${
+          isWishlisted 
+            ? 'bg-red-500 text-white' 
+            : 'bg-white border border-gray-200 shadow-sm hover:bg-gray-50'
+        }`}
       >
         {isWishlisted ? (
-          <FaHeart className="text-red-500 w-4 h-4" />
+          <FaHeart className="w-4 h-4" />
         ) : (
-          <FaRegHeart className="text-gray-400 w-4 h-4" />
+          <FaRegHeart className="w-4 h-4 text-gray-600" />
         )}
       </button>
       <div
