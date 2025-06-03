@@ -119,9 +119,9 @@ const Home = () => {
               slidesPerView="auto"
               spaceBetween={24}
               centeredSlides={true}
-              initialSlide={categories.length/2}
-              defaultValue={categories.length/2}
-              // wrapperClass="items-stretch"
+              onInit={(swiper) => {
+                swiper.slideTo(2);
+              }}
             >
               {categories.map((category: Category) => (
                 <SwiperSlide key={category.categoryId} className="!w-[280px] !h-auto">

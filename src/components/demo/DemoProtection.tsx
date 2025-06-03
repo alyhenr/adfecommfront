@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiLock, FiUser, FiGlobe, FiMail } from 'react-icons/fi';
-import Logo from '../../assets/YOUDE.png';
+import ADFLogo from "../../assets/logo.png"
 
 interface DemoProtectionProps {
     onAuthenticate: (isAuthenticated: boolean) => void;
@@ -74,7 +74,7 @@ const DemoProtection = ({ onAuthenticate }: DemoProtectionProps) => {
             >
                 {/* Logo and Title */}
                 <motion.div variants={itemVariants} className="text-center">
-                    <img src={Logo} alt="ADF Logo" className="h-24 mx-auto mb-6" />
+                    <img src={String(ADFLogo)} alt="ADF Logo" className="h-24 mx-auto mb-6" />
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">
                         ADF E-commerce Demo
                     </h2>
