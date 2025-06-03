@@ -21,43 +21,51 @@ import HelpCenter from "./components/help/HelpCenter";
 import PrivacyPolicy from "./components/legal/PrivacyPolicy";
 import Terms from "./components/legal/Terms";
 import CookiePolicy from "./components/legal/CookiePolicy";
+import DemoProtection from "./components/demo/DemoProtection";
+import { useState } from "react";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path='/' element={<Home />}/>
-            <Route path='/products' element={<Products />}/>
-            <Route path='/about' element={<About />}/>
-            <Route path='/contact' element={<Contact />}/>
-            <Route path='/cart' element={<Cart />}/>
-            <Route path='/help' element={<HelpCenter />}/>
-            <Route path='/faq' element={<FAQ />}/>
-            <Route path='/privacy' element={<PrivacyPolicy />}/>
-            <Route path='/terms' element={<Terms />}/>
-            <Route path='/cookies' element={<CookiePolicy />}/>
+      {!isAuthenticated ? (
+        <DemoProtection onAuthenticate={setIsAuthenticated} />
+      ) : (
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path='/' element={<Home />}/>
+              <Route path='/products' element={<Products />}/>
+              <Route path='/about' element={<About />}/>
+              <Route path='/contact' element={<Contact />}/>
+              <Route path='/cart' element={<Cart />}/>
+              <Route path='/help' element={<HelpCenter />}/>
+              <Route path='/faq' element={<FAQ />}/>
+              <Route path='/privacy' element={<PrivacyPolicy />}/>
+              <Route path='/terms' element={<Terms />}/>
+              <Route path='/cookies' element={<CookiePolicy />}/>
 
-            <Route element={<PrivateRouter isPublic={true} />}>
-              <Route path='/login' element={<Login />}/>
-              <Route path='/signup' element={<SignUp />}/>
-            </Route>
+              <Route element={<PrivateRouter isPublic={true} />}>
+                <Route path='/login' element={<Login />}/>
+                <Route path='/signup' element={<SignUp />}/>
+              </Route>
 
-            <Route element={<PrivateRouter isPublic={false} />}>
-              <Route path='/checkout' element={<Checkout />}/>
-              <Route path='/order-confirm' element={<OrderConfirmation />}/>
-              <Route path="/user" element={<UserLayout />}>
-                <Route path="profile" element={<Profile />} />
-                <Route path="purchases" element={<Purchases />} />
-                <Route path="settings" element={<Settings />} />
+              <Route element={<PrivateRouter isPublic={false} />}>
+                <Route path='/checkout' element={<Checkout />}/>
+                <Route path='/order-confirm' element={<OrderConfirmation />}/>
+                <Route path="/user" element={<UserLayout />}>
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="purchases" element={<Purchases />} />
+                  <Route path="settings" element={<Settings />} />
+                </Route>
               </Route>
             </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      )}
       <Toaster position="bottom-center" />
     </GoogleOAuthProvider>
   );

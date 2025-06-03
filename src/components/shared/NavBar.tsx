@@ -56,16 +56,7 @@ const NavBar = () => {
               <Link to="/" className="flex-shrink-0 mx-auto sm:mx-0">
                 <img src={Logo} alt="Logo" className="h-20 w-auto" />
               </Link>
-              {/* Mobile menu button - Only visible on mobile */}
-              <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="sm:hidden p-2 text-gray-400 hover:text-gray-500"
-              >
-                <HiMenu className="h-6 w-6" />
-              </button>
-            </div>
-
-            {/* Navigation - Desktop */}
+              {/* Navigation - Desktop */}
             <nav className="hidden md:flex items-center space-x-8">
               {pages.map((page) => (
                 <Link
@@ -81,6 +72,16 @@ const NavBar = () => {
                 </Link>
               ))}
             </nav>
+              {/* Mobile menu button - Only visible on mobile */}
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="sm:hidden p-2 text-gray-400 hover:text-gray-500"
+              >
+                <HiMenu className="h-6 w-6" />
+              </button>
+            </div>
+
+            
 
             {/* Right section - Hidden on mobile */}
             <div className="hidden sm:flex items-center space-x-6">
@@ -95,7 +96,7 @@ const NavBar = () => {
               </Link>
 
               {/* User Menu - Desktop */}
-              <div className="hidden md:block">
+              <div className="hidden sm:block">
                 {isLoggedIn ? (
                   <div className="relative">
                     <button
