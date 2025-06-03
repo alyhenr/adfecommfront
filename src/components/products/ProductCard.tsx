@@ -150,7 +150,7 @@ const ProductCard = (product: Product) => {
             ) : (
               <FaShoppingCart className="w-4 h-4" />
             )}
-            <span className="text-sm font-medium h-5 h-auto w-full text-center flex items-center justify-center">
+            <span className="md:text-xs text-sm lg:text-sm font-medium h-5 w-full text-center flex items-center justify-center">
               {!isAvailable 
                 ? "Esgotado" 
                 : isInCart 
