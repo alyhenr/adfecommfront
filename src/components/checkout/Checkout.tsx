@@ -158,47 +158,80 @@ const Checkout = () => {
                     </Elements>}
                 </div>
 
-                {/* Navigation */}
-                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-                    <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-                        <div className="flex justify-between items-center">
-                            <button
-                                type="button"
-                                onClick={() => setCurrStep(prev => prev - 1)}
-                                disabled={currStep === 0}
-                                className={`
-                                    inline-flex items-center px-4 py-2 text-sm font-medium rounded-md
-                                    ${currStep === 0 
-                                        ? 'text-gray-400 cursor-not-allowed' 
-                                        : 'text-gray-700 hover:text-gray-900'}
-                                `}
-                            >
-                                <HiChevronLeft className="mr-1 h-5 w-5" />
-                                Anterior
-                            </button>
+                {/* Navigation - Desktop and Mobile */}
+                <div className="fixed bottom-16 sm:bottom-0 left-0 right-0">
+                    {/* Desktop version */}
+                    <div className="hidden sm:block bg-white border-t border-gray-200">
+                        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between items-center">
+                                <button
+                                    type="button"
+                                    onClick={() => setCurrStep(prev => prev - 1)}
+                                    disabled={currStep === 0}
+                                    className={`
+                                        inline-flex items-center px-4 py-2 text-sm font-medium rounded-md
+                                        ${currStep === 0 
+                                            ? 'text-gray-400 cursor-not-allowed' 
+                                            : 'text-gray-700 hover:text-gray-900'}
+                                    `}
+                                >
+                                    <HiChevronLeft className="mr-1 h-5 w-5" />
+                                    Anterior
+                                </button>
 
-                            <button
-                                type="button"
-                                onClick={handleNextStep}
-                                disabled={!canGoToNextStep() || isLoading}
-                                className={`${currStep === 2 ? "hidden" : "inline-flex"}
-                                    items-center px-6 py-3 text-sm font-medium rounded-md
-                                    ${!canGoToNextStep() || isLoading
-                                        ? 'bg-gray-300 cursor-not-allowed'
-                                        : 'bg-gray-900 hover:bg-black text-white'}
-                                `}
-                            >
-                                {currStep === 2 
-                                    ? (canGoToNextStep() 
-                                        ? "Finalizar compra"
-                                        : "Processando pagamento...") 
-                                    : currStep === 1
-                                        ? (isLoading 
-                                            ? "Preparando pagamento..." 
-                                            : "Prosseguir para pagamento") 
-                                        : "Próximo"}
-                                <HiChevronRight className="ml-1 h-5 w-5" />
-                            </button>
+                                <button
+                                    type="button"
+                                    onClick={handleNextStep}
+                                    disabled={!canGoToNextStep() || isLoading}
+                                    className={`${currStep === 2 ? "hidden" : "inline-flex"}
+                                        items-center px-6 py-3 text-sm font-medium rounded-md
+                                        ${!canGoToNextStep() || isLoading
+                                            ? 'bg-gray-300 cursor-not-allowed'
+                                            : 'bg-gray-900 hover:bg-black text-white'}
+                                    `}
+                                >
+                                    {currStep === 2 
+                                        ? (canGoToNextStep() 
+                                            ? "Finalizar compra"
+                                            : "Processando pagamento...") 
+                                        : currStep === 1
+                                            ? (isLoading 
+                                                ? "Preparando pagamento..." 
+                                                : "Prosseguir para pagamento") 
+                                            : "Próximo"}
+                                    <HiChevronRight className="ml-1 h-5 w-5" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Mobile version - Floating buttons */}
+                    <div className="sm:hidden px-4 pb-4">
+                        <div className="flex gap-3 justify-end">
+                            {currStep !== 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setCurrStep(prev => prev - 1)}
+                                    className="flex items-center justify-center p-3 bg-white text-gray-700 rounded-full shadow-lg border border-gray-200"
+                                >
+                                    <HiChevronLeft className="h-6 w-6" />
+                                </button>
+                            )}
+                            {currStep !== 2 && (
+                                <button
+                                    type="button"
+                                    onClick={handleNextStep}
+                                    disabled={!canGoToNextStep() || isLoading}
+                                    className={`
+                                        flex items-center justify-center p-3 rounded-full shadow-lg
+                                        ${!canGoToNextStep() || isLoading
+                                            ? 'bg-gray-300 cursor-not-allowed'
+                                            : 'bg-gray-900 hover:bg-black text-white'}
+                                    `}
+                                >
+                                    <HiChevronRight className="h-6 w-6" />
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
