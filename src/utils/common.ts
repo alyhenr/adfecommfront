@@ -1,3 +1,5 @@
+export const TAX_PERCENTAGE = 2;
+
 export const truncateText = (text: string, maxSize: number = 150) : string => {    
     return text.length > maxSize ? text.slice(0, maxSize - 3) + "..." : text
 }
@@ -22,4 +24,8 @@ export const validateLocalStoredItems = (item: string) : boolean =>  {
         default:
             return false;
     }
+}
+
+export const calculateTax = (totalPrice: number) : number => {
+    return totalPrice * (TAX_PERCENTAGE / 100);
 }

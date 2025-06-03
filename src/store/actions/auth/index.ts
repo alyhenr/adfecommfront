@@ -11,7 +11,7 @@ export const authenticateUser = (credentials: LoginRequest) => async (dispatch: 
     try {
         const authService = getAuthService();
         const response = await authService.login(credentials);
-        
+
         dispatch(setUser({ 
             user: response.user,
             expiresIn: response.expiresIn
@@ -19,6 +19,8 @@ export const authenticateUser = (credentials: LoginRequest) => async (dispatch: 
         
         return { success: true, message: `Bem vindo novamente ${response.user.username}` };
     } catch (error) {
+        console.log(error);
+        
         if (error instanceof AxiosError) {
             return { success: false, message: error?.response?.data?.message };
         }

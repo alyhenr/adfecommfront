@@ -7,7 +7,7 @@ import auth from "./auth/auth";
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_BACK_END_URL}/api`,
-  withCredentials: true, // Keep this for CSRF tokens if needed
+  // withCredentials: true, // Keep this for CSRF tokens if needed
   headers: {
     'Content-Type': 'application/json',
   },
@@ -92,8 +92,7 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const authService = getAuthService();
     // Handle 401 errors
-    if (error.response?.status === 401) {
-
+    if (error.response?.status === 401) {      
       if (authService.getAuthMethod() === 'jwt') {
         authService.clearAuthData();
           store.dispatch(setUser({

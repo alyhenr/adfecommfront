@@ -9,6 +9,7 @@ export type OrderRequest = {
     pgPaymentId: string;
     pgStatus: OrderStatus;
     pgResponseMessage: string;
+    tax: number;
 };
 
 export type StripePaymentResponse = {

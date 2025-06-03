@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit"
+
 import productReducer from "../reducers/products/productReducer.ts"
 import filteredProductReducer from "../reducers/products/filteredProductReducer.ts";  
 import errorReducer from "../reducers/errors/errorReducer.ts";
@@ -6,16 +7,20 @@ import categoryReducer from "../reducers/categories/categoryReducer.ts";
 import cartReducer from "../reducers/cart/cartReducer.ts";
 import authReducer from "../reducers/auth/authReducer.ts";
 import addressReducer from "../reducers/address/addressReducer.ts";
+import userReducer from "../reducers/user/userReducer.ts";
+import orderReducer from "../reducers/order/orderReducer.ts";
+
 import type { ErrorState } from "../types/errors/index.ts";
 import type { ProductState } from "../types/products/index.ts";
 import type { FilteredProductState } from "../types/products/index.ts";
 import type { CategoryState } from "../types/categories/index.ts";
 import type { CartState } from "../types/cart/index.ts";
 import type { AuthState } from "../types/auth/index.ts";
-import { validateLocalStoredItems } from "../../utils/common.ts";
-import type { OrderState } from "../types/order/index.ts";
-import orderReducer from "../reducers/order/orderReducer.ts";
+import type { UserState } from "../types/user/index.ts";
 import type { AddressState } from "../types/address/index.ts";
+import type { OrderState } from "../types/order/index.ts";
+
+import { validateLocalStoredItems } from "../../utils/common.ts";
 import { getStoredAuthData, isTokenValid, clearAuthData } from "../../utils/auth.ts";
 
 const pagination = {
@@ -35,6 +40,7 @@ export const initialState : {
     authState: AuthState,
     addressState: AddressState,
     orderState: OrderState,
+    userState: UserState,
 } = {
     errorsState: {
         isLoading: false,
@@ -70,6 +76,16 @@ export const initialState : {
     },
     orderState: {
         orders: [],
+    },
+    userState: {
+        profile: {
+            userId: 0,
+            username: "",
+            email: "",
+            createdAt: "",
+            updatedAt: "",
+        },
+        purchases: []
     },
 }
 
@@ -112,6 +128,7 @@ export const store = configureStore({
         authState: authReducer,
         addressState: addressReducer,
         orderState: orderReducer,
+        userState: userReducer,
     },
     preloadedState: initialState,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

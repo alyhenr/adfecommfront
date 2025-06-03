@@ -3,6 +3,7 @@ import type { User } from "../../../types";
 export type AuthState = {
     user: User;
     expiresIn: number;
+    accessToken?: string;
 };
 
 export type LoginRequest = {

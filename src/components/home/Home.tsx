@@ -120,6 +120,7 @@ const Home = () => {
               spaceBetween={24}
               centeredSlides={true}
               initialSlide={categories.length/2}
+              defaultValue={categories.length/2}
               // wrapperClass="items-stretch"
             >
               {categories.map((category: Category) => (

@@ -16,6 +16,7 @@ const PaymentForm = ({ clientSecret, totalPrice } : { clientSecret: string, tota
     const [isReady, setIsReady] = useState(false)
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         if (!stripe || !clientSecret || clientSecret == "") {
             return;
         }

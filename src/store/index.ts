@@ -12,6 +12,7 @@ import orderReducer from "./reducers/order/orderReducer";
 
 // Import types
 import type { RootState } from "./types/root";
+import userReducer from "./reducers/user/userReducer";
 
 // Define initial state
 const pagination = {
@@ -51,12 +52,24 @@ export const initialState: RootState = {
             roles: []
         },
         expiresIn: 0,
+        accessToken: ""
     },
     addressState: {
         addresses: []
     },
     orderState: {
         orders: []
+    },
+    userState: {
+        profile: {
+            userId: -1,
+            username: "",
+            email: "",
+            createdAt: "",
+            updatedAt: "",
+            address: undefined
+        },
+        purchases: []
     }
 };
 
@@ -71,6 +84,7 @@ export const store = configureStore({
         authState: authReducer,
         addressState: addressReducer,
         orderState: orderReducer,
+        userState: userReducer
     },
     preloadedState: initialState,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

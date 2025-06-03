@@ -6,7 +6,7 @@ export type AuthMethod = 'jwt' | 'oauth2';
 
 let authService: AuthService;
 
-export const initializeAuth = (method: AuthMethod = 'jwt', tokenTransportationMethod: TokenTransportationMethod = 'cookie'): AuthService => {
+export const initializeAuth = (method: AuthMethod = 'jwt', tokenTransportationMethod: TokenTransportationMethod = 'header'): AuthService => {
     switch (method) {
         case 'jwt':
             authService = new JWTCookieAuthService();

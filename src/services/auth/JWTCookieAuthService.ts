@@ -1,6 +1,6 @@
 import type { AuthService, AuthResponse, LoginCredentials, GoogleAuthCredentials, AuthStorageData, TokenTransportationMethod } from './types';
-import api from '../../api/api';
 import type { AuthMethod } from '.';
+import auth from '../../api/auth/auth';
 
 export class JWTCookieAuthService implements AuthService {
     private readonly storageKey = 'loggedInUser';
@@ -8,22 +8,20 @@ export class JWTCookieAuthService implements AuthService {
     private tokenTransportationMethod: TokenTransportationMethod = 'cookie';
 
     async login(credentials: LoginCredentials): Promise<AuthResponse> {
-        console.log(credentials);
-        
-        const { data } = await api.post<AuthResponse>('/auth/sign-in', credentials);
-        this.storeAuthData(data);
-        return data;
+        const response = await auth.login(credentials);
+        this.storeAuthData(response);
+        return response;
     }
 
     async loginWithGoogle(credentials: GoogleAuthCredentials): Promise<AuthResponse> {
-        const { data } = await api.post<AuthResponse>('/auth/google', credentials);
+        const { data } = await auth.loginWithGoogle(credentials);
         this.storeAuthData(data);
         return data;
     }
 
     async logout(): Promise<void> {
         try {
-            await api.post('/auth/sign-out');
+            await auth.logout();
         } catch (error) {
             console.error('Error during logout:', error);
         } finally {
@@ -63,6 +61,7 @@ export class JWTCookieAuthService implements AuthService {
         const authData: AuthStorageData = {
             user: response.user,
             expiresAt: Date.now() + (response.expiresIn * 1000),
+            accessToken: response.accessToken,
         };
         
         localStorage.setItem(this.storageKey, JSON.stringify(authData));

@@ -18,6 +18,7 @@ const OrderConfirmation = () => {
     } = useSelector((state: RootState) => state)
 
     const [order, setOrder] = useState<Order | null>(null)
+    console.log(order);
     
     const paymentIntent = searchParams.get("payment_intent")
     const clientSecret = searchParams.get("payment_intent_client_secret")

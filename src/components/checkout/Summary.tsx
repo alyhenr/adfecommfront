@@ -1,6 +1,6 @@
 import type { Address, Product } from "../../types"
 import AddressInfoCard from "./AddressInfoCard"
-import { truncateText } from "../../utils/common"
+import { calculateTax, TAX_PERCENTAGE, truncateText } from "../../utils/common"
 import { getSpecialPriceStr } from "../../utils/productsUtils"
 import { PaymentMethodEnum } from "./Checkout"
 
@@ -9,8 +9,7 @@ const Summary = ({
 } : {
     selectedAddress: Address, selectedMethod: string, products: Product[], totalPrice: number
 }) => {
-    const taxesPct = 2
-    const taxesValue = totalPrice * (taxesPct/100)
+    const taxesValue = calculateTax(totalPrice)
     const total = totalPrice + taxesValue
 
     return (
@@ -88,7 +87,7 @@ const Summary = ({
 
                             <div className="flex items-center justify-between">
                                 <dt className="text-sm text-gray-600">
-                                    Frete ({taxesPct}%)
+                                    Frete ({TAX_PERCENTAGE}%)
                                 </dt>
                                 <dd className="text-sm font-medium text-gray-900">
                                     R$ {taxesValue.toFixed(2)}

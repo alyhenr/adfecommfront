@@ -21,6 +21,7 @@ type SignUpForm = {
     username: string,
     password: string,
     passwordConfirmation: string,
+    terms: boolean,
 }
 
 const SignUp = () => {
@@ -38,6 +39,12 @@ const SignUp = () => {
 
     const registerHandler: SubmitHandler<SignUpForm> = async (data: SignUpForm) => {
         setLoading(true)
+
+        if (!data.terms) {
+            toast.error("Você precisa aceitar os termos e condições para continuar")
+            setLoading(false)
+            return
+        }
 
         if (data.password != data.passwordConfirmation) {
             toast.error("As senhas devem ser iguais, favor verificar")
@@ -176,22 +183,32 @@ const SignUp = () => {
                                 value={""}
                             />
 
-                            <div className="flex items-center">
-                                <input 
-                                    type="checkbox" 
-                                    id="terms" 
-                                    className="rounded border-gray-300 text-red-600 focus:ring-red-500"
-                                />
-                                <label htmlFor="terms" className="ml-2 block text-sm text-gray-600">
-                                    Eu concordo com os{" "}
-                                    <a href="#" className="text-red-600 hover:text-red-800">
-                                        Termos de Serviço
-                                    </a>
-                                    {" "}e{" "}
-                                    <a href="#" className="text-red-600 hover:text-red-800">
-                                        Política de Privacidade
-                                    </a>
-                                </label>
+                            <div className="flex items-start">
+                                <div className="flex items-center h-5">
+                                    <input
+                                        type="checkbox"
+                                        id="terms"
+                                        {...register("terms", { required: true })}
+                                        className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                                    />
+                                </div>
+                                <div className="ml-2">
+                                    <label htmlFor="terms" className="text-sm text-gray-600">
+                                        Eu concordo com os{" "}
+                                        <Link to="/terms" className="text-red-600 hover:text-red-800" target="_blank">
+                                            Termos de Serviço
+                                        </Link>
+                                        {" "}e{" "}
+                                        <Link to="/privacy" className="text-red-600 hover:text-red-800" target="_blank">
+                                            Política de Privacidade
+                                        </Link>
+                                    </label>
+                                    {errors.terms && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            Você precisa aceitar os termos para continuar
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 

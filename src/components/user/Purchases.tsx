@@ -1,83 +1,91 @@
-import { useState } from "react";
-
-interface Purchase {
-  id: string;
-  date: string;
-  total: number;
-  status: string;
-  items: { name: string; quantity: number; price: number }[];
-}
-
-const mockPurchases: Purchase[] = [
-  {
-    id: "ORD-001",
-    date: "2024-05-01",
-    total: 199.99,
-    status: "Entregue",
-    items: [
-      { name: "Produto A", quantity: 1, price: 99.99 },
-      { name: "Produto B", quantity: 2, price: 50.00 },
-    ],
-  },
-  {
-    id: "ORD-002",
-    date: "2024-04-15",
-    total: 89.90,
-    status: "Em trânsito",
-    items: [
-      { name: "Produto C", quantity: 1, price: 89.90 },
-    ],
-  },
-];
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../store/reducers/store';
+import { fetchUserPurchases } from '../../store/actions/user';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 const Purchases = () => {
-  const [expanded, setExpanded] = useState<string | null>(null);
+    const dispatch = useDispatch<AppDispatch>();
+    const { purchases } = useSelector((state: RootState) => state.userState);
 
-  return (
-    <div>
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Minhas Compras</h1>
-      <div className="space-y-6">
-        {mockPurchases.map((purchase) => (
-          <div
-            key={purchase.id}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-medium text-gray-900">Pedido {purchase.id}</div>
-                <div className="text-gray-500 text-sm">{purchase.date}</div>
-                <div className="text-sm mt-1">
-                  <span className="font-medium text-gray-700">Status:</span> {purchase.status}
+    useEffect(() => {
+        dispatch(fetchUserPurchases());
+    }, [dispatch]);
+
+
+
+    return (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+            <h1 className="text-2xl font-bold mb-8">Minhas Compras</h1>
+
+            {purchases.length === 0 ? (
+                <div className="text-center py-12">
+                    <p className="text-gray-500">Você ainda não realizou nenhuma compra.</p>
                 </div>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-semibold text-gray-900">R$ {purchase.total.toFixed(2)}</div>
-                <button
-                  className="text-red-500 hover:underline text-sm mt-2"
-                  onClick={() => setExpanded(expanded === purchase.id ? null : purchase.id)}
-                >
-                  {expanded === purchase.id ? "Ocultar detalhes" : "Ver detalhes"}
-                </button>
-              </div>
-            </div>
-            {expanded === purchase.id && (
-              <div className="mt-6 border-t border-gray-100 pt-4">
-                <div className="font-medium text-gray-700 mb-2">Itens do pedido:</div>
-                <ul className="space-y-2">
-                  {purchase.items.map((item, idx) => (
-                    <li key={idx} className="flex justify-between text-sm text-gray-700">
-                      <span>{item.name} <span className="text-gray-400">x{item.quantity}</span></span>
-                      <span>R$ {(item.price * item.quantity).toFixed(2)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            ) : (
+                <div className="space-y-6">
+                    {purchases.map((purchase) => (
+                        <div key={purchase.orderId} className="bg-white p-6 rounded-lg shadow-sm">
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 className="text-lg font-semibold">
+                                        Pedido #{purchase.orderId}
+                                    </h2>
+                                    <p className="text-sm text-gray-500">
+                                        {format(new Date(purchase.orderDate), "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-semibold">
+                                        R$ {purchase.totalAmount.toFixed(2)}
+                                    </p>
+                                    <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                                        purchase.status === 'COMPLETED' 
+                                            ? 'bg-green-100 text-green-800'
+                                            : purchase.status === 'PENDING'
+                                            ? 'bg-yellow-100 text-yellow-800'
+                                            : 'bg-red-100 text-red-800'
+                                    }`}>
+                                        {purchase.status === 'COMPLETED' ? 'Concluído' :
+                                         purchase.status === 'PENDING' ? 'Pendente' : 'Cancelado'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-gray-100 pt-4 mt-4">
+                                <h3 className="text-sm font-medium text-gray-900 mb-3">
+                                    Itens do Pedido
+                                </h3>
+                                <div className="space-y-4">
+                                    {purchase.items.map((item) => (
+                                        <div key={item.productId} className="flex items-center">
+                                            <img
+                                                src={item.imageUrl}
+                                                alt={item.productName}
+                                                className="w-16 h-16 object-cover rounded"
+                                            />
+                                            <div className="ml-4 flex-grow">
+                                                <h4 className="text-sm font-medium">
+                                                    {item.productName}
+                                                </h4>
+                                                <p className="text-sm text-gray-500">
+                                                    Quantidade: {item.quantity}
+                                                </p>
+                                            </div>
+                                            <p className="text-sm font-medium">
+                                                R$ {(item.price * item.quantity).toFixed(2)}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default Purchases; 

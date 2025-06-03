@@ -13,6 +13,7 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
 import { Stepper, Step, StepLabel } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import { useNavigate } from "react-router-dom"
+import { calculateTax } from "../../utils/common"
 
 export enum PaymentMethodEnum {
     CREDIT_CARD = "CREDIT_CARD", PIX = "PIX"
@@ -45,8 +46,8 @@ const Checkout = () => {
     const steps = ["Endereço", "Resumo", "Pagamento"]
     const navigate = useNavigate()
     const [currStep, setCurrStep] = useState(0)
-    const { cartState: { products, totalPrice },
-    errorsState: { isLoading } } = useSelector((state: RootState) => state)
+    const { cartState, errorsState: { isLoading } } = useSelector((state: RootState) => state)
+    const { products, totalPrice } = cartState
 
     const [selectedAddress, setSelectedAddress] = useState<Address>({
         addressId: 0,
@@ -68,12 +69,13 @@ const Checkout = () => {
             case 1:
                 return true
             case 2:
-                return clientPublishableKey && clientSecret != ""
+                return clientPublishableKey && clientSecret != "" && pgPaymentId != ""
             default:
                 return false
         }
     }
-
+    console.log(cartState);
+    
     useEffect(() => {
         if (pgPaymentId == "") return
         new Promise(async () => {
@@ -81,6 +83,7 @@ const Checkout = () => {
                 paymentMethod: "stripe",
                 orderRequest: {
                     addressId: selectedAddress.addressId,
+                    tax: calculateTax(totalPrice),
                     pgPaymentId: pgPaymentId,
                     pgResponseMessage: "",
                     pgStatus: OrderStatus.WAITING_PAYMENT
@@ -92,7 +95,7 @@ const Checkout = () => {
     const dispatch = useDispatch<AppDispatch>()
     const isLoggedIn = useSelector((state: RootState) => state.authState.user.userId > 0)
     const handlePaymentConfiguration = async () => {
-        const { success, clientSecret, paymentId} = await dispatch(createStripePaymentSecret(Number(totalPrice.toFixed(2)) * 100))
+        const { success, clientSecret, paymentId} = await dispatch(createStripePaymentSecret(Number((totalPrice + calculateTax(totalPrice)).toFixed(2)) * 100))
         if (!success) {
             if (isLoggedIn) {
                 toast.error("Falha ao comunicar com o provedor de pagamento")
@@ -178,8 +181,8 @@ const Checkout = () => {
                                 type="button"
                                 onClick={handleNextStep}
                                 disabled={!canGoToNextStep() || isLoading}
-                                className={`
-                                    inline-flex items-center px-6 py-3 text-sm font-medium rounded-md
+                                className={`${currStep === 2 ? "hidden" : "inline-flex"}
+                                    items-center px-6 py-3 text-sm font-medium rounded-md
                                     ${!canGoToNextStep() || isLoading
                                         ? 'bg-gray-300 cursor-not-allowed'
                                         : 'bg-gray-900 hover:bg-black text-white'}

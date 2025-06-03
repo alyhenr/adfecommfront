@@ -1,98 +1,250 @@
-import { useState } from "react";
-
-interface UserProfile {
-  name: string;
-  email: string;
-}
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../store/reducers/store';
+import { fetchUserProfile, updateUserProfile, updateUserAddress } from '../../store/actions/user';
+import { useForm } from 'react-hook-form';
+import type { UpdateProfileRequest, UpdateAddressRequest } from '../../store/types/user';
+import toast from 'react-hot-toast';
+import InputField from '../shared/InputField';
+import SubmitBtn from '../shared/SubmitBtn';
 
 const Profile = () => {
-  // Placeholder state, replace with backend fetch
-  const [profile, setProfile] = useState<UserProfile>({
-    name: "Alysson Almeida",
-    email: "alysson@email.com",
-  });
-  const [editing, setEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+    const dispatch = useDispatch<AppDispatch>();
+    const { profile } = useSelector((state: RootState) => state.userState);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isEditingAddress, setIsEditingAddress] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
-  };
+    const {
+        register: registerProfile,
+        handleSubmit: handleProfileSubmit,
+        formState: { errors: profileErrors }
+    } = useForm<UpdateProfileRequest>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccess("");
-    // TODO: Implement backend update
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess("Perfil atualizado com sucesso!");
-      setEditing(false);
-    }, 1000);
-  };
+    const {
+        register: registerAddress,
+        handleSubmit: handleAddressSubmit,
+        formState: { errors: addressErrors }
+    } = useForm<UpdateAddressRequest>();
 
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Perfil</h1>
-      <form className="space-y-6" onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-          <input
-            type="text"
-            name="name"
-            value={profile.name}
-            onChange={handleChange}
-            disabled={!editing}
-            className="w-full px-4 py-2 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition"
-          />
+    useEffect(() => {
+        dispatch(fetchUserProfile());
+    }, [dispatch]);
+
+    const onProfileSubmit = async (data: UpdateProfileRequest) => {
+        const result = await dispatch(updateUserProfile(data));
+        if (updateUserProfile.fulfilled.match(result)) {
+            toast.success('Perfil atualizado com sucesso!');
+            setIsEditingProfile(false);
+        } else {
+            toast.error('Erro ao atualizar perfil');
+        }
+    };
+
+    const onAddressSubmit = async (data: UpdateAddressRequest) => {
+        const result = await dispatch(updateUserAddress(data));
+        if (updateUserAddress.fulfilled.match(result)) {
+            toast.success('Endereço atualizado com sucesso!');
+            setIsEditingAddress(false);
+        } else {
+            toast.error('Erro ao atualizar endereço');
+        }
+    };
+
+    return (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+            <h1 className="text-2xl font-bold mb-8">Meu Perfil</h1>
+
+            {/* Profile Information */}
+            <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Informações Pessoais</h2>
+                    <button
+                        onClick={() => setIsEditingProfile(!isEditingProfile)}
+                        className="text-red-600 hover:text-red-800"
+                    >
+                        {isEditingProfile ? 'Cancelar' : 'Editar'}
+                    </button>
+                </div>
+
+                {isEditingProfile ? (
+                    <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-4">
+                        <InputField
+                            label="Nome"
+                            id="username"
+                            register={registerProfile}
+                            errors={profileErrors}
+                            required
+                            value={profile?.username ?? ""}
+                            message="Nome é obrigatório"
+                            placeholder="Digite o nome"
+                            type="text"
+                        />
+                        <InputField
+                            label="Email"
+                            id="email"
+                            register={registerProfile}
+                            errors={profileErrors}
+                            required
+                            value={profile?.email ?? ""}
+                            message="Email é obrigatório"
+                            placeholder="Digite o email"
+                            type="email"
+                        />
+                        <InputField
+                            label="Senha Atual"
+                            id="currentPassword"
+                            register={registerProfile}
+                            errors={profileErrors}
+                            type="password"
+                            placeholder="Digite para alterar a senha"
+                            value={""}
+                            required={false}
+                            message=""
+                        />
+                        <InputField
+                            label="Nova Senha"
+                            id="newPassword"
+                            register={registerProfile}
+                            errors={profileErrors}
+                            type="password"
+                            placeholder="Digite a nova senha"
+                            required={false}
+                            message=""
+                            value={""}
+                        />
+                        <SubmitBtn text="Salvar Alterações" />
+                    </form>
+                ) : (
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Nome</label>
+                            <p className="mt-1">{profile?.username}</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Email</label>
+                            <p className="mt-1">{profile?.email}</p>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Address Information */}
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Endereço</h2>
+                    <button
+                        onClick={() => setIsEditingAddress(!isEditingAddress)}
+                        className="text-red-600 hover:text-red-800"
+                    >
+                        {isEditingAddress ? 'Cancelar' : 'Editar'}
+                    </button>
+                </div>
+
+                {isEditingAddress ? (
+                    <form onSubmit={handleAddressSubmit(onAddressSubmit)} className="space-y-4">
+                        <InputField
+                            label="CEP"
+                            id="zipCode"
+                            register={registerAddress}
+                            errors={addressErrors}
+                            required
+                            value={profile?.address?.zipCode ?? ""}
+                            message="CEP é obrigatório"
+                            placeholder="Digite o CEP"
+                            type="text"
+                        />
+                        <InputField
+                            label="Rua"
+                            id="street"
+                            register={registerAddress}
+                            errors={addressErrors}
+                            required
+                            value={profile?.address?.street ?? ""}  
+                            message="Rua é obrigatória"
+                            placeholder="Digite a rua"
+                            type="text"
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <InputField
+                                label="Número"
+                                id="number"
+                                register={registerAddress}
+                                errors={addressErrors}
+                                required
+                                value={profile?.address?.number ?? ""}  
+                                message="Número é obrigatório"
+                                placeholder="Digite o número"
+                                type="text"
+                            />
+                            <InputField
+                                label="Complemento"
+                                id="complement"
+                                register={registerAddress}
+                                errors={addressErrors}
+                                value={profile?.address?.complement ?? ""}
+                                message="Complemento é obrigatório"
+                                placeholder="Digite o complemento"
+                                type="text"
+                                required={false}
+                            />
+                        </div>
+                        <InputField
+                            label="Bairro"
+                            id="neighborhood"
+                            register={registerAddress}
+                            errors={addressErrors}
+                            required
+                            value={profile?.address?.neighborhood ?? ""}  
+                            message="Bairro é obrigatório"
+                            placeholder="Digite o bairro"
+                            type="text"
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <InputField
+                                label="Cidade"
+                                id="city"
+                                register={registerAddress}
+                                errors={addressErrors}
+                                required
+                                value={profile?.address?.city ?? ""}  
+                                message="Cidade é obrigatória"
+                                placeholder="Digite a cidade"
+                                type="text"
+                            />
+                            <InputField
+                                label="Estado"
+                                id="state"
+                                register={registerAddress}
+                                errors={addressErrors}
+                                required
+                                value={profile?.address?.state ?? ""}  
+                                message="Estado é obrigatório"
+                                placeholder="Digite o estado"
+                                type="text"
+                            />
+                        </div>
+                        <SubmitBtn text="Salvar Endereço" />
+                    </form>
+                ) : (
+                    <div className="space-y-4">
+                        {profile?.address ? (
+                            <>
+                                <p>{profile.address.street}, {profile.address.number}</p>
+                                {profile.address.complement && (
+                                    <p>{profile.address.complement}</p>
+                                )}
+                                <p>{profile.address.neighborhood}</p>
+                                <p>{profile.address.city} - {profile.address.state}</p>
+                                <p>{profile.address.zipCode}</p>
+                            </>
+                        ) : (
+                            <p className="text-gray-500">Nenhum endereço cadastrado</p>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={profile.email}
-            onChange={handleChange}
-            disabled={!editing}
-            className="w-full px-4 py-2 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition"
-          />
-        </div>
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-        {success && <div className="text-green-600 text-sm">{success}</div>}
-        <div className="flex gap-3 pt-2">
-          {editing ? (
-            <>
-              <button
-                type="submit"
-                className="bg-red-500 text-white px-5 py-2 rounded-md font-medium hover:bg-red-600 transition disabled:opacity-50"
-                disabled={loading}
-              >
-                {loading ? "Salvando..." : "Salvar"}
-              </button>
-              <button
-                type="button"
-                className="bg-gray-100 text-gray-700 px-5 py-2 rounded-md font-medium hover:bg-gray-200 transition"
-                onClick={() => setEditing(false)}
-                disabled={loading}
-              >
-                Cancelar
-              </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              className="bg-gray-900 text-white px-5 py-2 rounded-md font-medium hover:bg-black transition"
-              onClick={() => setEditing(true)}
-            >
-              Editar Perfil
-            </button>
-          )}
-        </div>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default Profile; 

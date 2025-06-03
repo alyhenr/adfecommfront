@@ -7,7 +7,7 @@ type InputFieldProps = {
     register: UseFormRegister<any>,
     errors: any,
     message: string,
-    min: number,
+    min?: number,
     placeholder: string,
     type: string,
     value: string,
@@ -41,7 +41,7 @@ const InputField = ({
                         message: message
                     },
                     minLength: {
-                        value: min,
+                        value: min ?? 0,
                         message: `${label} deve ter no mínimo ${min} caracteres`
                     }
                 })}

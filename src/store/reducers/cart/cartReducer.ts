@@ -19,20 +19,20 @@ const cartSlice = createSlice({
         ) => {         
             state.cartId = action.payload.cartId;
             state.products = action.payload.products;
-            state.totalPrice = action.payload.totalPrice;
+            state.totalPrice = action.payload.products.reduce((sum: number, p: Product) => sum + (p.price - (p.price * p.discount)) * p.quantity, 0);
         },
         addToCart: (state, action: PayloadAction<Product>) => {
             state.products = [...state.products, action.payload];
-            state.totalPrice += action.payload.price;
+            state.totalPrice += (action.payload.price - (action.payload.price * action.payload.discount));
         },
         removeFromCart: (state, action: PayloadAction<Product>) => {
             state.products = state.products.filter((p: Product) => p.productId !== action.payload.productId);
-            state.totalPrice -= action.payload.price;
+            state.totalPrice -= (action.payload.price - (action.payload.price * action.payload.discount));
         },  
         getOrCreateUserCart: (state, action: PayloadAction<CartResponse>) => {
             state.cartId = action.payload.cartId;
             state.products = action.payload.cartItems.map((ci: CartItem) => ci.product);
-            state.totalPrice = action.payload.totalPrice;
+            state.totalPrice = action.payload.cartItems.reduce((sum: number, ci: CartItem) => sum + (ci.price - (ci.price * ci.discount)) * ci.quantity, 0);
         },
     },
 });

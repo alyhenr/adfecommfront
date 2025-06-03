@@ -226,17 +226,13 @@ const createCart = createAsyncThunk(
             quantity: product.quantity,
         }));
 
-        const totalPrice = cartItems.reduce(
-            (sum, p) => sum + p.price * p.quantity,
-            0
-        );  
-
         try {
             dispatch(setError({ errorMessage: "", isLoading: true }));
             
             const { data }: AxiosResponse<Cart> = await api.post(`/users/carts`, {
-                cartItems, totalPrice
+                cartItems
             });
+            console.log(data);
             
             if (data instanceof AxiosError) throw data;
 
