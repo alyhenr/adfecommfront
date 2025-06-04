@@ -23,6 +23,8 @@ import Terms from "./components/legal/Terms";
 import CookiePolicy from "./components/legal/CookiePolicy";
 import DemoProtection from "./components/demo/DemoProtection";
 import { useState } from "react";
+// Import i18n configuration
+import './i18n/config';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 

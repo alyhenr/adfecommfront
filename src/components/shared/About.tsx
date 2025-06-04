@@ -1,4 +1,5 @@
 import { FaShop, FaHandshake, FaUserShield } from "react-icons/fa6";
+import { useTranslation } from 'react-i18next';
 
 const FeatureCard = ({ icon: Icon, title, description }: { 
   icon: React.ElementType, 
@@ -15,6 +16,26 @@ const FeatureCard = ({ icon: Icon, title, description }: {
 );
 
 const About = () => {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: FaShop,
+      title: t('about.features.selected.title'),
+      description: t('about.features.selected.description'),
+    },
+    {
+      icon: FaHandshake,
+      title: t('about.features.commitment.title'),
+      description: t('about.features.commitment.description'),
+    },
+    {
+      icon: FaUserShield,
+      title: t('about.features.trust.title'),
+      description: t('about.features.trust.description'),
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -23,10 +44,10 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl">
             <h1 className="text-4xl font-bold mb-6">
-              Tradição e Qualidade em Cada Produto
+              {t('about.hero.title')}
             </h1>
             <p className="text-lg text-red-50">
-              Nossa missão é trazer os melhores produtos com a melhor qualidade, mantendo a tradição e excelência em cada detalhe.
+              {t('about.hero.description')}
             </p>
           </div>
         </div>
@@ -35,21 +56,14 @@ const About = () => {
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16">
         <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard
-            icon={FaShop}
-            title="Produtos Selecionados"
-            description="Cuidadosamente escolhidos para garantir a mais alta qualidade e autenticidade."
-          />
-          <FeatureCard
-            icon={FaHandshake}
-            title="Compromisso"
-            description="Comprometidos com a satisfação dos nossos clientes e parceiros."
-          />
-          <FeatureCard
-            icon={FaUserShield}
-            title="Confiança"
-            description="Construindo relacionamentos duradouros baseados em confiança e respeito."
-          />
+          {features.map((feature, index) => (
+            <FeatureCard
+              key={index}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+            />
+          ))}
         </div>
       </div>
 
@@ -58,24 +72,23 @@ const About = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-gray-900">
-              Nossa História
+              {t('about.history.title')}
             </h2>
             <p className="text-lg text-gray-600">
-              Desde o início, nossa missão tem sido proporcionar uma experiência de compra excepcional, 
-              combinando a tradição do comércio com a modernidade da tecnologia. Cada produto em nosso 
-              catálogo é cuidadosamente selecionado para garantir que nossos clientes recebam apenas 
-              o melhor.
+              {t('about.description')}
             </p>
             <p className="text-lg text-gray-600">
-              Nosso compromisso com a qualidade e excelência nos tornou uma referência no mercado, 
-              construindo uma base sólida de clientes satisfeitos e parceiros confiáveis.
+              {t('about.historyText')}
+            </p>
+            <p className="text-lg text-gray-600">
+              {t('about.today')}
             </p>
           </div>
           <div className="relative">
             <div className="absolute -inset-4 bg-red-50 rounded-sm transform rotate-3"></div>
             <img 
-              src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
-              alt="Nossa História" 
+              src="https://images.unsplash.com/photo-1441986300917-64674bd600d8"
+              alt={t('about.history.imageAlt')} 
               className="relative rounded-sm w-full h-[400px] object-cover"
             />
           </div>
@@ -88,19 +101,19 @@ const About = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">2K+</div>
-              <div className="text-red-100">Clientes Satisfeitos</div>
+              <div className="text-red-100">{t('about.stats.customers')}</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-red-100">Produtos</div>
+              <div className="text-red-100">{t('about.stats.products')}</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">98%</div>
-              <div className="text-red-100">Taxa de Satisfação</div>
+              <div className="text-red-100">{t('about.stats.satisfaction')}</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-red-100">Suporte</div>
+              <div className="text-red-100">{t('about.stats.support')}</div>
             </div>
           </div>
         </div>

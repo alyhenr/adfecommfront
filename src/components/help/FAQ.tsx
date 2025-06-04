@@ -1,40 +1,31 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { FiChevronDown } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 const FAQ = () => {
+    const { t } = useTranslation();
+
     const faqs = [
         {
-            question: 'Como faço para rastrear meu pedido?',
-            answer: 'Você pode rastrear seu pedido fazendo login em sua conta e acessando a seção "Meus Pedidos". Lá você encontrará o número de rastreamento e o status atual de cada pedido.'
+            question: t('help.faq.questions.shipping.question'),
+            answer: t('help.faq.questions.shipping.answer'),
         },
         {
-            question: 'Qual é o prazo de entrega?',
-            answer: 'O prazo de entrega varia de acordo com sua localização e o método de envio escolhido. Geralmente, as entregas são realizadas em 3-7 dias úteis para capitais e 5-12 dias úteis para outras localidades.'
+            question: t('help.faq.questions.payment.question'),
+            answer: t('help.faq.questions.payment.answer'),
         },
         {
-            question: 'Como posso fazer uma devolução?',
-            answer: 'Para fazer uma devolução, acesse sua conta, vá até o pedido desejado e clique em "Solicitar Devolução". Você terá 7 dias após o recebimento para iniciar este processo. O produto deve estar em sua embalagem original e sem sinais de uso.'
+            question: t('help.faq.questions.returns.question'),
+            answer: t('help.faq.questions.returns.answer'),
         },
         {
-            question: 'Quais formas de pagamento são aceitas?',
-            answer: 'Aceitamos cartões de crédito (Visa, Mastercard, American Express), PIX, boleto bancário e PayPal. Para compras parceladas, oferecemos até 12x sem juros em cartões selecionados.'
+            question: t('help.faq.questions.products.question'),
+            answer: t('help.faq.questions.products.answer'),
         },
         {
-            question: 'Os produtos têm garantia?',
-            answer: 'Sim, todos os nossos produtos possuem garantia contra defeitos de fabricação. O prazo da garantia varia de acordo com o fabricante, geralmente entre 30 dias e 1 ano.'
+            question: t('help.faq.questions.orders.question'),
+            answer: t('help.faq.questions.orders.answer'),
         },
-        {
-            question: 'Como funciona o frete grátis?',
-            answer: 'Oferecemos frete grátis para compras acima de R$ 200,00 para todo o Brasil. A promoção é válida apenas para entregas padrão e pode não se aplicar a produtos muito pesados ou localidades muito distantes.'
-        },
-        {
-            question: 'Posso alterar meu pedido após a confirmação?',
-            answer: 'Alterações no pedido só podem ser feitas antes do início do processamento. Entre em contato com nosso suporte imediatamente após fazer o pedido se precisar de alguma alteração.'
-        },
-        {
-            question: 'Como faço para cancelar um pedido?',
-            answer: 'Para cancelar um pedido, acesse sua conta e procure a opção "Cancelar Pedido" junto ao pedido desejado. Note que só é possível cancelar pedidos que ainda não foram enviados.'
-        }
     ];
 
     return (

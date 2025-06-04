@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux"
 import type { RootState } from "../../store/reducers/store"
+import { useTranslation } from 'react-i18next'
 
 export enum LoaderType {
     DEFAULT, SKELETON, 
@@ -42,6 +43,7 @@ const LoadingSpinner = () => (
 
 const Loader = ({ text = "", variant = LoaderType.DEFAULT} : { text?: string, variant?: LoaderType }) => {
     const { isLoading } = useSelector((state: RootState) => state.errorsState)
+    const { t } = useTranslation()
 
     if (!isLoading) return null;
 
@@ -54,7 +56,7 @@ const Loader = ({ text = "", variant = LoaderType.DEFAULT} : { text?: string, va
                     <LoadingSpinner />
                     {text && (
                         <p className="text-sm text-gray-500 animate-pulse">
-                            {text || "Carregando..."}
+                            {text || t('common.loading')}
                         </p>
                     )}
                 </div>

@@ -61,6 +61,7 @@ const Products = () => {
       params.delete("keyword");
     }
     navigate(`${path}?${params}`);
+    window.scrollTo(0, 0);
   }
       
   return (
@@ -73,7 +74,7 @@ const Products = () => {
       {/* Main Content */}
       <main className="flex-1">
         {/* Search Bar */}
-        <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+        <div className="sticky top-16 z-50 bg-white border-b border-gray-100">
           <div className="max-w-2xl mx-auto px-4 py-3">
             <div className="relative flex items-center">
               <input

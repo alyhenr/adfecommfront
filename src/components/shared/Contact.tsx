@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FaEnvelope, FaMapMarkedAlt, FaPhone, FaWeixin, FaWhatsapp } from "react-icons/fa"
 import { formatPhoneNumber } from "../../utils/common"
+import { useTranslation } from 'react-i18next';
 
 const StyledLabel = ({ text, htmlFor } : { text: string, htmlFor: string }) => {
   return <label className="block text-sm font-medium text-gray-700" htmlFor={htmlFor}>{text}:</label>
@@ -24,6 +25,35 @@ const ContactInfoCard = ({ icon: Icon, title, content }: {
 
 const Contact = () => {
   const [formattedNumber, setFormattedNumber] = useState<string>()
+  const { t } = useTranslation();
+
+  const contactInfo = [
+    {
+      icon: FaPhone,
+      title: t('contact.phone.label'),
+      content: formatPhoneNumber("41999999999"),
+    },
+    {
+      icon: FaEnvelope,
+      title: t('contact.email.label'),
+      content: t('contact.email.value'),
+    },
+    {
+      icon: FaMapMarkedAlt,
+      title: t('contact.address.label'),
+      content: `${t('contact.address.value')} ${t('contact.address.extra')}`,
+    },
+    {
+      icon: FaWhatsapp,
+      title: 'WhatsApp',
+      content: formatPhoneNumber("41999999999"),
+    },
+    {
+      icon: FaWeixin,
+      title: 'WeChat',
+      content: "youde_oficial",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -32,9 +62,12 @@ const Contact = () => {
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl">
-            <h1 className="text-4xl font-bold mb-6">Entre em Contato</h1>
+            <h1 className="text-4xl font-bold mb-6">{t('contact.title')}</h1>
             <p className="text-lg text-red-50">
-              Estamos aqui para ajudar. Entre em contato conosco por qualquer um dos canais abaixo.
+              {t('contact.subtitle')}
+            </p>
+            <p className="text-lg text-red-50">
+              {t('contact.available')}
             </p>
           </div>
         </div>
@@ -45,31 +78,14 @@ const Contact = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Info */}
           <div className="lg:col-span-1 space-y-4">
-            <ContactInfoCard
-              icon={FaPhone}
-              title="Telefone"
-              content={formatPhoneNumber("41999999999")}
-            />
-            <ContactInfoCard
-              icon={FaEnvelope}
-              title="Email"
-              content="contato@youde.com"
-            />
-            <ContactInfoCard
-              icon={FaMapMarkedAlt}
-              title="Endereço"
-              content="123 Street X, City, PR"
-            />
-            <ContactInfoCard
-              icon={FaWhatsapp}
-              title="WhatsApp"
-              content={formatPhoneNumber("41999999999")}
-            />
-            <ContactInfoCard
-              icon={FaWeixin}
-              title="WeChat"
-              content="youde_oficial"
-            />
+            {contactInfo.map((info, index) => (
+              <ContactInfoCard
+                key={index}
+                icon={info.icon}
+                title={info.title}
+                content={info.content}
+              />
+            ))}
           </div>
 
           {/* Contact Form */}
@@ -77,7 +93,7 @@ const Contact = () => {
             <div className="bg-white shadow-sm border border-gray-100 rounded-sm p-8">
               <form className="space-y-6">
                 <div>
-                  <StyledLabel text="Nome" htmlFor="name" />
+                  <StyledLabel text={t('contact.form.name')} htmlFor="name" />
                   <input
                     type="text"
                     id="name"
@@ -87,7 +103,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <StyledLabel text="Email" htmlFor="email" />
+                  <StyledLabel text={t('contact.form.email')} htmlFor="email" />
                   <input
                     type="email"
                     id="email"
@@ -97,7 +113,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <StyledLabel text="Celular (DD)XXXXX-XXXX" htmlFor="phone" />
+                  <StyledLabel text={t('contact.form.phone')} htmlFor="phone" />
                   <input
                     type="tel"
                     id="phone"
@@ -109,7 +125,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <StyledLabel text="Mensagem" htmlFor="message" />
+                  <StyledLabel text={t('contact.form.message')} htmlFor="message" />
                   <textarea
                     id="message"
                     rows={4}
@@ -122,7 +138,7 @@ const Contact = () => {
                   type="submit"
                   className="w-full bg-red-600 text-white py-2 px-4 rounded-sm hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
-                  Enviar Mensagem
+                  {t('contact.form.submit')}
                 </button>
               </form>
             </div>

@@ -2,11 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaShoppingCart, FaUser } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/reducers/store';
+import { useTranslation } from 'react-i18next';
 
 const MobileNav = () => {
     const location = useLocation();
     const cartCount = useSelector((state: RootState) => state.cartState.products.length);
     const isLoggedIn = useSelector((state: RootState) => state.authState.user.userId > 0);
+    const { t } = useTranslation();
 
     return (
         <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-40">
@@ -18,7 +20,7 @@ const MobileNav = () => {
                     }`}
                 >
                     <FaHome className="w-5 h-5" />
-                    <span className="text-xs mt-1">Home</span>
+                    <span className="text-xs mt-1">{t('nav.home')}</span>
                 </Link>
 
                 <Link
@@ -35,7 +37,7 @@ const MobileNav = () => {
                             </span>
                         )}
                     </div>
-                    <span className="text-xs mt-1">Carrinho</span>
+                    <span className="text-xs mt-1">{t('nav.cart')}</span>
                 </Link>
 
                 <Link
@@ -47,7 +49,7 @@ const MobileNav = () => {
                     }`}
                 >
                     <FaUser className="w-5 h-5" />
-                    <span className="text-xs mt-1">Perfil</span>
+                    <span className="text-xs mt-1">{t('nav.profile')}</span>
                 </Link>
             </div>
         </nav>
