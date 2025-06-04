@@ -65,12 +65,12 @@ const ProductViewModal = ({
                 {/* Wishlist Button */}
                 <button
                   onClick={() => setIsWishlisted(!isWishlisted)}
-                  className="absolute top-4 right-4 p-2 hover:bg-white/80 transition-colors rounded-sm bg-white/60"
+                  className="absolute bottom-4 right-2 p-2 hover:bg-white/80 transition-colors rounded-sm bg-white/20"
                 >
                   {isWishlisted ? (
                     <FaHeart className="w-5 h-5 text-red-500" />
                   ) : (
-                    <FaRegHeart className="w-5 h-5 text-gray-500" />
+                    <FaRegHeart className="w-5 h-5 text-black" />
                   )}
                 </button>
                 <img
