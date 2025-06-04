@@ -182,7 +182,7 @@ const NavBar = () => {
       >
         <Dialog
           as="div"
-          className="fixed inset-0 z-40 sm:hidden"
+          className="fixed inset-0 z-1000 sm:hidden"
           onClose={setIsOpen}
         >
           <div className="fixed inset-0 bg-black bg-opacity-25" />
