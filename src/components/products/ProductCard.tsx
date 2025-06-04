@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Product } from "../../types";
-import { FaShoppingCart, FaHeart, FaRegHeart, FaTrash } from "react-icons/fa";
+import { FaShoppingCart, FaHeart, FaRegHeart, FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
 import { getSpecialPriceStr } from "../../utils/productsUtils";
 import { truncateText } from "../../utils/common";
@@ -23,8 +23,6 @@ const ProductCard = (product: Product) => {
 
   const [openModal, setOpenModal] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  let btnLoader = false;
   const [_selectedViewProduct, setSelectedViewProduct] = useState<Product>();
   const isAvailable: boolean = Boolean(quantity && quantity > 0);
 
@@ -64,6 +62,14 @@ const ProductCard = (product: Product) => {
       toast.error(message)
     }
   }
+
+  const handleIncreaseQuantity = async () => {
+    await dispatch(addToCart({data: product, updateQtde: true})).unwrap();
+  }
+
+  const handleDecreaseQuantity = async () => {
+    await dispatch(removeFromCart({productId, clean: false})).unwrap();
+  }
   
   return (
     <div className="group bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 flex flex-col h-full relative">
@@ -95,12 +101,45 @@ const ProductCard = (product: Product) => {
           src={imageUrl}
           alt={productName}
         />
+        {/* Green overlay when product is in cart */}
+        {isInCart && (
+          <>
+            <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+              <div className="relative flex items-center justify-center">
+                <FaShoppingCart className="w-8 h-8 text-green-600" />
+                <span className="absolute -top-1 -right-1 text-sm p-1 rounded-full w-5 h-5 flex items-center justify-center bg-white text-green-600 font-bold">
+                    {cartItems.find(item => item.productId === productId)?.quantity}
+                </span>
+              </div>              
+            </div>
+          </>
+        )}
       </div>
       <div className="p-4 flex flex-col gap-2 flex-grow">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
+        <div className="flex items-center gap-2 justify-between relative w-full">
+          <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1  rounded">
             {String(category.categoryName)}
           </span>
+          {isInCart && <div className="flex items-center justify-end w-fit p-1 rounded-md absolute -top-9 -right-5 z-10 gap-1">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDecreaseQuantity();
+              }}
+              className="p-2 rounded-full bg-white text-gray-700 shadow-lg transition-all duration-200 cursor-pointer border border-gray-200 hover:bg-gray-100"
+            >
+              <FaMinus className="w-4 h-4" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleIncreaseQuantity();
+              }}
+              className="p-2 rounded-full bg-white text-gray-700 shadow-lg transition-all duration-200 cursor-pointer border border-gray-200 hover:bg-gray-100"
+            >
+              <FaPlus className="w-4 h-4" />
+            </button>
+          </div>}
         </div>
         <h2
           onClick={handleProductView}
@@ -111,7 +150,7 @@ const ProductCard = (product: Product) => {
         <p className="text-sm text-gray-500 line-clamp-2 flex-grow">
           {truncateText(description, 80)}
         </p>
-        <div className="flex items-center justify-between flex-wrap mt-auto pt-3 sm:items-start flex-col gap-2">
+        <div className="flex items-center justify-between flex-wrap mt-auto pt-3">
           <div className="flex flex-col">
             {discount > 0 ? (
               <>
@@ -129,36 +168,28 @@ const ProductCard = (product: Product) => {
             )}
           </div>
           <button
-            disabled={!isAvailable || btnLoader}
+            disabled={!isAvailable}
             onClick={isInCart ? handleRemoveFromCart : handleAddToCart}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className={`cursor-pointer
-              flex items-center gap-2 px-4 py-2 rounded w-full sm:w-auto justify-center
-              transition-all duration-200
+            className={`flex items-center gap-2 px-4 py-2 rounded transition-all duration-200 w-full justify-center mt-2
               ${!isAvailable 
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                 : isInCart
-                  ? isHovered
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
-                    : 'bg-green-50 text-green-600 hover:bg-red-500 hover:text-white'
-                  : 'bg-gray-900 hover:bg-black text-white cursor-pointer'}
-            `}
+                  ? 'bg-red-500 hover:bg-red-600 text-white cursor-pointer'
+                  : 'bg-gray-900 hover:bg-black text-white cursor-pointer'}`}
           >
             {isInCart ? (
-              isHovered ? <FaTrash className="w-4 h-4" /> : <FaShoppingCart className="w-4 h-4" />
+              <>
+                <FaTrash className="w-4 h-4" />
+                <span className="text-sm font-medium">Remover</span>
+              </>
             ) : (
-              <FaShoppingCart className="w-4 h-4" />
+              <>
+                <FaShoppingCart className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {!isAvailable ? "Esgotado" : "Adicionar"}
+                </span>
+              </>
             )}
-            <span className="md:text-xs text-sm lg:text-sm font-medium h-5 w-full text-center flex items-center justify-center">
-              {!isAvailable 
-                ? "Esgotado" 
-                : isInCart 
-                  ? isHovered 
-                    ? "Remover" 
-                    : "No carrinho" 
-                  : "Adicionar"}
-            </span>
           </button>
         </div>
       </div>
