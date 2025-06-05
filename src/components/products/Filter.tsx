@@ -24,11 +24,11 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
   const { t } = useTranslation();
 
   const sortOptions: SortOption[] = [
-    { label: t('products.filters.sort.recent'), property: "productId", order: "desc" },
-    { label: t('products.filters.sort.nameAsc'), property: "productName", order: "asc" },
-    { label: t('products.filters.sort.nameDesc'), property: "productName", order: "desc" },
-    { label: t('products.filters.sort.priceAsc'), property: "price", order: "asc" },
-    { label: t('products.filters.sort.priceDesc'), property: "price", order: "desc" },
+    { label: t('products.filters.sortOptions.recent'), property: "productId", order: "desc" },
+    { label: t('products.filters.sortOptions.nameAsc'), property: "productName", order: "asc" },
+    { label: t('products.filters.sortOptions.nameDesc'), property: "productName", order: "desc" },
+    { label: t('products.filters.sortOptions.priceAsc'), property: "price", order: "asc" },
+    { label: t('products.filters.sortOptions.priceDesc'), property: "price", order: "desc" },
   ];
   
 
