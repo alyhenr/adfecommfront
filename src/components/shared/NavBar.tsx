@@ -61,7 +61,9 @@ const NavBar = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link to="/">
+              <Link to="/" onClick={() => { 
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}>
                 <img className="h-20 w-auto" src={Logo} alt="Youde Logo" />
               </Link>
             </div>
