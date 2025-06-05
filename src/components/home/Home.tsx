@@ -20,11 +20,11 @@ type CategoryImageMap = {
 
 // Default category images - will be used if no image is provided in the category data
 const categoryImages: CategoryImageMap = {
-  "Molhos": "https://images.unsplash.com/photo-1606483956061-46a898dce538",
-  "Massas": "https://images.unsplash.com/photo-1552611052-33e04de081de",
-  "Bebidas": "https://images.unsplash.com/photo-1621267860478-fa4c5988a4bb",
-  "Snacks": "https://images.unsplash.com/photo-1582461833047-2afd0994b746",
-  "default": "https://images.unsplash.com/photo-1550367363-ea12860cc124"
+  "Petiscos / 零食": "https://images.chinatimes.com/newsphoto/2024-10-24/656/20241024000062.jpg",
+  "Temperos / 调味酱料": "https://images-ext-1.discordapp.net/external/GrzaeItwbTX4Fq0IcQHgWLY8_HATnF_N3HkhyJth-TI/%3Fresize%3D600%252C600%26ssl%3D1/https/i0.wp.com/visionthai.net/wp-content/uploads/2022/08/thai-sauce-green-lid-5.webp?format=webp&width=660&height=660",
+  "Bebidas / 饮料": "https://images-ext-1.discordapp.net/external/xkNbyrIw-Qc8pJJHf3MWjMfQBIHurZ3Wcrpm5A2juQ8/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLAdncLSroOQgt7tkThTPoiajEMW1A/https/i.ytimg.com/vi/c9PB-bzujnY/hq720.jpg?format=webp&width=755&height=425",
+  "Iogurtes / 乳饮": "https://images-ext-1.discordapp.net/external/RPvBxcFuk8v96RtIEArsBG0xHRXDhc4zM5Ph-s3xPeQ/https/img.alicdn.com/imgextra/i3/2285436743/O1CN01baDriK1zgLfYKoi48_%21%212285436743.jpg?format=webp&width=880&height=880",
+  "default": "https://images.chinatimes.com/newsphoto/2024-10-24/656/20241024000062.jpg"
 };
 
 const Home = () => {

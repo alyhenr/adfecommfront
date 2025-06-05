@@ -143,9 +143,9 @@ const Products = () => {
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         
         <div className="fixed inset-0 flex items-center justify-center">
-          <DialogPanel className="w-full h-full bg-white p-6 overflow-y-auto">
+          <DialogPanel className="w-full h-full bg-white p-6 overflow-y-auto mt-30 sm:mt-0">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-medium text-gray-900">{t('products.filters')}</h2>
+              <div className="text-xl font-medium text-gray-900">{t('products.filtersTitle')}</div>
               <button
                 onClick={() => setIsMobileFilterOpen(false)}
                 className="p-2 text-gray-400 hover:text-gray-500"
