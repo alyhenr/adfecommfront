@@ -40,7 +40,7 @@ export default {
       features: {
         authentic: {
           title: '正品保证',
-          description: '直接从亚洲进口，确保风味的真实性',
+          description: '亚洲进口，确保风味的真实性',
         },
         fresh: {
           title: '新鲜食材',
@@ -52,7 +52,7 @@ export default {
         },
         experience: {
           title: '始于2004',
-          description: '20年来为您的餐桌带来亚洲美食',
+          description: '20年来为您带来亚洲美食',
         },
       },
       categories: {
@@ -63,7 +63,7 @@ export default {
       explore: '探索',
       products: {
         title: '最畅销',
-        description: '我们的客户最喜欢的产品',
+        description: '客户最喜欢的产品',
         explore: '查看所有产品',
       },
       cta: {
@@ -315,5 +315,22 @@ export default {
       addToCart: '添加',
       outOfStock: '售罄',
     },
+
+    // Cart Page
+    cart: {
+      emptyCartTitle: '您的购物车是空的',
+      emptyCart: '看起来您还没有添加任何商品到购物车。',
+      continueShopping: '继续购物',
+      cart: '购物车',
+      orderSummary: '订单摘要',
+      subtotal: '小计',
+      shipping: '运费',
+      calculatedAtCheckout: '结算时计算',
+      total: '总计',
+      item: '项',
+      items: '项',
+      inYourCart: '在您的购物车中',
+      checkout: '结算',
+    },  
   },
 }; 

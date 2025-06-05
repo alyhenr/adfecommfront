@@ -315,5 +315,22 @@ export default {
       addToCart: 'Adicionar',
       outOfStock: 'Esgotado',
     },
+
+    // Cart Page
+    cart: {
+      emptyCartTitle: 'Seu carrinho está vazio',
+      emptyCart: 'Parece que você ainda não adicionou nenhum item ao seu carrinho.',
+      continueShopping: 'Continuar comprando',
+      cart: 'Carrinho',
+      orderSummary: 'Resumo do pedido',
+      subtotal: 'Subtotal',
+      shipping: 'Frete',
+      calculatedAtCheckout: 'Calculado no checkout',
+      total: 'Total',
+      item: 'item',
+      items: 'itens',
+      inYourCart: 'no seu carrinho',
+      checkout: 'Finalizar compra',
+    },  
   },
 }; 
