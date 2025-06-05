@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../store/reducers/store";
 import { addToCart, removeFromCart } from "../../store/actions";
 import { toast } from "react-hot-toast"
+import { useTranslation } from "react-i18next";
 
 const ProductCard = (product: Product) => {
   let {
@@ -20,6 +21,8 @@ const ProductCard = (product: Product) => {
     imageUrl,
     category,
   } = product;
+
+  const { t } = useTranslation();
 
   const [openModal, setOpenModal] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -190,13 +193,13 @@ const ProductCard = (product: Product) => {
             {isInCart ? (
               <>
                 <FaTrash className="w-4 h-4" />
-                <span className="text-sm font-medium">Remover</span>
+                <span className="text-sm font-medium">{t('products.remove')}</span>
               </>
             ) : (
               <>
                 <FaShoppingCart className="w-4 h-4" />
                 <span className="text-sm font-medium">
-                  {!isAvailable ? "Esgotado" : "Adicionar"}
+                  {!isAvailable ? t('products.outOfStock') : t('products.addToCart')}
                 </span>
               </>
             )}

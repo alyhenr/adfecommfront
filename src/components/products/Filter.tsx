@@ -6,7 +6,7 @@ import useProductFilter from "../../hooks/useProductFilter";
 import { useSelector, useDispatch } from "react-redux";
 import type { AppDispatch, RootState } from "../../store/reducers/store";
 import { filterProducts } from "../../store/actions";
-
+import { useTranslation } from "react-i18next";
 type FilterProps = {
   categories: Category[];
   setFilterByPrice: (value: boolean) => void;
@@ -19,16 +19,19 @@ type SortOption = {
   order: "asc" | "desc";
 };
 
-const sortOptions: SortOption[] = [
-  { label: "Mais recentes", property: "productId", order: "desc" },
-  { label: "Nome A-Z", property: "productName", order: "asc" },
-  { label: "Nome Z-A", property: "productName", order: "desc" },
-  { label: "Menor preço", property: "price", order: "asc" },
-  { label: "Maior preço", property: "price", order: "desc" },
-];
-
 const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
+
+  const sortOptions: SortOption[] = [
+    { label: t('products.filters.sortOptions.recent'), property: "productId", order: "desc" },
+    { label: t('products.filters.sortOptions.nameAsc'), property: "productName", order: "asc" },
+    { label: t('products.filters.sortOptions.nameDesc'), property: "productName", order: "desc" },
+    { label: t('products.filters.sortOptions.priceAsc'), property: "price", order: "asc" },
+    { label: t('products.filters.sortOptions.priceDesc'), property: "price", order: "desc" },
+  ];
+  
+
   const categoryMap: Record<number, string> = { [-1]: "" };
   categories.forEach((category) => {
     categoryMap[category.categoryId] = category.categoryName;
@@ -132,7 +135,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
   };
 
   const clearFilters = () => {
-    setCategory({ categoryId: -1, categoryName: "Todas" });
+    setCategory({ categoryId: -1, categoryName: t('products.filters.all') });
     setPriceRange([0, 0]);
     setSelectedSort("");
     setFilterByPrice(false);
@@ -141,11 +144,11 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
 
   return (
     <div className="text-gray-600 z-1000">
-      <h2 className="text-sm font-medium uppercase tracking-wide text-gray-900 mb-6">Filtros</h2>
+      <h2 className="text-sm font-medium uppercase tracking-wide text-gray-900 mb-6">{t('products.filtersTitle')}</h2>
       
       {/* Categories */}
       <div className="mb-8">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-3">Categorias</h3>
+        <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-3">{t('products.filters.categories')}</h3>
         <div className="space-y-2">
           <label className="relative flex items-start group cursor-pointer py-1">
             <div className="flex items-center h-5">
@@ -158,7 +161,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
               />
               <div className="w-4 h-4 border border-gray-300 rounded-full peer-checked:border-[5px] peer-checked:border-red-500 transition-all"></div>
             </div>
-            <span className="ml-3 text-sm text-gray-700 group-hover:text-gray-900">Todas</span>
+            <span className="ml-3 text-sm text-gray-700 group-hover:text-gray-900">{t('products.filters.all')}</span>
           </label>
           {categories.map((c) => (
             <label key={c.categoryId} className="relative flex items-start group cursor-pointer py-1">
@@ -180,7 +183,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
 
       {/* Price Range */}
       <div className="mb-8">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-3">Faixa de Preço</h3>
+        <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-3">{t('products.filters.price')}</h3>
         <div className="space-y-4">
           <div className="flex gap-3">
             <div className="flex-1">
@@ -207,9 +210,9 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-gray-500">
               {isPriceFilterActive ? (
-                <span>{filteredProducts.length} produtos com filtro aplicado</span>
+                <span>{t('products.filters.applied', { count: filteredProducts.length })}</span>
               ) : (
-                <span>{previewCount} produtos encontrados nesta faixa</span>
+                <span>{t('products.filters.found', { count: previewCount })}</span>
               )}
             </div>
             <div className="flex flex-col gap-2">
@@ -224,8 +227,8 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
                 {isPriceFilterActive && <FiCheck className="w-3.5 h-3.5" />}
                 <span>
                   {isPriceFilterActive
-                    ? "Atualizar filtro"
-                    : "Aplicar filtro"}
+                    ? t('products.filters.update')
+                    : t('products.filters.apply')}
                 </span>
               </button>
               {isPriceFilterActive && (
@@ -233,7 +236,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
                   onClick={handleRemovePriceFilter}
                   className="text-red-500 hover:text-red-600 cursor-pointer text-sm font-medium"
                 >
-                  Remover filtro
+                  {t('products.filters.remove')}
                 </button>
               )}
             </div>
@@ -243,7 +246,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
 
       {/* Sort By */}
       <div className="mb-8">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-3">Ordenar por</h3>
+        <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-3">{t('products.filters.sort')}</h3>
         <div className="space-y-2">
           {sortOptions.map((option) => (
             <label key={`${option.property}:${option.order}`} className="relative flex items-start group cursor-pointer py-1">
@@ -269,7 +272,7 @@ const Filter = ({ categories, setFilterByPrice, onFilterApply }: FilterProps) =>
         className="w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-gray-700 px-4 py-2 border border-gray-200 transition-colors text-sm font-medium group"
       >
         <FiRefreshCcw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500" />
-        <span>Limpar filtros</span>
+        <span>{t('products.filters.clear')}</span>
       </button>
     </div>
   );

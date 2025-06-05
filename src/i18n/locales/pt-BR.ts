@@ -27,7 +27,7 @@ export default {
         },
         slide2: {
           title: 'Produtos Importados',
-          subtitle: 'Direto da Ásia',
+          subtitle: 'Alta Qualidade',
           description: 'A maior variedade de produtos asiáticos autênticos da região',
         },
         slide3: {
@@ -35,6 +35,7 @@ export default {
           subtitle: 'Sabor & Tradição',
           description: 'Ingredientes especiais para suas receitas favoritas',
         },
+        explore: 'Explorar',
       },
       features: {
         authentic: {
@@ -50,9 +51,25 @@ export default {
           description: 'Entregamos em toda a região com cuidado e agilidade',
         },
         experience: {
-          title: 'Desde 1995',
-          description: 'Mais de 25 anos trazendo a culinária asiática para sua mesa',
+          title: 'Desde 2004',
+          description: 'Mais de 20 anos trazendo a culinária asiática para sua mesa',
         },
+      },
+      categories: {
+        title: 'Nossas Categorias',
+        description: 'Explore nossa seleção de produtos asiáticos autênticos',
+        explore: 'Explorar',
+      },
+      explore: 'Explorar',
+      products: {
+        title: 'Mais Vendidos',
+        description: 'Os produtos favoritos de nossos clientes',
+        explore: 'Ver Todos os Produtos',
+      },
+      cta: {
+        title: 'Descubra os Sabores da Ásia',
+        description: 'Encontre todos os ingredientes necessários para preparar pratos autênticos da culinária asiática na sua casa.',
+        explore: 'Explorar Produtos',
       },
     },
 
@@ -266,6 +283,37 @@ export default {
         pattern: 'Formato inválido',
         minLength: '{{field}} deve ter no mínimo {{min}} caracteres',
       },
+    },
+
+    // Products Page
+    products: {
+      search: {
+        placeholder: 'Buscar produtos...',
+      },
+      loading: 'Carregando produtos...',
+      filtersTitle: 'Filtros',
+      filters: {
+        categories: 'Categorias',
+        all: 'Todas',
+        price: 'Faixa de Preço',
+        applied: '{{count}} produtos com filtro aplicado',
+        found: '{{count}} produtos encontrados nesta faixa',
+        update: 'Atualizar filtro',
+        apply: 'Aplicar filtro',
+        remove: 'Remover filtro',
+        clear: 'Limpar filtros',
+        sort: 'Ordenar por',
+        sortOptions: {
+          recent: 'Mais recentes',
+          nameAsc: 'Nome A-Z',
+          nameDesc: 'Nome Z-A',
+          priceAsc: 'Menor preço',
+          priceDesc: 'Maior preço',
+        },
+      },
+      remove: 'Remover',
+      addToCart: 'Adicionar',
+      outOfStock: 'Esgotado',
     },
   },
 }; 

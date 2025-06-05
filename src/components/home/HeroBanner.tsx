@@ -10,35 +10,37 @@ import 'swiper/css/scrollbar';
 import 'swiper/css/effect-fade';
 import 'swiper/css/autoplay';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-const slidesContent = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
-    title: "Sabores Autênticos",
-    subtitle: "Culinária Asiática",
-    description: "Descubra os verdadeiros sabores da gastronomia chinesa tradicional",
-    order: 0,
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1516211697506-8360dbcfe9a4",
-    title: "Produtos Importados",
-    subtitle: "Direto da Ásia",
-    description: "A maior variedade de produtos asiáticos autênticos da região",
-    order: 1,
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1498654896293-37aacf113fd9",
-    title: "Especiarias & Temperos",
-    subtitle: "Sabor & Tradição",
-    description: "Ingredientes especiais para suas receitas favoritas",
-    order: 2,
-  }
-];
 
 const HeroBanner = () => {
+  const { t } = useTranslation();
+  const slidesContent = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1654085757031-97dab8eeb107?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: t('home.hero.slide1.title'),
+      subtitle: t('home.hero.slide1.subtitle'),
+      description: t('home.hero.slide1.description'),
+      order: 0,
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1516211697506-8360dbcfe9a4",
+      title: t('home.hero.slide2.title'),
+      subtitle: t('home.hero.slide2.subtitle'),
+      description: t('home.hero.slide2.description'),
+      order: 1,
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1498654896293-37aacf113fd9",
+      title: t('home.hero.slide3.title'),
+      subtitle: t('home.hero.slide3.subtitle'),
+      description: t('home.hero.slide3.description'),
+      order: 2,
+    }
+  ];
   return (
     <div className='relative bg-gray-50'>
       <Swiper 
@@ -87,7 +89,7 @@ const HeroBanner = () => {
                           to="/products" 
                           className='inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 font-medium hover:bg-red-700 transition-colors'
                         >
-                          Explorar Produtos
+                          {t('home.hero.explore')}
                           <FaArrowRight className="w-4 h-4" />
                         </Link>
                       </div>

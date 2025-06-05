@@ -27,14 +27,15 @@ export default {
         },
         slide2: {
           title: '进口产品',
-          subtitle: '直接从亚洲进口',
+          subtitle: '高品质',
           description: '本地最丰富的正宗亚洲产品',
         },
         slide3: {
           title: '香料和调味料',
-          subtitle: '味道与传统',
+          subtitle: '原味原料',
           description: '为您喜爱的食谱提供特色配料',
         },
+        explore: '探索',
       },
       features: {
         authentic: {
@@ -50,9 +51,25 @@ export default {
           description: '细心快速地为整个地区提供配送服务',
         },
         experience: {
-          title: '始于1995',
-          description: '25年来为您的餐桌带来亚洲美食',
+          title: '始于2004',
+          description: '20年来为您的餐桌带来亚洲美食',
         },
+      },
+      categories: {
+        title: '所有分类',
+        description: '自由探索我们精选的正宗亚洲产品',
+        explore: '探索',
+      },
+      explore: '探索',
+      products: {
+        title: '最畅销',
+        description: '我们的客户最喜欢的产品',
+        explore: '查看所有产品',
+      },
+      cta: {
+        title: '探索亚洲风味',
+        description: '找到所有准备正宗亚洲菜所需的食材',
+        explore: '探索产品',
       },
     },
 
@@ -266,6 +283,37 @@ export default {
         pattern: '格式无效',
         minLength: '{{field}}必须至少包含{{min}}个字符',
       },
+    },
+
+    // Products Page
+    products: {
+      search: {
+        placeholder: '搜索产品...',
+      },
+      loading: '加载中...',
+      filtersTitle: '筛选',
+      filters: {
+        categories: '分类',
+        all: '全部',
+        price: '价格范围',
+        applied: '{{count}}个产品符合筛选条件',
+        found: '{{count}}个产品符合价格范围',
+        update: '更新筛选',
+        apply: '应用筛选',
+        remove: '移除筛选',
+        clear: '清除筛选',
+        sort: '排序',
+        sortOptions: {
+          recent: '最近',
+          nameAsc: '名称 A-Z',
+          nameDesc: '名称 Z-A',
+          priceAsc: '最低价格',
+          priceDesc: '最高价格',
+        },
+      },
+      remove: '移除',
+      addToCart: '添加',
+      outOfStock: '售罄',
     },
   },
 }; 

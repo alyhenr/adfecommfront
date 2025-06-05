@@ -12,8 +12,10 @@ import ErrorMessage from "../shared/ErrorMessage";
 import { FiSearch, FiSliders, FiX } from "react-icons/fi";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Dialog, DialogPanel } from "@headlessui/react";
+import { useTranslation } from "react-i18next";
 
 const Products = () => {
+  const { t } = useTranslation();
   const { isLoading, errorMessage } = useSelector(
     (state: RootState) => state.errorsState
   );
@@ -79,7 +81,7 @@ const Products = () => {
             <div className="relative flex items-center">
               <input
                 type="text"
-                placeholder="Buscar produtos..."
+                placeholder={t('products.search.placeholder')}
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 onKeyDown={(e) => {                 
@@ -104,7 +106,7 @@ const Products = () => {
         <div className="px-3 py-4 md:px-6 md:py-8">
           {isLoading ? (
             <div className="flex justify-center items-center min-h-[400px]">
-              <Loader text="Carregando produtos..." />
+              <Loader text={t('products.loading')} />
             </div>
           ) : errorMessage ? (
             <div className="flex justify-center items-center min-h-[400px]">
@@ -143,7 +145,7 @@ const Products = () => {
         <div className="fixed inset-0 flex items-center justify-center">
           <DialogPanel className="w-full h-full bg-white p-6 overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-medium text-gray-900">Filtros</h2>
+              <h2 className="text-xl font-medium text-gray-900">{t('products.filters')}</h2>
               <button
                 onClick={() => setIsMobileFilterOpen(false)}
                 className="p-2 text-gray-400 hover:text-gray-500"

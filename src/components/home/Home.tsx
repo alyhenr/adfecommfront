@@ -11,29 +11,7 @@ import { FaAward, FaLeaf, FaTruck, FaStore } from "react-icons/fa6"
 import { Link } from "react-router-dom"
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
-
-const features = [
-  {
-    icon: FaAward,
-    title: "Produtos Autênticos",
-    description: "Importados diretamente da Ásia, garantindo a autenticidade dos sabores"
-  },
-  {
-    icon: FaLeaf,
-    title: "Ingredientes Frescos",
-    description: "Produtos frescos e de alta qualidade selecionados diariamente"
-  },
-  {
-    icon: FaTruck,
-    title: "Entrega Rápida",
-    description: "Entregamos em toda a região com cuidado e agilidade"
-  },
-  {
-    icon: FaStore,
-    title: "Desde 1995",
-    description: "Mais de 25 anos trazendo a culinária asiática para sua mesa"
-  }
-];
+import { useTranslation } from "react-i18next"
 
 // Define type for category images
 type CategoryImageMap = {
@@ -60,6 +38,31 @@ const Home = () => {
   const { errorMessage, isLoading } = useSelector(
     (state: RootState) => state.errorsState
   );
+
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: FaAward,
+      title: t('home.features.authentic.title'),
+      description: t('home.features.authentic.description')
+    },
+    {
+      icon: FaLeaf,
+      title: t('home.features.fresh.title'),
+      description: t('home.features.fresh.description')
+    },
+    {
+      icon: FaTruck,
+      title: t('home.features.delivery.title'),
+      description: t('home.features.delivery.description')
+    },
+    {
+      icon: FaStore,
+      title: t('home.features.experience.title'),
+      description: t('home.features.experience.description')
+    }
+  ];
 
   useEffect(() => {
     // Fetch categories
@@ -107,10 +110,10 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Nossas Categorias
+              {t('home.categories.title')}
             </h2>
             <p className="text-lg text-gray-600">
-              Explore nossa seleção de produtos asiáticos autênticos
+              {t('home.categories.description')}
             </p>
           </div>
 
@@ -140,7 +143,7 @@ const Home = () => {
                     <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                       <h3 className="text-xl font-bold mb-2">{category.categoryName}</h3>
                       <p className="text-sm text-gray-200 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                        Explore nossa seleção de {category.categoryName.toLowerCase()}
+                        {t('home.categories.explore')} {category.categoryName.toLowerCase()}
                       </p>
                     </div>
                   </Link>
@@ -160,10 +163,10 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Mais Vendidos
+              {t('home.products.title')}
             </h2>
             <p className="text-lg text-gray-600">
-              Os produtos favoritos de nossos clientes
+              {t('home.products.description')}
             </p>
           </div>
 
@@ -184,7 +187,7 @@ const Home = () => {
               to="/products"
               className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 font-medium hover:bg-black transition-colors"
             >
-              Ver Todos os Produtos
+              {t('home.products.explore')}
             </Link>
           </div>
         </div>
@@ -201,17 +204,16 @@ const Home = () => {
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Descubra os Sabores da Ásia
+            {t('home.cta.title')}
           </h2>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            Encontre todos os ingredientes necessários para preparar 
-            pratos autênticos da culinária asiática na sua casa.
+            {t('home.cta.description')}
           </p>
           <Link
             to="/products"
             className="inline-flex items-center gap-2 bg-red-600 text-white px-8 py-4 font-medium hover:bg-red-700 transition-colors"
           >
-            Explorar Produtos
+            {t('home.cta.explore')}
           </Link>
         </div>
       </div>
